@@ -1,4 +1,4 @@
-﻿namespace Terraria
+﻿namespace Toaria
 {
     using System;
     using System.IO;
@@ -6,13 +6,13 @@
 
     internal class ProgramServer
     {
-        private static Terraria.Main Game;
+        private static Toaria.Main Game;
 
         private static void Main(string[] args)
         {
             try
             {
-                Game = new Terraria.Main();
+                Game = new Toaria.Main();
                 for (int i = 0; i < args.Length; i++)
                 {
                     if (args[i].ToLower() == "-config")

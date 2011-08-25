@@ -1,4 +1,4 @@
-﻿namespace Terraria.Properties
+﻿namespace Toaria.Properties
 {
     using System.CodeDom.Compiler;
     using System.Configuration;

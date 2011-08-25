@@ -1,4 +1,4 @@
-﻿namespace Terraria
+﻿namespace Toaria
 {
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Audio;
@@ -2427,121 +2427,8 @@
 
         protected override void Update(GameTime gameTime)
         {
-            if (Main.netMode == 1)
+            if (Main.netMode != 1)
             {
-                for (int i = 0; i < 0x2c; i++)
-                {
-                    if (player[myPlayer].inventory[i].IsNotTheSameAs(clientPlayer.inventory[i]))
-                    {
-                        NetMessage.SendData(5, -1, -1, player[myPlayer].inventory[i].name, myPlayer, (float) i, 0f, 0f, 0);
-                    }
-                }
-                if (player[myPlayer].armor[0].IsNotTheSameAs(clientPlayer.armor[0]))
-                {
-                    NetMessage.SendData(5, -1, -1, player[myPlayer].armor[0].name, myPlayer, 44f, 0f, 0f, 0);
-                }
-                if (player[myPlayer].armor[1].IsNotTheSameAs(clientPlayer.armor[1]))
-                {
-                    NetMessage.SendData(5, -1, -1, player[myPlayer].armor[1].name, myPlayer, 45f, 0f, 0f, 0);
-                }
-                if (player[myPlayer].armor[2].IsNotTheSameAs(clientPlayer.armor[2]))
-                {
-                    NetMessage.SendData(5, -1, -1, player[myPlayer].armor[2].name, myPlayer, 46f, 0f, 0f, 0);
-                }
-                if (player[myPlayer].armor[3].IsNotTheSameAs(clientPlayer.armor[3]))
-                {
-                    NetMessage.SendData(5, -1, -1, player[myPlayer].armor[3].name, myPlayer, 47f, 0f, 0f, 0);
-                }
-                if (player[myPlayer].armor[4].IsNotTheSameAs(clientPlayer.armor[4]))
-                {
-                    NetMessage.SendData(5, -1, -1, player[myPlayer].armor[4].name, myPlayer, 48f, 0f, 0f, 0);
-                }
-                if (player[myPlayer].armor[5].IsNotTheSameAs(clientPlayer.armor[5]))
-                {
-                    NetMessage.SendData(5, -1, -1, player[myPlayer].armor[5].name, myPlayer, 49f, 0f, 0f, 0);
-                }
-                if (player[myPlayer].armor[6].IsNotTheSameAs(clientPlayer.armor[6]))
-                {
-                    NetMessage.SendData(5, -1, -1, player[myPlayer].armor[6].name, myPlayer, 50f, 0f, 0f, 0);
-                }
-                if (player[myPlayer].armor[7].IsNotTheSameAs(clientPlayer.armor[7]))
-                {
-                    NetMessage.SendData(5, -1, -1, player[myPlayer].armor[7].name, myPlayer, 51f, 0f, 0f, 0);
-                }
-                if (player[myPlayer].armor[8].IsNotTheSameAs(clientPlayer.armor[8]))
-                {
-                    NetMessage.SendData(5, -1, -1, player[myPlayer].armor[8].name, myPlayer, 52f, 0f, 0f, 0);
-                }
-                if (player[myPlayer].armor[9].IsNotTheSameAs(clientPlayer.armor[9]))
-                {
-                    NetMessage.SendData(5, -1, -1, player[myPlayer].armor[9].name, myPlayer, 53f, 0f, 0f, 0);
-                }
-                if (player[myPlayer].armor[10].IsNotTheSameAs(clientPlayer.armor[10]))
-                {
-                    NetMessage.SendData(5, -1, -1, player[myPlayer].armor[10].name, myPlayer, 54f, 0f, 0f, 0);
-                }
-                if (player[myPlayer].chest != clientPlayer.chest)
-                {
-                    NetMessage.SendData(0x21, -1, -1, "", player[myPlayer].chest, 0f, 0f, 0f, 0);
-                }
-                if (player[myPlayer].talkNPC != clientPlayer.talkNPC)
-                {
-                    NetMessage.SendData(40, -1, -1, "", myPlayer, 0f, 0f, 0f, 0);
-                }
-                if (player[myPlayer].zoneEvil != clientPlayer.zoneEvil)
-                {
-                    NetMessage.SendData(0x24, -1, -1, "", myPlayer, 0f, 0f, 0f, 0);
-                }
-                if (player[myPlayer].zoneMeteor != clientPlayer.zoneMeteor)
-                {
-                    NetMessage.SendData(0x24, -1, -1, "", myPlayer, 0f, 0f, 0f, 0);
-                }
-                if (player[myPlayer].zoneDungeon != clientPlayer.zoneDungeon)
-                {
-                    NetMessage.SendData(0x24, -1, -1, "", myPlayer, 0f, 0f, 0f, 0);
-                }
-                if (player[myPlayer].zoneJungle != clientPlayer.zoneJungle)
-                {
-                    NetMessage.SendData(0x24, -1, -1, "", myPlayer, 0f, 0f, 0f, 0);
-                }
-                bool flag = false;
-                for (int j = 0; j < 10; j++)
-                {
-                    if (player[myPlayer].buffType[j] != clientPlayer.buffType[j])
-                    {
-                        flag = true;
-                    }
-                }
-                if (flag)
-                {
-                    NetMessage.SendData(50, -1, -1, "", myPlayer, 0f, 0f, 0f, 0);
-                    NetMessage.SendData(13, -1, -1, "", myPlayer, 0f, 0f, 0f, 0);
-                }
-            }
-            if (Main.netMode == 1)
-            {
-                clientPlayer = (Player) player[myPlayer].clientClone();
-            }
-            else
-            {
-                gamePaused = false;
-                for (int m = 0; m < 0xff; m++)
-                {
-                    if (ignoreErrors)
-                    {
-                        try
-                        {
-                            player[m].UpdatePlayer(m);
-                        }
-                        catch
-                        {
-                        }
-                    }
-                    else
-                    {
-                        player[m].UpdatePlayer(m);
-                    }
-                }
                 if (Main.netMode != 1)
                 {
                     NPC.SpawnNPC();

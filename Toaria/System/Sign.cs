@@ -1,4 +1,4 @@
-﻿namespace Terraria
+﻿namespace Toaria
 {
     using System;
 

@@ -1,4 +1,4 @@
-﻿namespace Terraria
+﻿namespace Toaria
 {
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;

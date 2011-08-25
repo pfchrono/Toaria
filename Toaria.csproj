@@ -6,7 +6,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7EF2C347-E81D-4913-9293-AC882E44D9C2}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <AssemblyName>TerrariaServer</AssemblyName>
+    <AssemblyName>Toaria</AssemblyName>
     <OutputType>Exe</OutputType>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
@@ -30,6 +30,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>Toaria</RootNamespace>
+  </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Reference Include="Microsoft.Xna.Framework.Game" />
@@ -38,6 +41,22 @@
     <Reference Include="Microsoft.Xna.Framework.Graphics" />
     <Reference Include="Microsoft.Xna.Framework.Xact" />
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="TShock\Hooks\Classes\MethodHookAttribute.cs" />
+    <Compile Include="TShock\Hooks\Classes\SetDefaults.cs" />
+    <Compile Include="TShock\Hooks\ClientHooks.cs" />
+    <Compile Include="TShock\Hooks\DrawHooks.cs" />
+    <Compile Include="TShock\Hooks\GameHooks.cs" />
+    <Compile Include="TShock\Hooks\ItemHooks.cs" />
+    <Compile Include="TShock\Hooks\NetHooks.cs" />
+    <Compile Include="TShock\Hooks\NpcHooks.cs" />
+    <Compile Include="TShock\Hooks\PlayerHooks.cs" />
+    <Compile Include="TShock\Hooks\ServerHooks.cs" />
+    <Compile Include="TShock\Hooks\WorldHooks.cs" />
+    <Compile Include="TShock\PacketTypes.cs" />
+    <Compile Include="TShock\PluginContainer.cs" />
+    <Compile Include="TShock\Program.cs" />
+    <Compile Include="TShock\TerrariaConsole.cs" />
+    <Compile Include="TShock\TerrariaPlugin.cs" />
     <Compile Include="Toaria\System\Projectile.cs" />
     <Compile Include="Toaria\Main.cs" />
     <Compile Include="Toaria\System\Collision.cs" />
@@ -65,12 +84,20 @@
     <Compile Include="Toaria\System\Chest.cs" />
     <Compile Include="Toaria\System\Recipe.cs" />
     <Compile Include="Toaria\Properties\Settings.cs" />
-    <Reference Include="TerrariaServerAPI">
-      <HintPath>.\TerrariaServerAPI.dll</HintPath>
-    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="XNAHelpers\XNAHelpers.csproj">
+      <Project>{BE066E72-276F-45AC-A755-FD6911F0F1A5}</Project>
+      <Name>XNAHelpers</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>

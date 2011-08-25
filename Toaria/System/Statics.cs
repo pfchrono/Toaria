@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Terraria
+namespace Toaria
 {
     public static class Statics
     {

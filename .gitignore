@@ -2,3 +2,14 @@
 /bin
 /obj
 *.suo
+/TerrariaAPI/obj
+/XNAHelpers/obj
+/TApi/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+/TApi/obj/Release/DesignTimeResolveAssemblyReferencesInput.cache
+/TApi/obj/Release/GenerateResource.read.1.tlog
+/TApi/obj/Release/GenerateResource.write.1.tlog
+/TApi/obj/Release/ResolveAssemblyReference.cache
+/TApi/obj/Release/TShockAPI.Resources.resources
+/TApi/obj/Release/TShockAPI.csproj.FileListAbsolute.txt
+/TApi/obj/Release/TShockAPI.dll
+/TApi/obj/Release/TShockAPI.pdb
