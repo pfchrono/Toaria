@@ -78,7 +78,6 @@
         public static string cJump = "Space";
         public static string cLeft = "A";
         public static Player clientPlayer = new Player();
-        public static Cloud[] cloud = new Cloud[100];
         public static int cloudLimit = 100;
         public static Texture2D[] cloudTexture = new Texture2D[4];
         public static string cMana = "M";
@@ -395,7 +394,6 @@
         public static int stackCounter = 0;
         public static int stackDelay = 7;
         public static int stackSplit;
-        public static Star[] star = new Star[130];
         public static Texture2D[] starTexture = new Texture2D[5];
         public static string statusText = "";
         public static bool stopTimeOuts = false;
@@ -1696,10 +1694,6 @@
             {
                 gore[num10] = new Gore();
             }
-            for (int num11 = 0; num11 < 100; num11++)
-            {
-                cloud[num11] = new Cloud();
-            }
             for (int num12 = 0; num12 < 100; num12++)
             {
                 combatText[num12] = new CombatText();
@@ -2531,11 +2525,6 @@
             else
             {
                 gamePaused = false;
-                if ((!dedServ && (screenPosition.Y < ((worldSurface * 16.0) + 16.0))) && ((((0xff - tileColor.R) - 100) > 0) && (Main.netMode != 2)))
-                {
-                    Star.UpdateStars();
-                    Cloud.UpdateClouds();
-                }
                 for (int m = 0; m < 0xff; m++)
                 {
                     if (ignoreErrors)

@@ -52,8 +52,6 @@
     <Compile Include="Toaria\System\Gore.cs" />
     <Compile Include="Toaria\System\Sign.cs" />
     <Compile Include="Toaria\System\Item.cs" />
-    <Compile Include="Toaria\System\Cloud.cs" />
-    <Compile Include="Toaria\Star.cs" />
     <Compile Include="Toaria\Network\ServerSock.cs" />
     <Compile Include="Toaria\Network\Netplay.cs" />
     <Compile Include="Toaria\Network\messageBuffer.cs" />
