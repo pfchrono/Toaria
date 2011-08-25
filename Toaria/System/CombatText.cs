@@ -128,17 +128,6 @@
                 }
             }
         }
-
-        public static void UpdateCombatText()
-        {
-            for (int i = 0; i < 100; i++)
-            {
-                if (Main.combatText[i].active)
-                {
-                    Main.combatText[i].Update();
-                }
-            }
-        }
     }
 }
 

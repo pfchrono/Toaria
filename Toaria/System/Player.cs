@@ -15,7 +15,7 @@
         public int accWatch;
         public bool active;
         public float activeNPCs;
-        public bool[] adjTile = new bool[0x6a];
+        public bool[] adjTile = new bool[0x6b];
         public bool adjWater;
         public Item[] ammo = new Item[4];
         public bool ammoCost80;
@@ -146,7 +146,7 @@
         public bool noFallDmg;
         public bool noItems;
         public bool noKnockback;
-        public bool[] oldAdjTile = new bool[0x6a];
+        public bool[] oldAdjTile = new bool[0x6b];
         public bool oldAdjWater;
         public Vector2 oldVelocity;
         public bool onFire;
@@ -254,7 +254,7 @@
             this.inventory[0].SetDefaults("Copper Shortsword");
             this.inventory[1].SetDefaults("Copper Pickaxe");
             this.inventory[2].SetDefaults("Copper Axe");
-            for (int m = 0; m < 0x6a; m++)
+            for (int m = 0; m < 0x6b; m++)
             {
                 this.adjTile[m] = false;
                 this.oldAdjTile[m] = false;
@@ -315,7 +315,7 @@
         {
             int num = 4;
             int num2 = 3;
-            for (int i = 0; i < 0x6a; i++)
+            for (int i = 0; i < 0x6b; i++)
             {
                 this.oldAdjTile[i] = this.adjTile[i];
                 this.adjTile[i] = false;
@@ -345,7 +345,7 @@
             if (Main.playerInventory)
             {
                 bool flag = false;
-                for (int m = 0; m < 0x6a; m++)
+                for (int m = 0; m < 0x6b; m++)
                 {
                     if (this.oldAdjTile[m] != this.adjTile[m])
                     {
@@ -843,10 +843,6 @@
                 Main.guideItem.position = Main.item[index].position;
                 Main.item[index] = Main.guideItem;
                 Main.guideItem = new Item();
-                if (Main.netMode == 0)
-                {
-                    Main.item[index].noGrabDelay = 100;
-                }
                 Main.item[index].velocity.Y = -2f;
                 Main.item[index].velocity.X = (4 * this.direction) + this.velocity.X;
                 if (Main.netMode == 1)
@@ -877,10 +873,6 @@
                     this.inventory[this.selectedItem].position = Main.item[num2].position;
                     Main.item[num2] = this.inventory[this.selectedItem];
                     this.inventory[this.selectedItem] = new Item();
-                }
-                if (Main.netMode == 0)
-                {
-                    Main.item[num2].noGrabDelay = 100;
                 }
                 Main.item[num2].velocity.Y = -2f;
                 Main.item[num2].velocity.X = (4 * this.direction) + this.velocity.X;
@@ -936,6 +928,23 @@
                         }
                     }
                     this.armor[i] = new Item();
+                }
+                if (i < 4)
+                {
+                    if (this.ammo[i].stack > 0)
+                    {
+                        int num4 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, this.ammo[i].type, 1, false);
+                        Main.item[num4].SetDefaults(this.ammo[i].name);
+                        Main.item[num4].stack = this.ammo[i].stack;
+                        Main.item[num4].velocity.Y = Main.rand.Next(-20, 1) * 0.2f;
+                        Main.item[num4].velocity.X = Main.rand.Next(-20, 0x15) * 0.2f;
+                        Main.item[num4].noGrabDelay = 100;
+                        if (Main.netMode == 1)
+                        {
+                            NetMessage.SendData(0x15, -1, -1, "", num4, 0f, 0f, 0f, 0);
+                        }
+                    }
+                    this.ammo[i] = new Item();
                 }
             }
             this.inventory[0].SetDefaults("Copper Shortsword");
@@ -1311,12 +1320,12 @@
             this.controlDown = false;
             this.controlRight = false;
             this.controlJump = false;
-            if (Main.hasFocus)
+            if ((Main.hasFocus && !Main.chatMode) && !Main.editSign)
             {
                 Keys[] pressedKeys = Main.keyState.GetPressedKeys();
                 for (int i = 0; i < pressedKeys.Length; i++)
                 {
-                    string str = (pressedKeys[i]).ToString();
+                    string str = pressedKeys[i].ToString();
                     if (str == Main.cUp)
                     {
                         this.controlUp = true;
@@ -1461,7 +1470,7 @@
 
         public void HealEffect(int healAmount)
         {
-            CombatText.NewText(new Rectangle((int) this.position.X, (int) this.position.Y, this.width, this.height), new Color(100, 0xff, 100, 0xff), healAmount.ToString(), false);
+            CombatText.NewText(new Rectangle((int)this.position.X, (int)this.position.Y, this.width, this.height), new Color(100, 0xff, 100, 0xff), healAmount.ToString(), false);
             if ((Main.netMode == 1) && (this.whoAmi == Main.myPlayer))
             {
                 NetMessage.SendData(0x23, -1, -1, "", this.whoAmi, (float) healAmount, 0f, 0f, 0);
@@ -1497,7 +1506,7 @@
                     NetMessage.SendData(0x10, -1, -1, "", this.whoAmi, 0f, 0f, 0f, 0);
                     NetMessage.SendData(0x1a, -1, -1, "", this.whoAmi, (float) hitDirection, (float) Damage, (float) num3, 0);
                 }
-                CombatText.NewText(new Rectangle((int) this.position.X, (int) this.position.Y, this.width, this.height), new Color(0xff, 80, 90, 0xff), ((int) dmg).ToString(), Crit);
+                CombatText.NewText(new Rectangle((int)this.position.X, (int)this.position.Y, this.width, this.height), new Color(0xff, 80, 90, 0xff), ((int)dmg).ToString(), Crit);
                 this.statLife -= (int) dmg;
                 this.immune = true;
                 this.immuneTime = 40;
@@ -2299,7 +2308,7 @@
                         }
                         if (Main.tile[Player.tileTargetX, Player.tileTargetY].type != 0x1b)
                         {
-                            if (((((((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 4) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 10)) || ((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 11) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 12))) || (((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 13) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 14)) || ((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 15) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x10)))) || ((((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x11) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x12)) || ((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x13) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x15))) || (((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x1a) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x1c)) || ((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x1d) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x1f))))) || (((((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x21) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x22)) || ((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x23) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x24))) || (((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x2a) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x30)) || ((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x31) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 50)))) || ((((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x36) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x37)) || ((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x4d) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x4e))) || (((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x4f) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x51)) || ((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x55) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x56)))))) || (((((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x57) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x58)) || ((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x59) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 90))) || (((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x5b) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x5c)) || ((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x5d) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x5e)))) || ((((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x5f) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x60)) || ((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x61) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x62))) || ((((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x63) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 100)) || ((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x65) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x66))) || (((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x67) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x68)) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x69))))))
+                            if (((((((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 4) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 10)) || ((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 11) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 12))) || (((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 13) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 14)) || ((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 15) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x10)))) || ((((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x11) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x12)) || ((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x13) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x15))) || (((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x1a) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x1c)) || ((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x1d) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x1f))))) || (((((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x21) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x22)) || ((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x23) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x24))) || (((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x2a) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x30)) || ((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x31) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 50)))) || ((((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x36) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x37)) || ((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x4d) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x4e))) || (((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x4f) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x51)) || ((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x55) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x56)))))) || (((((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x57) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x58)) || ((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x59) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 90))) || (((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x5b) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x5c)) || ((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x5d) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x5e)))) || (((((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x5f) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x60)) || ((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x61) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x62))) || (((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x63) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 100)) || ((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x65) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x66)))) || (((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x67) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x68)) || ((Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x69) || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x6a))))))
                             {
                                 if (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x30)
                                 {
@@ -2519,21 +2528,33 @@
                 if ((((this.inventory[this.selectedItem].createTile >= 0) && ((((this.position.X / 16f) - tileRangeX) - this.inventory[this.selectedItem].tileBoost) <= Player.tileTargetX)) && (((((((this.position.X + this.width) / 16f) + tileRangeX) + this.inventory[this.selectedItem].tileBoost) - 1f) >= Player.tileTargetX) && ((((this.position.Y / 16f) - tileRangeY) - this.inventory[this.selectedItem].tileBoost) <= Player.tileTargetY))) && ((((((this.position.Y + this.height) / 16f) + tileRangeY) + this.inventory[this.selectedItem].tileBoost) - 2f) >= Player.tileTargetY))
                 {
                     this.showItemIcon = true;
-                    if (((!Main.tile[Player.tileTargetX, Player.tileTargetY].active && ((Main.tile[Player.tileTargetX, Player.tileTargetY].liquid <= 0) || !Main.tile[Player.tileTargetX, Player.tileTargetY].lava)) || (((this.inventory[this.selectedItem].createTile == 0x17) || (this.inventory[this.selectedItem].createTile == 2)) || ((this.inventory[this.selectedItem].createTile == 60) || (this.inventory[this.selectedItem].createTile == 70)))) && (((this.itemTime == 0) && (this.itemAnimation > 0)) && this.controlUseItem))
+                    bool flag8 = false;
+                    if ((Main.tile[Player.tileTargetX, Player.tileTargetY].liquid > 0) && Main.tile[Player.tileTargetX, Player.tileTargetY].lava)
                     {
-                        bool flag8 = false;
+                        if (Main.tileSolid[this.inventory[this.selectedItem].createTile])
+                        {
+                            flag8 = true;
+                        }
+                        else if (Main.tileLavaDeath[this.inventory[this.selectedItem].createTile])
+                        {
+                            flag8 = true;
+                        }
+                    }
+                    if (((!Main.tile[Player.tileTargetX, Player.tileTargetY].active && !flag8) || (((this.inventory[this.selectedItem].createTile == 0x17) || (this.inventory[this.selectedItem].createTile == 2)) || ((this.inventory[this.selectedItem].createTile == 60) || (this.inventory[this.selectedItem].createTile == 70)))) && (((this.itemTime == 0) && (this.itemAnimation > 0)) && this.controlUseItem))
+                    {
+                        bool flag9 = false;
                         if ((this.inventory[this.selectedItem].createTile == 0x17) || (this.inventory[this.selectedItem].createTile == 2))
                         {
                             if (Main.tile[Player.tileTargetX, Player.tileTargetY].active && (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0))
                             {
-                                flag8 = true;
+                                flag9 = true;
                             }
                         }
                         else if ((this.inventory[this.selectedItem].createTile == 60) || (this.inventory[this.selectedItem].createTile == 70))
                         {
                             if (Main.tile[Player.tileTargetX, Player.tileTargetY].active && (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x3b))
                             {
-                                flag8 = true;
+                                flag9 = true;
                             }
                         }
                         else if (this.inventory[this.selectedItem].createTile == 4)
@@ -2575,47 +2596,47 @@
                             }
                             if (((type >= 0) && Main.tileSolid[type]) && !Main.tileNoAttach[type])
                             {
-                                flag8 = true;
+                                flag9 = true;
                             }
                             else if ((((index >= 0) && Main.tileSolid[index]) && !Main.tileNoAttach[index]) || (((index == 5) && (num37 == 5)) && (num39 == 5)))
                             {
-                                flag8 = true;
+                                flag9 = true;
                             }
                             else if ((((num36 >= 0) && Main.tileSolid[num36]) && !Main.tileNoAttach[num36]) || (((num36 == 5) && (num38 == 5)) && (num40 == 5)))
                             {
-                                flag8 = true;
+                                flag9 = true;
                             }
                         }
                         else if (((this.inventory[this.selectedItem].createTile == 0x4e) || (this.inventory[this.selectedItem].createTile == 0x62)) || (this.inventory[this.selectedItem].createTile == 100))
                         {
                             if (Main.tile[Player.tileTargetX, Player.tileTargetY + 1].active && (Main.tileSolid[Main.tile[Player.tileTargetX, Player.tileTargetY + 1].type] || Main.tileTable[Main.tile[Player.tileTargetX, Player.tileTargetY + 1].type]))
                             {
-                                flag8 = true;
+                                flag9 = true;
                             }
                         }
                         else if ((((this.inventory[this.selectedItem].createTile == 13) || (this.inventory[this.selectedItem].createTile == 0x1d)) || ((this.inventory[this.selectedItem].createTile == 0x21) || (this.inventory[this.selectedItem].createTile == 0x31))) || ((this.inventory[this.selectedItem].createTile == 50) || (this.inventory[this.selectedItem].createTile == 0x67)))
                         {
                             if (Main.tile[Player.tileTargetX, Player.tileTargetY + 1].active && Main.tileTable[Main.tile[Player.tileTargetX, Player.tileTargetY + 1].type])
                             {
-                                flag8 = true;
+                                flag9 = true;
                             }
                         }
                         else if (this.inventory[this.selectedItem].createTile == 0x33)
                         {
                             if (((Main.tile[Player.tileTargetX + 1, Player.tileTargetY].active || (Main.tile[Player.tileTargetX + 1, Player.tileTargetY].wall > 0)) || (Main.tile[Player.tileTargetX - 1, Player.tileTargetY].active || (Main.tile[Player.tileTargetX - 1, Player.tileTargetY].wall > 0))) || ((Main.tile[Player.tileTargetX, Player.tileTargetY + 1].active || (Main.tile[Player.tileTargetX, Player.tileTargetY + 1].wall > 0)) || (Main.tile[Player.tileTargetX, Player.tileTargetY - 1].active || (Main.tile[Player.tileTargetX, Player.tileTargetY - 1].wall > 0))))
                             {
-                                flag8 = true;
+                                flag9 = true;
                             }
                         }
                         else if (((Main.tile[Player.tileTargetX + 1, Player.tileTargetY].active && Main.tileSolid[Main.tile[Player.tileTargetX + 1, Player.tileTargetY].type]) || ((Main.tile[Player.tileTargetX + 1, Player.tileTargetY].wall > 0) || (Main.tile[Player.tileTargetX - 1, Player.tileTargetY].active && Main.tileSolid[Main.tile[Player.tileTargetX - 1, Player.tileTargetY].type]))) || ((((Main.tile[Player.tileTargetX - 1, Player.tileTargetY].wall > 0) || (Main.tile[Player.tileTargetX, Player.tileTargetY + 1].active && Main.tileSolid[Main.tile[Player.tileTargetX, Player.tileTargetY + 1].type])) || ((Main.tile[Player.tileTargetX, Player.tileTargetY + 1].wall > 0) || (Main.tile[Player.tileTargetX, Player.tileTargetY - 1].active && Main.tileSolid[Main.tile[Player.tileTargetX, Player.tileTargetY - 1].type]))) || (Main.tile[Player.tileTargetX, Player.tileTargetY - 1].wall > 0)))
                         {
-                            flag8 = true;
+                            flag9 = true;
                         }
                         if (Main.tileAlch[this.inventory[this.selectedItem].createTile])
                         {
-                            flag8 = true;
+                            flag9 = true;
                         }
-                        if (flag8 && WorldGen.PlaceTile(Player.tileTargetX, Player.tileTargetY, this.inventory[this.selectedItem].createTile, false, false, this.whoAmi, this.inventory[this.selectedItem].placeStyle))
+                        if (flag9 && WorldGen.PlaceTile(Player.tileTargetX, Player.tileTargetY, this.inventory[this.selectedItem].createTile, false, false, this.whoAmi, this.inventory[this.selectedItem].placeStyle))
                         {
                             this.itemTime = this.inventory[this.selectedItem].useTime;
                             if (Main.netMode == 1)
@@ -2636,7 +2657,7 @@
                                     NetMessage.SendTileSquare(-1, Player.tileTargetX - 1, Player.tileTargetY - 1, 3);
                                 }
                             }
-                            else if ((this.inventory[this.selectedItem].createTile == 0x4f) && (Main.netMode == 1))
+                            else if (((this.inventory[this.selectedItem].createTile == 0x4f) || (this.inventory[this.selectedItem].createTile == 90)) && (Main.netMode == 1))
                             {
                                 NetMessage.SendTileSquare(-1, Player.tileTargetX, Player.tileTargetY, 5);
                             }
@@ -2718,9 +2739,18 @@
                                             if (num45 == 4)
                                             {
                                                 WorldGen.PlaceWall(tileTargetX, tileTargetY, createWall, false);
-                                                if ((Main.tile[tileTargetX, tileTargetY].wall == createWall) && (Main.netMode == 1))
+                                                if (Main.tile[tileTargetX, tileTargetY].wall == createWall)
                                                 {
-                                                    NetMessage.SendData(0x11, -1, -1, "", 3, (float) tileTargetX, (float) tileTargetY, (float) createWall, 0);
+                                                    Item item1 = this.inventory[this.selectedItem];
+                                                    item1.stack--;
+                                                    if (this.inventory[this.selectedItem].stack == 0)
+                                                    {
+                                                        this.inventory[this.selectedItem].SetDefaults(0, false);
+                                                    }
+                                                    if (Main.netMode == 1)
+                                                    {
+                                                        NetMessage.SendData(0x11, -1, -1, "", 3, (float) tileTargetX, (float) tileTargetY, (float) createWall, 0);
+                                                    }
                                                 }
                                             }
                                         }
@@ -2733,7 +2763,7 @@
             }
             if (((this.inventory[this.selectedItem].damage >= 0) && (this.inventory[this.selectedItem].type > 0)) && (!this.inventory[this.selectedItem].noMelee && (this.itemAnimation > 0)))
             {
-                bool flag9 = false;
+                bool flag10 = false;
                 Rectangle rectangle = new Rectangle((int) this.itemLocation.X, (int) this.itemLocation.Y, 0x20, 0x20);
                 if (!Main.dedServ)
                 {
@@ -2776,7 +2806,7 @@
                 {
                     if (this.itemAnimation > (this.itemAnimationMax * 0.666))
                     {
-                        flag9 = true;
+                        flag10 = true;
                     }
                     else
                     {
@@ -2790,7 +2820,7 @@
                     }
                 }
                 float gravDir = this.gravDir;
-                if (!flag9)
+                if (!flag10)
                 {
                     if ((((this.inventory[this.selectedItem].type == 0x2c) || (this.inventory[this.selectedItem].type == 0x2d)) || (((this.inventory[this.selectedItem].type == 0x2e) || (this.inventory[this.selectedItem].type == 0x67)) || (this.inventory[this.selectedItem].type == 0x68))) && (Main.rand.Next(15) == 0))
                     {
@@ -2919,17 +2949,17 @@
                                     Rectangle rectangle3 = new Rectangle((int) Main.player[num65].position.X, (int) Main.player[num65].position.Y, Main.player[num65].width, Main.player[num65].height);
                                     if (rectangle.Intersects(rectangle3) && Collision.CanHit(this.position, this.width, this.height, Main.player[num65].position, Main.player[num65].width, Main.player[num65].height))
                                     {
-                                        bool flag11 = false;
+                                        bool flag12 = false;
                                         if (Main.rand.Next(1, 0x65) <= 10)
                                         {
-                                            flag11 = true;
+                                            flag12 = true;
                                         }
                                         int num66 = Main.DamageVar((float) num55);
                                         this.StatusPvP(this.inventory[this.selectedItem].type, num65);
-                                        Main.player[num65].Hurt(num66, this.direction, true, false, "", flag11);
+                                        Main.player[num65].Hurt(num66, this.direction, true, false, "", flag12);
                                         if (Main.netMode != 0)
                                         {
-                                            if (flag11)
+                                            if (flag12)
                                             {
                                                 NetMessage.SendData(0x1a, -1, -1, getDeathMessage(this.whoAmi, -1, -1, -1), num65, (float) this.direction, (float) num66, 1f, 1);
                                             }
@@ -2988,7 +3018,7 @@
             if (((this.itemTime == 0) && (this.itemAnimation > 0)) && ((this.inventory[this.selectedItem].type == 0x2b) || (this.inventory[this.selectedItem].type == 70)))
             {
                 this.itemTime = this.inventory[this.selectedItem].useTime;
-                bool flag12 = false;
+                bool flag13 = false;
                 int num67 = 4;
                 if (this.inventory[this.selectedItem].type == 0x2b)
                 {
@@ -3002,11 +3032,11 @@
                 {
                     if (Main.npc[num68].active && (Main.npc[num68].type == num67))
                     {
-                        flag12 = true;
+                        flag13 = true;
                         break;
                     }
                 }
-                if (flag12)
+                if (flag13)
                 {
                     if (Main.myPlayer == this.whoAmi)
                     {
@@ -3072,15 +3102,15 @@
             {
                 if ((this.itemTime == this.inventory[this.selectedItem].useTime) && this.inventory[this.selectedItem].consumable)
                 {
-                    bool flag13 = true;
+                    bool flag14 = true;
                     if ((this.inventory[this.selectedItem].ranged && this.ammoCost80) && (Main.rand.Next(5) == 0))
                     {
-                        flag13 = false;
+                        flag14 = false;
                     }
-                    if (flag13)
+                    if (flag14)
                     {
-                        Item item1 = this.inventory[this.selectedItem];
-                        item1.stack--;
+                        Item item2 = this.inventory[this.selectedItem];
+                        item2.stack--;
                         if (this.inventory[this.selectedItem].stack <= 0)
                         {
                             this.itemTime = this.itemAnimation;
@@ -3185,10 +3215,6 @@
                 if (Main.netMode == 2)
                 {
                     NetMessage.SendData(0x19, -1, -1, this.name + deathText, 0xff, 225f, 25f, 25f, 0);
-                }
-                else if (Main.netMode == 0)
-                {
-                    Main.NewText(this.name + deathText, 0xe1, 0x19, 0x19);
                 }
                 if ((Main.netMode == 1) && (this.whoAmi == Main.myPlayer))
                 {
@@ -3404,7 +3430,7 @@
 
         public void ManaEffect(int manaAmount)
         {
-            CombatText.NewText(new Rectangle((int) this.position.X, (int) this.position.Y, this.width, this.height), new Color(100, 100, 0xff, 0xff), manaAmount.ToString(), false);
+            CombatText.NewText(new Rectangle((int)this.position.X, (int)this.position.Y, this.width, this.height), new Color(100, 100, 0xff, 0xff), manaAmount.ToString(), false);
             if ((Main.netMode == 1) && (this.whoAmi == Main.myPlayer))
             {
                 NetMessage.SendData(0x2b, -1, -1, "", this.whoAmi, (float) manaAmount, 0f, 0f, 0);
@@ -4014,7 +4040,7 @@
             }
         }
 
-        public bool SellItem(int price)
+        public bool SellItem(int price, int stack)
         {
             if (price > 0)
             {
@@ -4025,6 +4051,7 @@
                     itemArray[i] = (Item) this.inventory[i].Clone();
                 }
                 int num2 = price / 5;
+                num2 *= stack;
                 if (num2 < 1)
                 {
                     num2 = 1;
@@ -4536,7 +4563,7 @@
                         bool flag2 = false;
                         for (int num10 = 0; num10 < pressedKeys.Length; num10++)
                         {
-                            string str = (pressedKeys[num10]).ToString();
+                            string str = pressedKeys[num10].ToString();
                             if (str == Main.cUp)
                             {
                                 this.controlUp = true;
@@ -5382,6 +5409,10 @@
                     this.statMana = this.statManaMax2;
                 }
             }
+            if (this.manaRegenCount < 0)
+            {
+                this.manaRegenCount = 0;
+            }
             num4 *= this.moveSpeed;
             num3 *= this.moveSpeed;
             if (this.jumpBoost)
@@ -6047,18 +6078,6 @@
                             }
                             if (flag7)
                             {
-                                if (Main.netMode == 0)
-                                {
-                                    this.talkNPC = -1;
-                                    Main.playerInventory = false;
-                                    Main.editSign = false;
-                                    Main.PlaySound(10, -1, -1, 1);
-                                    int num54 = Sign.ReadSign(Player.tileTargetX, Player.tileTargetY);
-                                    this.sign = num54;
-                                    Main.npcChatText = Main.sign[num54].text;
-                                }
-                                else
-                                {
                                     int num55 = Main.tile[Player.tileTargetX, Player.tileTargetY].frameX / 0x12;
                                     int num56 = Main.tile[Player.tileTargetX, Player.tileTargetY].frameY / 0x12;
                                     while (num55 > 1)
@@ -6071,7 +6090,6 @@
                                     {
                                         NetMessage.SendData(0x2e, -1, -1, "", number, (float) num58, 0f, 0f, 0);
                                     }
-                                }
                             }
                         }
                         else if (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 0x68)
@@ -6786,15 +6804,15 @@
                 try
                 {
                     this.ItemCheck(i);
-                    goto Label_5FE9;
+                    goto Label_5FF9;
                 }
                 catch
                 {
-                    goto Label_5FE9;
+                    goto Label_5FF9;
                 }
             }
             this.ItemCheck(i);
-        Label_5FE9:
+        Label_5FF9:
             this.PlayerFrame();
             if (this.statLife > this.statLifeMax)
             {

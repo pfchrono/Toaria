@@ -262,10 +262,6 @@
                 Main.item[index].FindOwner(index);
                 return index;
             }
-            if (Main.netMode == 0)
-            {
-                Main.item[index].owner = Main.myPlayer;
-            }
             return index;
         }
 
@@ -456,7 +452,7 @@
             }
             else if (ItemName != "")
             {
-                for (int i = 0; i < 0x16b; i++)
+                for (int i = 0; i < 0x16c; i++)
                 {
                     if (Main.itemName[i] == ItemName)
                     {
@@ -1045,7 +1041,7 @@
                 this.width = 0x1c;
                 this.height = 14;
                 this.value = 150;
-                this.toolTip = "Used for crafting";
+                this.toolTip = "Used for basic crafting";
             }
             else if (this.type == 0x25)
             {
@@ -1525,7 +1521,7 @@
                 this.width = 10;
                 this.height = 12;
                 this.maxStack = 100;
-                this.value = 4;
+                this.value = 5;
             }
             else if (this.type == 0x48)
             {
@@ -1533,7 +1529,7 @@
                 this.width = 10;
                 this.height = 12;
                 this.maxStack = 100;
-                this.value = 400;
+                this.value = 500;
             }
             else if (this.type == 0x49)
             {
@@ -1541,7 +1537,7 @@
                 this.width = 10;
                 this.height = 12;
                 this.maxStack = 100;
-                this.value = 0x9c40;
+                this.value = 0xc350;
             }
             else if (this.type == 0x4a)
             {
@@ -1549,7 +1545,7 @@
                 this.width = 10;
                 this.height = 12;
                 this.maxStack = 100;
-                this.value = 0x3d0900;
+                this.value = 0x4c4b40;
             }
             else if (this.type == 0x4b)
             {
@@ -2008,7 +2004,7 @@
             {
                 this.name = "Lesser Mana Potion";
                 this.useSound = 3;
-                this.healMana = 100;
+                this.healMana = 50;
                 this.useStyle = 2;
                 this.useTurn = true;
                 this.useAnimation = 0x11;
@@ -3155,7 +3151,7 @@
             {
                 this.name = "Mana Potion";
                 this.useSound = 3;
-                this.healMana = 200;
+                this.healMana = 100;
                 this.useStyle = 2;
                 this.useTurn = true;
                 this.useAnimation = 0x11;
@@ -3690,8 +3686,8 @@
             {
                 this.name = "Lesser Restoration Potion";
                 this.useSound = 3;
-                this.healMana = 100;
-                this.healLife = 100;
+                this.healMana = 50;
+                this.healLife = 50;
                 this.useStyle = 2;
                 this.useTurn = true;
                 this.useAnimation = 0x11;
@@ -3707,8 +3703,8 @@
             {
                 this.name = "Restoration Potion";
                 this.useSound = 3;
-                this.healMana = 200;
-                this.healLife = 200;
+                this.healMana = 100;
+                this.healLife = 100;
                 this.useStyle = 2;
                 this.useTurn = true;
                 this.useAnimation = 0x11;
@@ -5512,6 +5508,22 @@
                 this.height = 0x1c;
                 this.value = 30;
             }
+            else if (this.type == 0x16b)
+            {
+                this.name = "Sawmill";
+                this.useStyle = 1;
+                this.useTurn = true;
+                this.useAnimation = 15;
+                this.useTime = 10;
+                this.autoReuse = true;
+                this.maxStack = 0x63;
+                this.consumable = true;
+                this.createTile = 0x6a;
+                this.width = 20;
+                this.height = 20;
+                this.value = 300;
+                this.toolTip = "Used for advanced wood crafting";
+            }
             if (!noMatCheck)
             {
                 this.checkMat();
@@ -5522,10 +5534,6 @@
         {
             if (this.active)
             {
-                if (Main.netMode == 0)
-                {
-                    this.owner = Main.myPlayer;
-                }
                 float num = 0.1f;
                 float num2 = 7f;
                 if (this.wet)

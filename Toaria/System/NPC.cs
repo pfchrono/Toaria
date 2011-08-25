@@ -8,10 +8,10 @@
     {
         public bool active;
         public static int sWidth = 0x690;
-        private static int activeRangeX = ((int) (sWidth * 1.7));
         public static int sHeight = 0x41a;
-        private static int activeRangeY = ((int) (sHeight * 1.7));
-        private static int activeTime = 750;
+        public static int activeRangeX = ((int) (sWidth * 1.7));
+        public static int activeRangeY = ((int) (sHeight * 1.7));
+        public static int activeTime = 750;
         public float[] ai = new float[maxAI];
         public int aiAction;
         public int aiStyle;
@@ -26,8 +26,8 @@
         public bool collideY;
         public Color color;
         public int damage;
-        private static int defaultMaxSpawns = 5;
-        private static int defaultSpawnRate = 600;
+        public static int defaultMaxSpawns = 5;
+        public static int defaultSpawnRate = 600;
         public int defense;
         public int direction = 1;
         public int directionY = 1;
@@ -57,13 +57,13 @@
         public int lifeRegenCount;
         public static int maxAI = 4;
         public const int maxBuffs = 5;
-        private static int maxSpawns = defaultMaxSpawns;
+        public static int maxSpawns = defaultMaxSpawns;
         public string name;
         public bool netUpdate;
         public bool noGravity;
-        private static bool noSpawnCycle = false;
+        public static bool noSpawnCycle = false;
         public bool noTileCollide;
-        private float npcSlots = 1f;
+        public float npcSlots = 1f;
         public int oldDirection;
         public int oldDirectionY;
         public Vector2 oldPosition;
@@ -79,18 +79,18 @@
         public int soundDelay;
         public int soundHit;
         public int soundKilled;
-        private static int spawnRangeX = ((int) ((sWidth / 0x10) * 0.7));
-        private static int spawnRangeY = ((int) ((sHeight / 0x10) * 0.7));
-        private static int spawnRate = defaultSpawnRate;
-        private static int spawnSpaceX = 3;
-        private static int spawnSpaceY = 3;
+        public static int spawnRangeX = ((int) ((sWidth / 0x10) * 0.7));
+        public static int spawnRangeY = ((int) ((sHeight / 0x10) * 0.7));
+        public static int spawnRate = defaultSpawnRate;
+        public static int spawnSpaceX = 3;
+        public static int spawnSpaceY = 3;
         public int spriteDirection = -1;
         public int target = -1;
         public Rectangle targetRect;
         public int timeLeft;
         public bool townNPC;
-        private static int townRangeX = sWidth;
-        private static int townRangeY = sHeight;
+        public static int townRangeX = sWidth;
+        public static int townRangeY = sHeight;
         public int type;
         public float value;
         public Vector2 velocity;
@@ -174,6 +174,11 @@
             }
             if (this.aiStyle == 1)
             {
+                bool flag = false;
+                if ((!Main.dayTime || (this.life != this.lifeMax)) || (this.position.Y > (Main.worldSurface * 16.0)))
+                {
+                    flag = true;
+                }
                 if (this.type == 0x3b)
                 {
                     int index = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, this.velocity.X * 0.2f, this.velocity.Y * 0.2f, 100, new Color(), 1.7f);
@@ -222,7 +227,7 @@
                             this.velocity.Y = -4f;
                         }
                     }
-                    if (this.ai[2] == 1f)
+                    if ((this.ai[2] == 1f) && flag)
                     {
                         this.TargetClosest(true);
                     }
@@ -260,7 +265,7 @@
                     {
                         this.velocity.X = 0f;
                     }
-                    if ((!Main.dayTime || (this.life != this.lifeMax)) || (this.position.Y > (Main.worldSurface * 16.0)))
+                    if (flag)
                     {
                         this.ai[0]++;
                     }
@@ -276,7 +281,7 @@
                     if (this.ai[0] >= 0f)
                     {
                         this.netUpdate = true;
-                        if (((!Main.dayTime || (this.life != this.lifeMax)) || (this.position.Y > (Main.worldSurface * 16.0))) && (this.ai[2] == 1f))
+                        if (flag && (this.ai[2] == 1f))
                         {
                             this.TargetClosest(true);
                         }
@@ -452,12 +457,12 @@
             if (this.aiStyle == 3)
             {
                 int num3 = 60;
-                bool flag = false;
+                bool flag2 = false;
                 if ((this.velocity.Y == 0f) && (((this.velocity.X > 0f) && (this.direction < 0)) || ((this.velocity.X < 0f) && (this.direction > 0))))
                 {
-                    flag = true;
+                    flag2 = true;
                 }
-                if (((this.position.X == this.oldPosition.X) || (this.ai[3] >= num3)) || flag)
+                if (((this.position.X == this.oldPosition.X) || (this.ai[3] >= num3)) || flag2)
                 {
                     this.ai[3]++;
                 }
@@ -650,12 +655,12 @@
                 {
                     Main.tile[i + this.direction, j + 1] = new Tile();
                 }
-                bool flag2 = true;
+                bool flag3 = true;
                 if ((this.type == 0x2f) || (this.type == 0x43))
                 {
-                    flag2 = false;
+                    flag3 = false;
                 }
-                if ((!Main.tile[i, j - 1].active || (Main.tile[i, j - 1].type != 10)) || !flag2)
+                if ((!Main.tile[i, j - 1].active || (Main.tile[i, j - 1].type != 10)) || !flag3)
                 {
                     if (((this.velocity.X < 0f) && (this.spriteDirection == -1)) || ((this.velocity.X > 0f) && (this.spriteDirection == 1)))
                     {
@@ -731,24 +736,24 @@
                             this.ai[1] += 6f;
                         }
                         this.ai[2] = 0f;
-                        bool flag3 = false;
+                        bool flag4 = false;
                         if (this.ai[1] >= 10f)
                         {
-                            flag3 = true;
+                            flag4 = true;
                             this.ai[1] = 10f;
                         }
                         WorldGen.KillTile(i, j - 1, true, false, false);
-                        if (((Main.netMode != 1) || !flag3) && (flag3 && (Main.netMode != 1)))
+                        if (((Main.netMode != 1) || !flag4) && (flag4 && (Main.netMode != 1)))
                         {
                             if (this.type != 0x1a)
                             {
-                                bool flag4 = WorldGen.OpenDoor(i, j, this.direction);
-                                if (!flag4)
+                                bool flag5 = WorldGen.OpenDoor(i, j, this.direction);
+                                if (!flag5)
                                 {
                                     this.ai[3] = num3;
                                     this.netUpdate = true;
                                 }
-                                if ((Main.netMode == 2) && flag4)
+                                if ((Main.netMode == 2) && flag5)
                                 {
                                     NetMessage.SendData(0x13, -1, -1, "", 0, (float) i, (float) j, (float) this.direction, 0);
                                     return;
@@ -1477,7 +1482,7 @@
                     {
                         this.TargetClosest(true);
                     }
-                    bool flag10 = false;
+                    bool flag11 = false;
                     this.directionY = -1;
                     if (this.direction == 0)
                     {
@@ -1487,7 +1492,7 @@
                     {
                         if (Main.player[num83].active && (Main.player[num83].talkNPC == this.whoAmI))
                         {
-                            flag10 = true;
+                            flag11 = true;
                             if (this.ai[0] != 0f)
                             {
                                 this.netUpdate = true;
@@ -1528,7 +1533,7 @@
                     }
                     if (((((Main.netMode != 1) && this.townNPC) && !Main.dayTime) && ((num81 != this.homeTileX) || (num82 != this.homeTileY))) && !this.homeless)
                     {
-                        bool flag11 = true;
+                        bool flag12 = true;
                         for (int num84 = 0; num84 < 2; num84++)
                         {
                             Rectangle rectangle3 = new Rectangle(((((int) this.position.X) + (this.width / 2)) - (sWidth / 2)) - safeRangeX, ((((int) this.position.Y) + (this.height / 2)) - (sHeight / 2)) - safeRangeY, sWidth + (safeRangeX * 2), sHeight + (safeRangeY * 2));
@@ -1543,17 +1548,17 @@
                                     Rectangle rectangle4 = new Rectangle((int) Main.player[num85].position.X, (int) Main.player[num85].position.Y, Main.player[num85].width, Main.player[num85].height);
                                     if (rectangle4.Intersects(rectangle3))
                                     {
-                                        flag11 = false;
+                                        flag12 = false;
                                         break;
                                     }
                                 }
-                                if (!flag11)
+                                if (!flag12)
                                 {
                                     break;
                                 }
                             }
                         }
-                        if (flag11)
+                        if (flag12)
                         {
                             if ((this.type == 0x25) || !Collision.SolidTiles(this.homeTileX - 1, this.homeTileX + 1, this.homeTileY - 3, this.homeTileY - 1))
                             {
@@ -1834,7 +1839,7 @@
                         {
                             this.ai[2]--;
                         }
-                        if (!Main.dayTime && !flag10)
+                        if (!Main.dayTime && !flag11)
                         {
                             if (Main.netMode != 1)
                             {
@@ -1857,7 +1862,7 @@
                                         this.velocity.X = 0f;
                                     }
                                 }
-                                else if (!flag10)
+                                else if (!flag11)
                                 {
                                     if (num81 > this.homeTileX)
                                     {
@@ -3129,16 +3134,16 @@
                                     this.ai[0] = 1f;
                                 }
                             }
-                            bool flag16 = false;
+                            bool flag17 = false;
                             if (!this.friendly)
                             {
                                 this.TargetClosest(false);
                                 if (Main.player[this.target].wet && !Main.player[this.target].dead)
                                 {
-                                    flag16 = true;
+                                    flag17 = true;
                                 }
                             }
-                            if (flag16)
+                            if (flag17)
                             {
                                 this.TargetClosest(true);
                                 if (this.type == 0x41)
@@ -3453,16 +3458,16 @@
                                 this.ai[0] = 1f;
                             }
                         }
-                        bool flag17 = false;
+                        bool flag18 = false;
                         if (!this.friendly)
                         {
                             this.TargetClosest(false);
                             if (Main.player[this.target].wet && !Main.player[this.target].dead)
                             {
-                                flag17 = true;
+                                flag18 = true;
                             }
                         }
-                        if (!flag17)
+                        if (!flag18)
                         {
                             this.velocity.X += this.direction * 0.02f;
                             this.rotation = this.velocity.X * 0.4f;
@@ -3556,17 +3561,17 @@
                             num185 = num182 / num185;
                             num183 *= num185;
                             num184 *= num185;
-                            bool flag18 = false;
+                            bool flag19 = false;
                             if (this.directionY < 0)
                             {
                                 this.rotation = (float) (Math.Atan2((double) num184, (double) num183) + 1.57);
                                 if ((this.rotation < -1.2) || (this.rotation > 1.2))
                                 {
-                                    flag18 = false;
+                                    flag19 = false;
                                 }
                                 else
                                 {
-                                    flag18 = true;
+                                    flag19 = true;
                                 }
                                 if (this.rotation < -0.8)
                                 {
@@ -3594,7 +3599,7 @@
                                 }
                                 this.ai[0]--;
                             }
-                            if (((Main.netMode != 1) && flag18) && ((this.ai[0] == 0f) && Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height)))
+                            if (((Main.netMode != 1) && flag19) && ((this.ai[0] == 0f) && Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height)))
                             {
                                 this.ai[0] = 200f;
                                 int num186 = 10;
@@ -3612,7 +3617,7 @@
                                 int num190 = (((int) this.position.X) + (this.width / 2)) / 0x10;
                                 int num191 = (((int) this.position.X) + this.width) / 0x10;
                                 int num192 = (((int) this.position.Y) + this.height) / 0x10;
-                                bool flag19 = false;
+                                bool flag20 = false;
                                 if (Main.tile[num189, num192] == null)
                                 {
                                     Main.tile[num189, num192] = new Tile();
@@ -3627,9 +3632,9 @@
                                 }
                                 if (((Main.tile[num189, num192].active && Main.tileSolid[Main.tile[num189, num192].type]) || (Main.tile[num190, num192].active && Main.tileSolid[Main.tile[num190, num192].type])) || (Main.tile[num191, num192].active && Main.tileSolid[Main.tile[num191, num192].type]))
                                 {
-                                    flag19 = true;
+                                    flag20 = true;
                                 }
-                                if (flag19)
+                                if (flag20)
                                 {
                                     this.noGravity = true;
                                     this.noTileCollide = true;
@@ -3880,11 +3885,11 @@
                 {
                     this.ai[1] = 30f;
                     this.netUpdate = true;
-                    goto Label_6D8C;
+                    goto Label_6D6A;
                 }
                 if ((this.ai[0] < 650f) || (Main.netMode == 1))
                 {
-                    goto Label_6D8C;
+                    goto Label_6D6A;
                 }
                 this.ai[0] = 1f;
                 int num96 = ((int) Main.player[this.target].position.X) / 0x10;
@@ -3893,14 +3898,14 @@
                 int num99 = ((int) this.position.Y) / 0x10;
                 int num100 = 20;
                 int num101 = 0;
-                bool flag14 = false;
+                bool flag15 = false;
                 if ((Math.Abs((float) (this.position.X - Main.player[this.target].position.X)) + Math.Abs((float) (this.position.Y - Main.player[this.target].position.Y))) > 2000f)
                 {
                     num101 = 100;
-                    flag14 = true;
+                    flag15 = true;
                 }
-            Label_6D78:
-                while (!flag14 && (num101 < 100))
+            Label_6D56:
+                while (!flag15 && (num101 < 100))
                 {
                     num101++;
                     int num102 = Main.rand.Next(num96 - num100, num96 + num100);
@@ -3908,22 +3913,22 @@
                     {
                         if (((((num104 < (num97 - 4)) || (num104 > (num97 + 4))) || ((num102 < (num96 - 4)) || (num102 > (num96 + 4)))) && (((num104 < (num99 - 1)) || (num104 > (num99 + 1))) || ((num102 < (num98 - 1)) || (num102 > (num98 + 1))))) && Main.tile[num102, num104].active)
                         {
-                            bool flag15 = true;
+                            bool flag16 = true;
                             if ((this.type == 0x20) && (Main.tile[num102, num104 - 1].wall == 0))
                             {
-                                flag15 = false;
+                                flag16 = false;
                             }
                             else if (Main.tile[num102, num104 - 1].lava)
                             {
-                                flag15 = false;
+                                flag16 = false;
                             }
-                            if ((flag15 && Main.tileSolid[Main.tile[num102, num104].type]) && !Collision.SolidTiles(num102 - 1, num102 + 1, num104 - 4, num104 - 1))
+                            if ((flag16 && Main.tileSolid[Main.tile[num102, num104].type]) && !Collision.SolidTiles(num102 - 1, num102 + 1, num104 - 4, num104 - 1))
                             {
                                 this.ai[1] = 20f;
                                 this.ai[2] = num102;
                                 this.ai[3] = num104;
-                                flag14 = true;
-                                goto Label_6D78;
+                                flag15 = true;
+                                goto Label_6D56;
                             }
                         }
                     }
@@ -4032,16 +4037,16 @@
                         }
                         if (this.life == 0)
                         {
-                            bool flag6 = true;
+                            bool flag7 = true;
                             for (int num61 = 0; num61 < 0x3e8; num61++)
                             {
                                 if (Main.npc[num61].active && (((Main.npc[num61].type == 13) || (Main.npc[num61].type == 14)) || (Main.npc[num61].type == 15)))
                                 {
-                                    flag6 = false;
+                                    flag7 = false;
                                     break;
                                 }
                             }
-                            if (flag6)
+                            if (flag7)
                             {
                                 this.boss = true;
                                 this.NPCLoot();
@@ -4073,7 +4078,7 @@
                 {
                     maxTilesY = Main.maxTilesY;
                 }
-                bool flag7 = false;
+                bool flag8 = false;
                 for (int num66 = num62; num66 < maxTilesX; num66++)
                 {
                     for (int num67 = num64; num67 < maxTilesY; num67++)
@@ -4085,7 +4090,7 @@
                             vector9.Y = num67 * 0x10;
                             if ((((this.position.X + this.width) > vector9.X) && (this.position.X < (vector9.X + 16f))) && (((this.position.Y + this.height) > vector9.Y) && (this.position.Y < (vector9.Y + 16f))))
                             {
-                                flag7 = true;
+                                flag8 = true;
                                 if ((Main.rand.Next(40) == 0) && Main.tile[num66, num67].active)
                                 {
                                     WorldGen.KillTile(num66, num67, true, true, false);
@@ -4098,11 +4103,11 @@
                         }
                     }
                 }
-                if (!flag7 && (((this.type == 7) || (this.type == 10)) || ((this.type == 13) || (this.type == 0x27))))
+                if (!flag8 && (((this.type == 7) || (this.type == 10)) || ((this.type == 13) || (this.type == 0x27))))
                 {
                     Rectangle rectangle = new Rectangle((int) this.position.X, (int) this.position.Y, this.width, this.height);
                     int num68 = 0x3e8;
-                    bool flag8 = true;
+                    bool flag9 = true;
                     for (int num69 = 0; num69 < 0xff; num69++)
                     {
                         if (Main.player[num69].active)
@@ -4110,14 +4115,14 @@
                             Rectangle rectangle2 = new Rectangle(((int) Main.player[num69].position.X) - num68, ((int) Main.player[num69].position.Y) - num68, num68 * 2, num68 * 2);
                             if (rectangle.Intersects(rectangle2))
                             {
-                                flag8 = false;
+                                flag9 = false;
                                 break;
                             }
                         }
                     }
-                    if (flag8)
+                    if (flag9)
                     {
-                        flag7 = true;
+                        flag8 = true;
                     }
                 }
                 float num70 = 8f;
@@ -4150,7 +4155,7 @@
                     this.position.Y += num73;
                     return;
                 }
-                if (!flag7)
+                if (!flag8)
                 {
                     this.TargetClosest(true);
                     this.velocity.Y += 0.11f;
@@ -4216,15 +4221,15 @@
                     num73 *= num74;
                     if (((this.type == 13) || (this.type == 7)) && !Main.player[this.target].zoneEvil)
                     {
-                        bool flag9 = true;
+                        bool flag10 = true;
                         for (int num78 = 0; num78 < 0xff; num78++)
                         {
                             if ((Main.player[num78].active && !Main.player[num78].dead) && Main.player[num78].zoneEvil)
                             {
-                                flag9 = false;
+                                flag10 = false;
                             }
                         }
-                        if (flag9)
+                        if (flag10)
                         {
                             if ((Main.netMode != 1) && ((this.position.Y / 16f) > ((Main.rockLayer + Main.maxTilesY) / 2.0)))
                             {
@@ -4316,7 +4321,7 @@
                 this.rotation = ((float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X)) + 1.57f;
                 return;
             }
-        Label_6D8C:
+        Label_6D6A:
             if (this.ai[1] > 0f)
             {
                 this.ai[1]--;
@@ -6549,11 +6554,6 @@
             Main.npc[index].wet = Collision.WetCollision(Main.npc[index].position, Main.npc[index].width, Main.npc[index].height);
             if (Type == 50)
             {
-                if (Main.netMode == 0)
-                {
-                    Main.NewText(Main.npc[index].name + " has awoken!", 0xaf, 0x4b, 0xff);
-                    return index;
-                }
                 if (Main.netMode == 2)
                 {
                     NetMessage.SendData(0x19, -1, -1, Main.npc[index].name + " has awoken!", 0xff, 175f, 75f, 255f, 0);
@@ -6791,11 +6791,7 @@
                 {
                     Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 0x3a, 1, false);
                 }
-                if (Main.netMode == 0)
-                {
-                    Main.NewText(this.name + " has been defeated!", 0xaf, 0x4b, 0xff);
-                }
-                else if (Main.netMode == 2)
+                if (Main.netMode == 2)
                 {
                     NetMessage.SendData(0x19, -1, -1, this.name + " has been defeated!", 0xff, 175f, 75f, 255f, 0);
                 }
@@ -8324,6 +8320,10 @@
                 this.scale = scaleOverride;
                 this.width = (int) (this.width * this.scale);
                 this.height = (int) (this.height * this.scale);
+                if ((this.height == 0x10) || (this.height == 0x20))
+                {
+                    this.height++;
+                }
                 this.position.X -= this.width / 2;
                 this.position.Y -= this.height;
             }
@@ -9119,11 +9119,7 @@
                     {
                         NetMessage.SendData(0x17, -1, -1, "", index, 0f, 0f, 0f, 0);
                     }
-                    if (Main.netMode == 0)
-                    {
-                        Main.NewText(name + " has awoken!", 0xaf, 0x4b, 0xff);
-                    }
-                    else if (Main.netMode == 2)
+                    if (Main.netMode == 2)
                     {
                         NetMessage.SendData(0x19, -1, -1, name + " has awoken!", 0xff, 175f, 75f, 255f, 0);
                     }
@@ -9166,11 +9162,7 @@
                 int index = NewNPC(((int) position.X) + (width / 2), ((int) position.Y) + (height / 2), 0x23, 0);
                 Main.npc[index].netUpdate = true;
                 string str = "Skeletron";
-                if (Main.netMode == 0)
-                {
-                    Main.NewText(str + " has awoken!", 0xaf, 0x4b, 0xff);
-                }
-                else if (Main.netMode == 2)
+                if (Main.netMode == 2)
                 {
                     NetMessage.SendData(0x19, -1, -1, str + " has awoken!", 0xff, 175f, 75f, 255f, 0);
                 }
@@ -9197,7 +9189,7 @@
                 }
                 else
                 {
-                    CombatText.NewText(new Rectangle((int) this.position.X, (int) this.position.Y, this.width, this.height), new Color(0xff, 160, 80, 0xff), ((int) dmg).ToString(), crit);
+                    CombatText.NewText(new Rectangle((int)this.position.X, (int)this.position.Y, this.width, this.height), new Color(0xff, 160, 80, 0xff), ((int)dmg).ToString(), crit);
                 }
             }
             if (dmg < 1.0)
@@ -9292,11 +9284,7 @@
                 noSpawnCycle = true;
                 if (this.townNPC && (this.type != 0x25))
                 {
-                    if (Main.netMode == 0)
-                    {
-                        Main.NewText(this.name + " was slain...", 0xff, 0x19, 0x19);
-                    }
-                    else if (Main.netMode == 2)
+                    if (Main.netMode == 2)
                     {
                         NetMessage.SendData(0x19, -1, -1, this.name + " was slain...", 0xff, 255f, 25f, 25f, 0);
                     }

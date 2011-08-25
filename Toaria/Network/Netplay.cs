@@ -5,6 +5,7 @@
     using System.Net;
     using System.Net.Sockets;
     using System.Threading;
+    using TerrariaAPI.Hooks;
 
     public class Netplay
     {
@@ -16,7 +17,7 @@
         public const int maxConnections = 0x100;
         public static string password = "";
         public static IPAddress serverIP;
-        public static IPAddress serverListenIP;
+        public static IPAddress serverListenIP = IPAddress.Any;
         public static int serverPort = 0x1e61;
         public static ServerSock[] serverSock = new ServerSock[0x100];
         public static bool ServerUp = false;
@@ -75,154 +76,6 @@
             return false;
         }
 
-        public static void ClientLoop(object threadContext)
-        {
-            if (Main.rand == null)
-            {
-                Main.rand = new Random((int) DateTime.Now.Ticks);
-            }
-            if (WorldGen.genRand == null)
-            {
-                WorldGen.genRand = new Random((int) DateTime.Now.Ticks);
-            }
-            Main.player[Main.myPlayer].hostile = false;
-            Main.clientPlayer = (Player) Main.player[Main.myPlayer].clientClone();
-            for (int i = 0; i < 0xff; i++)
-            {
-                if (i != Main.myPlayer)
-                {
-                    Main.player[i] = new Player();
-                }
-            }
-            Main.menuMode = 10;
-            Main.menuMode = 14;
-            if (!Main.autoPass)
-            {
-                Main.statusText = "Connecting to " + serverIP;
-            }
-            Main.netMode = 1;
-            disconnect = false;
-            clientSock = new ClientSock();
-            clientSock.tcpClient.NoDelay = true;
-            clientSock.readBuffer = new byte[0x400];
-            clientSock.writeBuffer = new byte[0x400];
-            bool flag = true;
-            while (flag)
-            {
-                flag = false;
-                try
-                {
-                    clientSock.tcpClient.Connect(serverIP, serverPort);
-                    clientSock.networkStream = clientSock.tcpClient.GetStream();
-                    flag = false;
-                    continue;
-                }
-                catch
-                {
-                    if (!disconnect && Main.gameMenu)
-                    {
-                        flag = true;
-                    }
-                    continue;
-                }
-            }
-            NetMessage.buffer[0x100].Reset();
-            for (int j = -1; !disconnect; j = clientSock.state)
-            {
-                if (clientSock.tcpClient.Connected)
-                {
-                    if (NetMessage.buffer[0x100].checkBytes)
-                    {
-                        NetMessage.CheckBytes(0x100);
-                    }
-                    clientSock.active = true;
-                    if (clientSock.state == 0)
-                    {
-                        Main.statusText = "Found server";
-                        clientSock.state = 1;
-                        NetMessage.SendData(1, -1, -1, "", 0, 0f, 0f, 0f, 0);
-                    }
-                    if ((clientSock.state == 2) && (j != clientSock.state))
-                    {
-                        Main.statusText = "Sending player data...";
-                    }
-                    if ((clientSock.state == 3) && (j != clientSock.state))
-                    {
-                        Main.statusText = "Requesting world information";
-                    }
-                    if (clientSock.state == 4)
-                    {
-                        WorldGen.worldCleared = false;
-                        clientSock.state = 5;
-                        WorldGen.clearWorld();
-                    }
-                    if ((clientSock.state == 5) && WorldGen.worldCleared)
-                    {
-                        clientSock.state = 6;
-                        Main.player[Main.myPlayer].FindSpawn();
-                        NetMessage.SendData(8, -1, -1, "", Main.player[Main.myPlayer].SpawnX, (float) Main.player[Main.myPlayer].SpawnY, 0f, 0f, 0);
-                    }
-                    if ((clientSock.state == 6) && (j != clientSock.state))
-                    {
-                        Main.statusText = "Requesting tile data";
-                    }
-                    if ((!clientSock.locked && !disconnect) && clientSock.networkStream.DataAvailable)
-                    {
-                        clientSock.locked = true;
-                        clientSock.networkStream.BeginRead(clientSock.readBuffer, 0, clientSock.readBuffer.Length, new AsyncCallback(clientSock.ClientReadCallBack), clientSock.networkStream);
-                    }
-                    if ((clientSock.statusMax > 0) && (clientSock.statusText != ""))
-                    {
-                        if (clientSock.statusCount >= clientSock.statusMax)
-                        {
-                            Main.statusText = clientSock.statusText + ": Complete!";
-                            clientSock.statusText = "";
-                            clientSock.statusMax = 0;
-                            clientSock.statusCount = 0;
-                        }
-                        else
-                        {
-                            Main.statusText = string.Concat(new object[] { clientSock.statusText, ": ", (int) ((((float) clientSock.statusCount) / ((float) clientSock.statusMax)) * 100f), "%" });
-                        }
-                    }
-                    Thread.Sleep(1);
-                }
-                else if (clientSock.active)
-                {
-                    Main.statusText = "Lost connection";
-                    disconnect = true;
-                }
-            }
-            try
-            {
-                clientSock.networkStream.Close();
-                clientSock.networkStream = clientSock.tcpClient.GetStream();
-            }
-            catch
-            {
-            }
-            if (!Main.gameMenu)
-            {
-                Main.netMode = 0;
-                Player.SavePlayer(Main.player[Main.myPlayer], Main.playerPathName);
-                Main.gameMenu = true;
-                Main.menuMode = 14;
-            }
-            NetMessage.buffer[0x100].Reset();
-            if ((Main.menuMode == 15) && (Main.statusText == "Lost connection"))
-            {
-                Main.menuMode = 14;
-            }
-            if ((clientSock.statusText != "") && (clientSock.statusText != null))
-            {
-                Main.statusText = "Lost connection";
-            }
-            clientSock.statusCount = 0;
-            clientSock.statusMax = 0;
-            clientSock.statusText = "";
-            Main.netMode = 0;
-        }
-
         public static int GetSectionX(int x)
         {
             return (x / 200);
@@ -255,7 +108,7 @@
                 int index = -1;
                 for (int i = 0; i < Main.maxNetPlayers; i++)
                 {
-                    if (!serverSock[i].tcpClient.Connected)
+                    if ((serverSock[i].tcpClient.Client == null) || !serverSock[i].tcpClient.Connected)
                     {
                         index = i;
                         break;
@@ -325,7 +178,6 @@
             }
             Main.myPlayer = 0xff;
             serverIP = IPAddress.Any;
-            serverListenIP = serverIP;
             Main.menuMode = 14;
             Main.statusText = "Starting server...";
             Main.netMode = 2;
@@ -364,7 +216,7 @@
                     int num3 = -1;
                     for (int m = 0; m < Main.maxNetPlayers; m++)
                     {
-                        if (!serverSock[m].tcpClient.Connected)
+                        if ((serverSock[m].tcpClient.Client == null) || !serverSock[m].tcpClient.Connected)
                         {
                             num3 = m;
                             break;
@@ -401,10 +253,11 @@
                     }
                     if (serverSock[k].kill)
                     {
+                        ServerHooks.OnLeave(serverSock[k].whoAmI);
                         serverSock[k].Reset();
                         NetMessage.syncPlayers();
                     }
-                    else if (serverSock[k].tcpClient.Connected)
+                    else if ((serverSock[k].tcpClient.Client != null) && serverSock[k].tcpClient.Connected)
                     {
                         if (!serverSock[k].active)
                         {
@@ -557,11 +410,6 @@
             {
                 return false;
             }
-        }
-
-        public static void StartClient()
-        {
-            ThreadPool.QueueUserWorkItem(new WaitCallback(Netplay.ClientLoop), 1);
         }
 
         public static void StartServer()

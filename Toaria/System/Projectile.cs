@@ -173,6 +173,10 @@
                     float num8 = (Main.player[this.owner].position.X + (Main.player[this.owner].width / 2)) - vector.X;
                     float num9 = (Main.player[this.owner].position.Y + (Main.player[this.owner].height / 2)) - vector.Y;
                     float num10 = (float) Math.Sqrt((double) ((num8 * num8) + (num9 * num9)));
+                    if (num10 > 3000f)
+                    {
+                        this.Kill();
+                    }
                     num10 = num6 / num10;
                     num8 *= num10;
                     num9 *= num10;
@@ -2588,6 +2592,7 @@
                 this.penetrate = -1;
                 this.timeLeft *= 5;
                 this.ignoreWater = true;
+                this.scale = 0.8f;
             }
             else if (this.type == 0x13)
             {

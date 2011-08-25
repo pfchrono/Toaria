@@ -252,13 +252,13 @@
                 {
                     float num3 = ((float) (maxY - i)) / ((float) ((maxY - minY) + 1));
                     num3 /= (float) verbose;
-                    Main.statusText = "Settling liquids: " + ((int) ((num3 * 100f) + 1f)) + "%";
+                    //Main.statusText = "Settling liquids: " + ((int) ((num3 * 100f) + 1f)) + "%";
                 }
                 else if (verbose < 0)
                 {
                     float num4 = ((float) (maxY - i)) / ((float) ((maxY - minY) + 1));
                     num4 /= (float) -verbose;
-                    Main.statusText = "Creating underworld: " + ((int) ((num4 * 100f) + 1f)) + "%";
+                    //Main.statusText = "Creating underworld: " + ((int) ((num4 * 100f) + 1f)) + "%";
                 }
                 for (int j = 0; j < 2; j++)
                 {

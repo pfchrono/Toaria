@@ -183,20 +183,6 @@
                 }
             }
         }
-
-        public static void UpdateItemText()
-        {
-            int num = 0;
-            for (int i = 0; i < 100; i++)
-            {
-                if (Main.itemText[i].active)
-                {
-                    num++;
-                    Main.itemText[i].Update(i);
-                }
-            }
-            numActive = num;
-        }
     }
 }
 

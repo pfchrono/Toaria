@@ -6,8 +6,10 @@
     using System.IO;
     using System.Runtime.InteropServices;
     using System.Threading;
+    using TerrariaAPI.Hooks;
+    using System.IO.Compression;
 
-    internal class WorldGen
+    public class WorldGen
     {
         public static int bestX = 0;
         public static int bestY = 0;
@@ -47,7 +49,7 @@
         private static int hellChest = 0;
         public static int hiScore = 0;
         private static int houseCount = 0;
-        public static bool[] houseTile = new bool[0x6a];
+        public static bool[] houseTile = new bool[0x6b];
         private static int[] JChestX = new int[100];
         private static int[] JChestY = new int[100];
         private static int JungleX = 0;
@@ -903,6 +905,16 @@
         {
             if (((x >= 10) && (x <= (Main.maxTilesX - 10))) && ((y >= 10) && (y <= (Main.maxTilesY - 10))))
             {
+                for (int i = x - 1; i < (x + 1); i++)
+                {
+                    for (int j = y - 1; j < (y + 1); j++)
+                    {
+                        if (Main.tile[i, j].active && (Main.tile[i, j].type == 0x1f))
+                        {
+                            return;
+                        }
+                    }
+                }
                 Main.tile[x - 1, y - 1].active = true;
                 Main.tile[x - 1, y - 1].type = 0x1f;
                 Main.tile[x - 1, y - 1].frameX = 0;
@@ -2304,24 +2316,42 @@
                         }
                     }
                 }
-                if (Main.tile[num + 1, num2 - 1] == null)
+                if (type == 0x6a)
                 {
-                    Main.tile[num + 1, num2 - 1] = new Tile();
+                    for (int n = num; n < (num + 3); n++)
+                    {
+                        if (Main.tile[n, num2 + 3] == null)
+                        {
+                            Main.tile[n, num2 + 3] = new Tile();
+                        }
+                        if (!Main.tile[n, num2 + 3].active || !Main.tileSolid[Main.tile[n, num2 + 3].type])
+                        {
+                            flag = true;
+                            break;
+                        }
+                    }
                 }
-                if ((!Main.tile[num + 1, num2 - 1].active || !Main.tileSolid[Main.tile[num + 1, num2 - 1].type]) || Main.tileSolidTop[Main.tile[num + 1, num2 - 1].type])
+                else
                 {
-                    flag = true;
+                    if (Main.tile[num + 1, num2 - 1] == null)
+                    {
+                        Main.tile[num + 1, num2 - 1] = new Tile();
+                    }
+                    if ((!Main.tile[num + 1, num2 - 1].active || !Main.tileSolid[Main.tile[num + 1, num2 - 1].type]) || Main.tileSolidTop[Main.tile[num + 1, num2 - 1].type])
+                    {
+                        flag = true;
+                    }
                 }
                 if (flag)
                 {
                     destroyObject = true;
-                    for (int n = num; n < (num + 3); n++)
+                    for (int num6 = num; num6 < (num + 3); num6++)
                     {
-                        for (int num6 = num2; num6 < (num2 + 3); num6++)
+                        for (int num7 = num2; num7 < (num2 + 3); num7++)
                         {
-                            if ((Main.tile[n, num6].type == type) && Main.tile[n, num6].active)
+                            if ((Main.tile[num6, num7].type == type) && Main.tile[num6, num7].active)
                             {
-                                KillTile(n, num6, false, false, false);
+                                KillTile(num6, num7, false, false, false);
                             }
                         }
                     }
@@ -2337,12 +2367,16 @@
                     {
                         Item.NewItem(i * 0x10, j * 0x10, 0x20, 0x20, 0x6c, 1, false);
                     }
-                    destroyObject = false;
-                    for (int num7 = num - 1; num7 < (num + 4); num7++)
+                    else if (type == 0x6a)
                     {
-                        for (int num8 = num2 - 1; num8 < (num2 + 4); num8++)
+                        Item.NewItem(i * 0x10, j * 0x10, 0x20, 0x20, 0x16b, 1, false);
+                    }
+                    destroyObject = false;
+                    for (int num8 = num - 1; num8 < (num + 4); num8++)
+                    {
+                        for (int num9 = num2 - 1; num9 < (num2 + 4); num9++)
                         {
-                            TileFrame(num7, num8, false, false);
+                            TileFrame(num8, num9, false, false);
                         }
                     }
                 }
@@ -3531,7 +3565,7 @@
                 for (int num4 = 0; num4 < Main.maxTilesX; num4++)
                 {
                     float num5 = ((float) num4) / ((float) Main.maxTilesX);
-                    Main.statusText = "Resetting game objects: " + ((int) ((num5 * 100f) + 1f)) + "%";
+                    //Main.statusText = "Resetting game objects: " + ((int) ((num5 * 100f) + 1f)) + "%";
                     for (int num6 = 0; num6 < Main.maxTilesY; num6++)
                     {
                         Main.tile[num4, num6] = new Tile();
@@ -4869,7 +4903,7 @@
             for (int i = 0; i < Main.maxTilesX; i++)
             {
                 float num2 = ((float) i) / ((float) Main.maxTilesX);
-                Main.statusText = "Finding tile frames: " + ((int) ((num2 * 100f) + 1f)) + "%";
+                //Main.statusText = "Finding tile frames: " + ((int) ((num2 * 100f) + 1f)) + "%";
                 for (int j = 0; j < Main.maxTilesY; j++)
                 {
                     TileFrame(i, j, true, false);
@@ -5045,7 +5079,7 @@
             for (int i = 0; i < Main.maxTilesX; i++)
             {
                 float num11 = ((float) i) / ((float) Main.maxTilesX);
-                Main.statusText = "Generating world terrain: " + ((int) ((num11 * 100f) + 1f)) + "%";
+                //Main.statusText = "Generating world terrain: " + ((int) ((num11 * 100f) + 1f)) + "%";
                 if (num < num2)
                 {
                     num2 = num;
@@ -5185,7 +5219,7 @@
             waterLine += genRand.Next(-100, 20);
             lavaLine = waterLine + genRand.Next(50, 80);
             int num15 = 0;
-            Main.statusText = "Adding sand...";
+            //Main.statusText = "Adding sand...";
             int num16 = genRand.Next((int) (Main.maxTilesX * 0.0008), (int) (Main.maxTilesX * 0.0025)) + 2;
             for (int j = 0; j < num16; j++)
             {
@@ -5293,7 +5327,7 @@
                 TileRunner(genRand.Next(0, Main.maxTilesX), genRand.Next((int) Main.worldSurface, (int) Main.rockLayer), (double) genRand.Next(15, 70), genRand.Next(20, 130), 0x35, false, 0f, 0f, false, true);
             }
             numMCaves = 0;
-            Main.statusText = "Generating hills...";
+            //Main.statusText = "Generating hills...";
             for (int m = 0; m < ((int) (Main.maxTilesX * 0.0008)); m++)
             {
                 int num30 = 0;
@@ -5340,7 +5374,7 @@
             for (int n = 1; n < (Main.maxTilesX - 1); n++)
             {
                 float num35 = ((float) n) / ((float) Main.maxTilesX);
-                Main.statusText = "Puttin dirt behind dirt: " + ((int) ((num35 * 100f) + 1f)) + "%";
+                //Main.statusText = "Puttin dirt behind dirt: " + ((int) ((num35 * 100f) + 1f)) + "%";
                 bool flag3 = false;
                 num15 += genRand.Next(-1, 2);
                 if (num15 < 0)
@@ -5367,7 +5401,7 @@
                     }
                 }
             }
-            Main.statusText = "Placing rocks in the dirt...";
+            //Main.statusText = "Placing rocks in the dirt...";
             for (int num37 = 0; num37 < ((int) ((Main.maxTilesX * Main.maxTilesY) * 0.0002)); num37++)
             {
                 TileRunner(genRand.Next(0, Main.maxTilesX), genRand.Next(0, ((int) num2) + 1), (double) genRand.Next(4, 15), genRand.Next(5, 40), 1, false, 0f, 0f, false, true);
@@ -5380,12 +5414,12 @@
             {
                 TileRunner(genRand.Next(0, Main.maxTilesX), genRand.Next((int) num3, ((int) num6) + 1), (double) genRand.Next(2, 7), genRand.Next(2, 0x17), 1, false, 0f, 0f, false, true);
             }
-            Main.statusText = "Placing dirt in the rocks...";
+            //Main.statusText = "Placing dirt in the rocks...";
             for (int num40 = 0; num40 < ((int) ((Main.maxTilesX * Main.maxTilesY) * 0.005)); num40++)
             {
                 TileRunner(genRand.Next(0, Main.maxTilesX), genRand.Next((int) num5, Main.maxTilesY), (double) genRand.Next(2, 6), genRand.Next(2, 40), 0, false, 0f, 0f, false, true);
             }
-            Main.statusText = "Adding clay...";
+            //Main.statusText = "Adding clay...";
             for (int num41 = 0; num41 < ((int) ((Main.maxTilesX * Main.maxTilesY) * 2E-05)); num41++)
             {
                 TileRunner(genRand.Next(0, Main.maxTilesX), genRand.Next(0, (int) num2), (double) genRand.Next(4, 14), genRand.Next(10, 50), 40, false, 0f, 0f, false, true);
@@ -5418,7 +5452,7 @@
             for (int num47 = 0; num47 < ((int) ((Main.maxTilesX * Main.maxTilesY) * 0.0015)); num47++)
             {
                 float num48 = (float) (((double) num47) / ((Main.maxTilesX * Main.maxTilesY) * 0.0015));
-                Main.statusText = "Making random holes: " + ((int) ((num48 * 100f) + 1f)) + "%";
+                //Main.statusText = "Making random holes: " + ((int) ((num48 * 100f) + 1f)) + "%";
                 int type = -1;
                 if (genRand.Next(5) == 0)
                 {
@@ -5430,7 +5464,7 @@
             for (int num50 = 0; num50 < ((int) ((Main.maxTilesX * Main.maxTilesY) * 3E-05)); num50++)
             {
                 float num51 = (float) (((double) num50) / ((Main.maxTilesX * Main.maxTilesY) * 3E-05));
-                Main.statusText = "Generating small caves: " + ((int) ((num51 * 100f) + 1f)) + "%";
+                //Main.statusText = "Generating small caves: " + ((int) ((num51 * 100f) + 1f)) + "%";
                 if (num6 <= Main.maxTilesY)
                 {
                     int num52 = -1;
@@ -5444,7 +5478,7 @@
             for (int num53 = 0; num53 < ((int) ((Main.maxTilesX * Main.maxTilesY) * 0.00015)); num53++)
             {
                 float num54 = (float) (((double) num53) / ((Main.maxTilesX * Main.maxTilesY) * 0.00015));
-                Main.statusText = "Generating large caves: " + ((int) ((num54 * 100f) + 1f)) + "%";
+                //Main.statusText = "Generating large caves: " + ((int) ((num54 * 100f) + 1f)) + "%";
                 if (num6 <= Main.maxTilesY)
                 {
                     int num55 = -1;
@@ -5456,7 +5490,7 @@
                 }
             }
             int num56 = 0;
-            Main.statusText = "Generating surface caves...";
+            //Main.statusText = "Generating surface caves...";
             for (int num57 = 0; num57 < ((int) (Main.maxTilesX * 0.0025)); num57++)
             {
                 num56 = genRand.Next(0, Main.maxTilesX);
@@ -5532,7 +5566,7 @@
                     Main.tile[num65, num66].type = 2;
                 }
             }
-            Main.statusText = "Generating jungle: 0%";
+            //Main.statusText = "Generating jungle: 0%";
             float num68 = Main.maxTilesX / 0x1068;
             num68 *= 1.5f;
             int num69 = 0;
@@ -5557,7 +5591,7 @@
                 TileRunner(num69 + genRand.Next(-((int) (125f * num68)), (int) (125f * num68)), num71 + genRand.Next(-((int) (125f * num68)), (int) (125f * num68)), (double) genRand.Next(3, 7), genRand.Next(3, 8), genRand.Next(0x3f, 0x41), false, 0f, 0f, false, true);
             }
             mudWall = true;
-            Main.statusText = "Generating jungle: 15%";
+            //Main.statusText = "Generating jungle: 15%";
             num69 += genRand.Next((int) (-250f * num68), (int) (251f * num68));
             num71 += genRand.Next((int) (-150f * num68), (int) (151f * num68));
             int num73 = num69;
@@ -5571,7 +5605,7 @@
                 TileRunner(num69 + genRand.Next(-((int) (125f * num68)), (int) (125f * num68)), num71 + genRand.Next(-((int) (125f * num68)), (int) (125f * num68)), (double) genRand.Next(3, 7), genRand.Next(3, 8), genRand.Next(0x41, 0x43), false, 0f, 0f, false, true);
             }
             mudWall = true;
-            Main.statusText = "Generating jungle: 30%";
+            //Main.statusText = "Generating jungle: 30%";
             num69 += genRand.Next((int) (-400f * num68), (int) (401f * num68));
             num71 += genRand.Next((int) (-150f * num68), (int) (151f * num68));
             int num74 = num69;
@@ -5583,12 +5617,12 @@
                 TileRunner(num69 + genRand.Next(-((int) (125f * num68)), (int) (125f * num68)), num71 + genRand.Next(-((int) (125f * num68)), (int) (125f * num68)), (double) genRand.Next(3, 7), genRand.Next(3, 8), genRand.Next(0x43, 0x45), false, 0f, 0f, false, true);
             }
             mudWall = true;
-            Main.statusText = "Generating jungle: 45%";
+            //Main.statusText = "Generating jungle: 45%";
             num69 = ((num72 + num73) + num74) / 3;
             num71 = ((num75 + num76) + num77) / 3;
             TileRunner(num69, num71, (double) genRand.Next((int) (400f * num68), (int) (600f * num68)), 0x2710, 0x3b, false, 0f, -20f, true, true);
             JungleRunner(num69, num71);
-            Main.statusText = "Generating jungle: 60%";
+            //Main.statusText = "Generating jungle: 60%";
             mudWall = false;
             for (int num83 = 0; num83 < (Main.maxTilesX / 10); num83++)
             {
@@ -5605,14 +5639,14 @@
             num71 = num80;
             for (int num84 = 0; num84 <= (20f * num68); num84++)
             {
-                Main.statusText = "Generating jungle: " + ((int) (60f + (((float) num84) / num68))) + "%";
+                //Main.statusText = "Generating jungle: " + ((int) (60f + (((float) num84) / num68))) + "%";
                 num69 += genRand.Next((int) (-5f * num68), (int) (6f * num68));
                 num71 += genRand.Next((int) (-5f * num68), (int) (6f * num68));
                 TileRunner(num69, num71, (double) genRand.Next(40, 100), genRand.Next(300, 500), 0x3b, false, 0f, 0f, false, true);
             }
             for (int num85 = 0; num85 <= (10f * num68); num85++)
             {
-                Main.statusText = "Generating jungle: " + ((int) (80f + ((((float) num85) / num68) * 2f))) + "%";
+                //Main.statusText = "Generating jungle: " + ((int) (80f + ((((float) num85) / num68) * 2f))) + "%";
                 num69 = num79 + genRand.Next((int) (-600f * num68), (int) (600f * num68));
                 num71 = num80 + genRand.Next((int) (-200f * num68), (int) (200f * num68));
                 while ((((num69 < 1) || (num69 >= (Main.maxTilesX - 1))) || ((num71 < 1) || (num71 >= (Main.maxTilesY - 1)))) || (Main.tile[num69, num71].type != 0x3b))
@@ -5749,7 +5783,7 @@
             }
             numIslandHouses = 0;
             houseCount = 0;
-            Main.statusText = "Generating floating islands...";
+            //Main.statusText = "Generating floating islands...";
             for (int num113 = 0; num113 < ((int) (Main.maxTilesX * 0.0008)); num113++)
             {
                 int num114 = 0;
@@ -5799,7 +5833,7 @@
                     }
                 }
             }
-            Main.statusText = "Adding mushroom patches...";
+            //Main.statusText = "Adding mushroom patches...";
             for (int num120 = 0; num120 < (Main.maxTilesX / 300); num120++)
             {
                 int num121 = genRand.Next((int) (Main.maxTilesX * 0.3), (int) (Main.maxTilesX * 0.7));
@@ -5816,12 +5850,12 @@
                     }
                 }
             }
-            Main.statusText = "Placing mud in the dirt...";
+            //Main.statusText = "Placing mud in the dirt...";
             for (int num125 = 0; num125 < ((int) ((Main.maxTilesX * Main.maxTilesY) * 0.001)); num125++)
             {
                 TileRunner(genRand.Next(0, Main.maxTilesX), genRand.Next((int) num5, Main.maxTilesY), (double) genRand.Next(2, 6), genRand.Next(2, 40), 0x3b, false, 0f, 0f, false, true);
             }
-            Main.statusText = "Adding shinies...";
+            //Main.statusText = "Adding shinies...";
             for (int num126 = 0; num126 < ((int) ((Main.maxTilesX * Main.maxTilesY) * 6E-05)); num126++)
             {
                 TileRunner(genRand.Next(0, Main.maxTilesX), genRand.Next((int) num2, (int) num3), (double) genRand.Next(3, 6), genRand.Next(2, 6), 7, false, 0f, 0f, false, true);
@@ -5870,7 +5904,7 @@
             {
                 TileRunner(genRand.Next(0, Main.maxTilesX), genRand.Next((int) num5, Main.maxTilesY), (double) genRand.Next(2, 4), genRand.Next(3, 6), 0x16, false, 0f, 0f, false, true);
             }
-            Main.statusText = "Adding webs...";
+            //Main.statusText = "Adding webs...";
             for (int num138 = 0; num138 < ((int) ((Main.maxTilesX * Main.maxTilesY) * 0.001)); num138++)
             {
                 int num139 = genRand.Next(20, Main.maxTilesX - 20);
@@ -5903,7 +5937,7 @@
                     }
                 }
             }
-            Main.statusText = "Creating underworld: 0%";
+            //Main.statusText = "Creating underworld: 0%";
             int num142 = Main.maxTilesY - genRand.Next(150, 190);
             for (int num143 = 0; num143 < Main.maxTilesX; num143++)
             {
@@ -5967,7 +6001,7 @@
             for (int num150 = 0; num150 < Main.maxTilesX; num150++)
             {
                 float num151 = ((float) num150) / ((float) (Main.maxTilesX - 1));
-                Main.statusText = "Creating underworld: " + ((int) (((num151 * 100f) / 2f) + 50f)) + "%";
+                //Main.statusText = "Creating underworld: " + ((int) (((num151 * 100f) / 2f) + 50f)) + "%";
                 if (genRand.Next(13) == 0)
                 {
                     int num152 = Main.maxTilesY - 0x41;
@@ -6027,7 +6061,7 @@
             for (int num158 = 0; num158 < num157; num158++)
             {
                 float num159 = ((float) num158) / ((float) num157);
-                Main.statusText = "Adding water bodies: " + ((int) (num159 * 100f)) + "%";
+                //Main.statusText = "Adding water bodies: " + ((int) (num159 * 100f)) + "%";
                 int num160 = genRand.Next(300, Main.maxTilesX - 300);
                 while ((num160 > ((Main.maxTilesX / 2) - 50)) && (num160 < ((Main.maxTilesX / 2) + 50)))
                 {
@@ -6056,7 +6090,7 @@
             for (int num164 = 0; num164 < (Main.maxTilesX * 0.00045); num164++)
             {
                 float num165 = (float) (((double) num164) / (Main.maxTilesX * 0.00045));
-                Main.statusText = "Making the world evil: " + ((int) (num165 * 100f)) + "%";
+                //Main.statusText = "Making the world evil: " + ((int) (num165 * 100f)) + "%";
                 bool flag8 = false;
                 int num166 = 0;
                 int num167 = 0;
@@ -6229,7 +6263,7 @@
                     }
                 }
             }
-            Main.statusText = "Generating mountain caves...";
+            //Main.statusText = "Generating mountain caves...";
             for (int num191 = 0; num191 < numMCaves; num191++)
             {
                 int num192 = mCaveX[num191];
@@ -6241,7 +6275,7 @@
             int num195 = 0;
             int num196 = 20;
             int num197 = Main.maxTilesX - 20;
-            Main.statusText = "Creating beaches...";
+            //Main.statusText = "Creating beaches...";
             for (int num198 = 0; num198 < 2; num198++)
             {
                 int num199 = 0;
@@ -6485,7 +6519,7 @@
                 num195++;
             }
             num195++;
-            Main.statusText = "Adding gems...";
+            //Main.statusText = "Adding gems...";
             for (int num213 = 0x3f; num213 <= 0x44; num213++)
             {
                 float num214 = 0f;
@@ -6531,7 +6565,7 @@
             for (int num218 = 0; num218 < Main.maxTilesX; num218++)
             {
                 float num219 = ((float) num218) / ((float) (Main.maxTilesX - 1));
-                Main.statusText = "Gravitating sand: " + ((int) (num219 * 100f)) + "%";
+                //Main.statusText = "Gravitating sand: " + ((int) (num219 * 100f)) + "%";
                 for (int num220 = Main.maxTilesY - 5; num220 > 0; num220--)
                 {
                     if (Main.tile[num218, num220].active && (Main.tile[num218, num220].type == 0x35))
@@ -6547,7 +6581,7 @@
             for (int num222 = 3; num222 < (Main.maxTilesX - 3); num222++)
             {
                 float num223 = ((float) num222) / ((float) Main.maxTilesX);
-                Main.statusText = "Cleaning up dirt backgrounds: " + ((int) ((num223 * 100f) + 1f)) + "%";
+                //Main.statusText = "Cleaning up dirt backgrounds: " + ((int) ((num223 * 100f) + 1f)) + "%";
                 bool flag11 = true;
                 for (int num224 = 0; num224 < Main.worldSurface; num224++)
                 {
@@ -6598,7 +6632,7 @@
             for (int num225 = 0; num225 < ((int) ((Main.maxTilesX * Main.maxTilesY) * 2E-05)); num225++)
             {
                 float num226 = (float) (((double) num225) / ((Main.maxTilesX * Main.maxTilesY) * 2E-05));
-                Main.statusText = "Placing altars: " + ((int) ((num226 * 100f) + 1f)) + "%";
+                //Main.statusText = "Placing altars: " + ((int) ((num226 * 100f) + 1f)) + "%";
                 bool flag12 = false;
                 int num227 = 0;
                 while (!flag12)
@@ -6682,7 +6716,7 @@
                     }
                     if (num235 == 1)
                     {
-                        Main.statusText = "Settling liquids: " + ((int) (((num238 * 100f) / 3f) + 33f)) + "%";
+                        //Main.statusText = "Settling liquids: " + ((int) (((num238 * 100f) / 3f) + 33f)) + "%";
                     }
                     int num239 = 10;
                     if (num235 > num239)
@@ -6692,14 +6726,14 @@
                     Liquid.UpdateLiquid();
                 }
                 WaterCheck();
-                Main.statusText = "Settling liquids: " + ((int) (((num235 * 10f) / 3f) + 66f)) + "%";
+                //Main.statusText = "Settling liquids: " + ((int) (((num235 * 10f) / 3f) + 66f)) + "%";
             }
             Liquid.quickSettle = false;
             float num240 = Main.maxTilesX / 0x1068;
             for (int num241 = 0; num241 < ((int) ((Main.maxTilesX * Main.maxTilesY) * 2E-05)); num241++)
             {
                 float num242 = (float) (((double) num241) / ((Main.maxTilesX * Main.maxTilesY) * 2E-05));
-                Main.statusText = "Placing life crystals: " + ((int) ((num242 * 100f) + 1f)) + "%";
+                //Main.statusText = "Placing life crystals: " + ((int) ((num242 * 100f) + 1f)) + "%";
                 bool flag13 = false;
                 int num243 = 0;
                 while (!flag13)
@@ -6721,7 +6755,7 @@
             for (int num244 = 0; num244 < ((int) ((Main.maxTilesX * Main.maxTilesY) * 1.6E-05)); num244++)
             {
                 float num245 = (float) (((double) num244) / ((Main.maxTilesX * Main.maxTilesY) * 1.6E-05));
-                Main.statusText = "Hiding treasure: " + ((int) ((num245 * 100f) + 1f)) + "%";
+                //Main.statusText = "Hiding treasure: " + ((int) ((num245 * 100f) + 1f)) + "%";
                 bool flag14 = false;
                 int num246 = 0;
                 while (!flag14)
@@ -6758,7 +6792,7 @@
             for (int num249 = 0; num249 < ((int) (Main.maxTilesX * 0.005)); num249++)
             {
                 float num250 = (float) (((double) num249) / (Main.maxTilesX * 0.005));
-                Main.statusText = "Hiding more treasure: " + ((int) ((num250 * 100f) + 1f)) + "%";
+                //Main.statusText = "Hiding more treasure: " + ((int) ((num250 * 100f) + 1f)) + "%";
                 bool flag15 = false;
                 int num251 = 0;
                 while (!flag15)
@@ -6788,7 +6822,7 @@
             for (int num255 = 0; num255 < numJChests; num255++)
             {
                 float num256 = num255 / numJChests;
-                Main.statusText = "Hiding jungle treasure: " + ((int) ((num256 * 100f) + 1f)) + "%";
+                //Main.statusText = "Hiding jungle treasure: " + ((int) ((num256 * 100f) + 1f)) + "%";
                 num254++;
                 int contain = 0xd3;
                 switch (num254)
@@ -6827,7 +6861,7 @@
                 int num264;
                 int num265;
                 float num262 = ((float) num261) / (9f * num240);
-                Main.statusText = "Hiding water treasure: " + ((int) ((num262 * 100f) + 1f)) + "%";
+                //Main.statusText = "Hiding water treasure: " + ((int) ((num262 * 100f) + 1f)) + "%";
                 int num263 = 0;
                 num260++;
                 switch (num260)
@@ -6861,7 +6895,7 @@
             for (int num267 = 0; num267 < ((int) ((Main.maxTilesX * Main.maxTilesY) * 0.0008)); num267++)
             {
                 float num268 = (float) (((double) num267) / ((Main.maxTilesX * Main.maxTilesY) * 0.0008));
-                Main.statusText = "Placing breakables: " + ((int) ((num268 * 100f) + 1f)) + "%";
+                //Main.statusText = "Placing breakables: " + ((int) ((num268 * 100f) + 1f)) + "%";
                 bool flag18 = false;
                 int num269 = 0;
             Label_5883:
@@ -6907,7 +6941,7 @@
             for (int num273 = 0; num273 < (Main.maxTilesX / 200); num273++)
             {
                 float num274 = num273 / (Main.maxTilesX / 200);
-                Main.statusText = "Placing hellforges: " + ((int) ((num274 * 100f) + 1f)) + "%";
+                //Main.statusText = "Placing hellforges: " + ((int) ((num274 * 100f) + 1f)) + "%";
                 bool flag20 = false;
                 int num275 = 0;
                 while (!flag20)
@@ -6945,7 +6979,7 @@
                     }
                 }
             }
-            Main.statusText = "Spreading grass...";
+            //Main.statusText = "Spreading grass...";
             for (int num278 = 0; num278 < Main.maxTilesX; num278++)
             {
                 num56 = num278;
@@ -6970,7 +7004,7 @@
                     }
                 }
             }
-            Main.statusText = "Growing cacti...";
+            //Main.statusText = "Growing cacti...";
             for (int num280 = 5; num280 < (Main.maxTilesX - 5); num280++)
             {
                 if (genRand.Next(8) == 0)
@@ -7039,7 +7073,7 @@
             Main.npc[index].homeTileY = Main.spawnTileY;
             Main.npc[index].direction = 1;
             Main.npc[index].homeless = true;
-            Main.statusText = "Planting sunflowers...";
+            //Main.statusText = "Planting sunflowers...";
             for (int num289 = 0; num289 < (Main.maxTilesX * 0.002); num289++)
             {
                 int num290 = 0;
@@ -7072,7 +7106,7 @@
                     }
                 }
             }
-            Main.statusText = "Planting trees...";
+            //Main.statusText = "Planting trees...";
             for (int num295 = 0; num295 < (Main.maxTilesX * 0.003); num295++)
             {
                 int num296 = genRand.Next(50, Main.maxTilesX - 50);
@@ -7086,12 +7120,12 @@
                 }
             }
             AddTrees();
-            Main.statusText = "Planting herbs...";
+            //Main.statusText = "Planting herbs...";
             for (int num300 = 0; num300 < (Main.maxTilesX * 1.7); num300++)
             {
                 PlantAlch();
             }
-            Main.statusText = "Planting weeds...";
+            //Main.statusText = "Planting weeds...";
             AddPlants();
             for (int num301 = 0; num301 < Main.maxTilesX; num301++)
             {
@@ -7114,7 +7148,7 @@
                     }
                 }
             }
-            Main.statusText = "Growing vines...";
+            //Main.statusText = "Growing vines...";
             for (int num303 = 0; num303 < Main.maxTilesX; num303++)
             {
                 int num304 = 0;
@@ -7154,7 +7188,7 @@
                     }
                 }
             }
-            Main.statusText = "Planting flowers...";
+            //Main.statusText = "Planting flowers...";
             for (int num307 = 0; num307 < (Main.maxTilesX * 0.005); num307++)
             {
                 int num308 = genRand.Next(20, Main.maxTilesX - 20);
@@ -7178,7 +7212,7 @@
                     }
                 }
             }
-            Main.statusText = "Planting mushrooms...";
+            //Main.statusText = "Planting mushrooms...";
             for (int num314 = 0; num314 < (Main.maxTilesX * 0.002); num314++)
             {
                 int num315 = genRand.Next(20, Main.maxTilesX - 20);
@@ -8824,7 +8858,7 @@
                             {
                                 type = 6;
                             }
-                            if (((((Main.tile[i, j].type == 5) || (Main.tile[i, j].type == 10)) || ((Main.tile[i, j].type == 11) || (Main.tile[i, j].type == 14))) || (((Main.tile[i, j].type == 15) || (Main.tile[i, j].type == 0x13)) || ((Main.tile[i, j].type == 30) || (Main.tile[i, j].type == 0x56)))) || ((((Main.tile[i, j].type == 0x57) || (Main.tile[i, j].type == 0x58)) || ((Main.tile[i, j].type == 0x59) || (Main.tile[i, j].type == 0x5d))) || ((Main.tile[i, j].type == 0x5e) || (Main.tile[i, j].type == 0x68))))
+                            if (((((Main.tile[i, j].type == 5) || (Main.tile[i, j].type == 10)) || ((Main.tile[i, j].type == 11) || (Main.tile[i, j].type == 14))) || (((Main.tile[i, j].type == 15) || (Main.tile[i, j].type == 0x13)) || ((Main.tile[i, j].type == 30) || (Main.tile[i, j].type == 0x56)))) || ((((Main.tile[i, j].type == 0x57) || (Main.tile[i, j].type == 0x58)) || ((Main.tile[i, j].type == 0x59) || (Main.tile[i, j].type == 0x5d))) || (((Main.tile[i, j].type == 0x5e) || (Main.tile[i, j].type == 0x68)) || (Main.tile[i, j].type == 0x6a))))
                             {
                                 type = 7;
                             }
@@ -8976,10 +9010,10 @@
 
                                     case 5:
                                         type = 6;
-                                        goto Label_0E65;
+                                        goto Label_0E7D;
                                 }
                             }
-                        Label_0E65:
+                        Label_0E7D:
                             if (Main.tile[i, j].type == 0x3d)
                             {
                                 if (genRand.Next(2) == 0)
@@ -9555,7 +9589,7 @@
                         }
                         if (Main.tile[i, j].wall == 20)
                         {
-                            num4 = 0xad;
+                            num4 = 330;
                         }
                         if (num4 > 0)
                         {
@@ -9654,6 +9688,12 @@
 
         public static void loadWorld()
         {
+            DirectoryInfo di = new DirectoryInfo(Main.WorldPath);
+            foreach (FileInfo fi in di.GetFiles("*.gz"))
+            {
+                Decompress(fi);
+
+            }
             if (!File.Exists(Main.worldPathName) && Main.autoGen)
             {
                 for (int i = Main.worldPathName.Length - 1; i >= 0; i--)
@@ -9728,7 +9768,7 @@
                             for (int j = 0; j < Main.maxTilesX; j++)
                             {
                                 float num4 = ((float) j) / ((float) Main.maxTilesX);
-                                Main.statusText = "Loading world data: " + ((int) ((num4 * 100f) + 1f)) + "%";
+                                Main.statusText = "Loading world: " + ((int) ((num4 * 100f) + 1f)) + "%";
                                 for (int num5 = 0; num5 < Main.maxTilesY; num5++)
                                 {
                                     Main.tile[j, num5].active = reader.ReadBoolean();
@@ -9852,7 +9892,7 @@
                                     {
                                         num17 = num16;
                                     }
-                                    Main.statusText = "Settling liquids: " + ((int) (((num17 * 100f) / 2f) + 50f)) + "%";
+                                    //Main.statusText = "Settling liquids: " + ((int) (((num17 * 100f) / 2f) + 50f)) + "%";
                                     Liquid.UpdateLiquid();
                                 }
                                 Liquid.quickSettle = false;
@@ -9935,7 +9975,7 @@
                     dMaxY = WorldGen.dungeonY;
                 }
                 num3--;
-                Main.statusText = "Creating dungeon: " + ((int) (((num4 - num3) / num4) * 60f)) + "%";
+                //Main.statusText = "Creating dungeon: " + ((int) (((num4 - num3) / num4) * 60f)) + "%";
                 if (num5 > 0)
                 {
                     num5--;
@@ -10001,7 +10041,7 @@
                 DungeonStairs(WorldGen.dungeonX, WorldGen.dungeonY, tileType, wallType);
             }
             DungeonEnt(WorldGen.dungeonX, WorldGen.dungeonY, tileType, wallType);
-            Main.statusText = "Creating dungeon: 65%";
+            //Main.statusText = "Creating dungeon: 65%";
             for (int j = 0; j < numDRooms; j++)
             {
                 for (int num14 = dRoomL[j]; num14 <= dRoomR[j]; num14++)
@@ -10047,7 +10087,7 @@
                     }
                 }
             }
-            Main.statusText = "Creating dungeon: 70%";
+            //Main.statusText = "Creating dungeon: 70%";
             int num18 = 0;
             int num19 = 0x3e8;
             int num20 = 0;
@@ -10107,7 +10147,7 @@
             num18 = 0;
             num19 = 0x3e8;
             num20 = 0;
-            Main.statusText = "Creating dungeon: 75%";
+            //Main.statusText = "Creating dungeon: 75%";
             while (num20 < (Main.maxTilesX / 100))
             {
                 num18++;
@@ -10161,7 +10201,7 @@
                     num20++;
                 }
             }
-            Main.statusText = "Creating dungeon: 80%";
+            //Main.statusText = "Creating dungeon: 80%";
             for (int k = 0; k < numDDoors; k++)
             {
                 int num32 = DDoorX[k] - 10;
@@ -10305,7 +10345,7 @@
                     Main.tile[num48 + 1, num49].type = (byte) tileType;
                 }
             }
-            Main.statusText = "Creating dungeon: 85%";
+            //Main.statusText = "Creating dungeon: 85%";
             for (int m = 0; m < numDPlats; m++)
             {
                 int num56 = DPlatX[m];
@@ -10395,7 +10435,7 @@
                     }
                 }
             }
-            Main.statusText = "Creating dungeon: 90%";
+            //Main.statusText = "Creating dungeon: 90%";
             num18 = 0;
             num19 = 0x3e8;
             num20 = 0;
@@ -10510,7 +10550,7 @@
                     num20++;
                 }
             }
-            Main.statusText = "Creating dungeon: 95%";
+            //Main.statusText = "Creating dungeon: 95%";
             int num82 = 0;
             for (int n = 0; n < numDRooms; n++)
             {
@@ -10750,11 +10790,7 @@
                 }
             }
             stopDrops = false;
-            if (Main.netMode == 0)
-            {
-                Main.NewText("A meteorite has landed!", 50, 0xff, 130);
-            }
-            else if (Main.netMode == 2)
+            if (Main.netMode == 2)
             {
                 NetMessage.SendData(0x19, -1, -1, "A meteorite has landed!", 0xff, 50f, 255f, 130f, 0);
             }
@@ -11335,66 +11371,100 @@
         public static void Place3x3(int x, int y, int type)
         {
             bool flag = true;
-            for (int i = x - 1; i < (x + 2); i++)
+            int num = 0;
+            if (type == 0x6a)
             {
-                for (int j = y; j < (y + 3); j++)
+                num = -2;
+                for (int i = x - 1; i < (x + 2); i++)
                 {
-                    if (Main.tile[i, j] == null)
+                    for (int k = y - 2; k < (y + 1); k++)
                     {
-                        Main.tile[i, j] = new Tile();
+                        if (Main.tile[i, k] == null)
+                        {
+                            Main.tile[i, k] = new Tile();
+                        }
+                        if (Main.tile[i, k].active)
+                        {
+                            flag = false;
+                        }
                     }
-                    if (Main.tile[i, j].active)
+                }
+                for (int j = x - 1; j < (x + 2); j++)
+                {
+                    if (Main.tile[j, y + 1] == null)
+                    {
+                        Main.tile[j, y + 1] = new Tile();
+                    }
+                    if (!Main.tile[j, y + 1].active || !Main.tileSolid[Main.tile[j, y + 1].type])
                     {
                         flag = false;
+                        break;
                     }
                 }
             }
-            if (Main.tile[x, y - 1] == null)
+            else
             {
-                Main.tile[x, y - 1] = new Tile();
-            }
-            if ((!Main.tile[x, y - 1].active || !Main.tileSolid[Main.tile[x, y - 1].type]) || Main.tileSolidTop[Main.tile[x, y - 1].type])
-            {
-                flag = false;
+                for (int m = x - 1; m < (x + 2); m++)
+                {
+                    for (int n = y; n < (y + 3); n++)
+                    {
+                        if (Main.tile[m, n] == null)
+                        {
+                            Main.tile[m, n] = new Tile();
+                        }
+                        if (Main.tile[m, n].active)
+                        {
+                            flag = false;
+                        }
+                    }
+                }
+                if (Main.tile[x, y - 1] == null)
+                {
+                    Main.tile[x, y - 1] = new Tile();
+                }
+                if ((!Main.tile[x, y - 1].active || !Main.tileSolid[Main.tile[x, y - 1].type]) || Main.tileSolidTop[Main.tile[x, y - 1].type])
+                {
+                    flag = false;
+                }
             }
             if (flag)
             {
-                Main.tile[x - 1, y].active = true;
-                Main.tile[x - 1, y].frameY = 0;
-                Main.tile[x - 1, y].frameX = 0;
-                Main.tile[x - 1, y].type = (byte) type;
-                Main.tile[x, y].active = true;
-                Main.tile[x, y].frameY = 0;
-                Main.tile[x, y].frameX = 0x12;
-                Main.tile[x, y].type = (byte) type;
-                Main.tile[x + 1, y].active = true;
-                Main.tile[x + 1, y].frameY = 0;
-                Main.tile[x + 1, y].frameX = 0x24;
-                Main.tile[x + 1, y].type = (byte) type;
-                Main.tile[x - 1, y + 1].active = true;
-                Main.tile[x - 1, y + 1].frameY = 0x12;
-                Main.tile[x - 1, y + 1].frameX = 0;
-                Main.tile[x - 1, y + 1].type = (byte) type;
-                Main.tile[x, y + 1].active = true;
-                Main.tile[x, y + 1].frameY = 0x12;
-                Main.tile[x, y + 1].frameX = 0x12;
-                Main.tile[x, y + 1].type = (byte) type;
-                Main.tile[x + 1, y + 1].active = true;
-                Main.tile[x + 1, y + 1].frameY = 0x12;
-                Main.tile[x + 1, y + 1].frameX = 0x24;
-                Main.tile[x + 1, y + 1].type = (byte) type;
-                Main.tile[x - 1, y + 2].active = true;
-                Main.tile[x - 1, y + 2].frameY = 0x24;
-                Main.tile[x - 1, y + 2].frameX = 0;
-                Main.tile[x - 1, y + 2].type = (byte) type;
-                Main.tile[x, y + 2].active = true;
-                Main.tile[x, y + 2].frameY = 0x24;
-                Main.tile[x, y + 2].frameX = 0x12;
-                Main.tile[x, y + 2].type = (byte) type;
-                Main.tile[x + 1, y + 2].active = true;
-                Main.tile[x + 1, y + 2].frameY = 0x24;
-                Main.tile[x + 1, y + 2].frameX = 0x24;
-                Main.tile[x + 1, y + 2].type = (byte) type;
+                Main.tile[x - 1, y + num].active = true;
+                Main.tile[x - 1, y + num].frameY = 0;
+                Main.tile[x - 1, y + num].frameX = 0;
+                Main.tile[x - 1, y + num].type = (byte) type;
+                Main.tile[x, y + num].active = true;
+                Main.tile[x, y + num].frameY = 0;
+                Main.tile[x, y + num].frameX = 0x12;
+                Main.tile[x, y + num].type = (byte) type;
+                Main.tile[x + 1, y + num].active = true;
+                Main.tile[x + 1, y + num].frameY = 0;
+                Main.tile[x + 1, y + num].frameX = 0x24;
+                Main.tile[x + 1, y + num].type = (byte) type;
+                Main.tile[x - 1, (y + 1) + num].active = true;
+                Main.tile[x - 1, (y + 1) + num].frameY = 0x12;
+                Main.tile[x - 1, (y + 1) + num].frameX = 0;
+                Main.tile[x - 1, (y + 1) + num].type = (byte) type;
+                Main.tile[x, (y + 1) + num].active = true;
+                Main.tile[x, (y + 1) + num].frameY = 0x12;
+                Main.tile[x, (y + 1) + num].frameX = 0x12;
+                Main.tile[x, (y + 1) + num].type = (byte) type;
+                Main.tile[x + 1, (y + 1) + num].active = true;
+                Main.tile[x + 1, (y + 1) + num].frameY = 0x12;
+                Main.tile[x + 1, (y + 1) + num].frameX = 0x24;
+                Main.tile[x + 1, (y + 1) + num].type = (byte) type;
+                Main.tile[x - 1, (y + 2) + num].active = true;
+                Main.tile[x - 1, (y + 2) + num].frameY = 0x24;
+                Main.tile[x - 1, (y + 2) + num].frameX = 0;
+                Main.tile[x - 1, (y + 2) + num].type = (byte) type;
+                Main.tile[x, (y + 2) + num].active = true;
+                Main.tile[x, (y + 2) + num].frameY = 0x24;
+                Main.tile[x, (y + 2) + num].frameX = 0x12;
+                Main.tile[x, (y + 2) + num].type = (byte) type;
+                Main.tile[x + 1, (y + 2) + num].active = true;
+                Main.tile[x + 1, (y + 2) + num].frameY = 0x24;
+                Main.tile[x + 1, (y + 2) + num].frameX = 0x24;
+                Main.tile[x + 1, (y + 2) + num].type = (byte) type;
             }
         }
 
@@ -11968,7 +12038,7 @@
 
         public static bool PlaceTile(int i, int j, int type, bool mute = false, bool forced = false, int plr = -1, int style = 0)
         {
-            if (type >= 0x6a)
+            if (type >= 0x6b)
             {
                 return false;
             }
@@ -12174,7 +12244,7 @@
                         SquareTileFrame(i, j, true);
                     }
                 }
-                else if (((type == 0x22) || (type == 0x23)) || (type == 0x24))
+                else if (((type == 0x22) || (type == 0x23)) || ((type == 0x24) || (type == 0x6a)))
                 {
                     Place3x3(i, j, type);
                     SquareTileFrame(i, j, true);
@@ -12335,7 +12405,15 @@
                             }
                             if ((Main.tile[k, m].wall > 0) && (Main.tile[k, m].wall != type))
                             {
-                                return;
+                                bool flag = false;
+                                if (((Main.tile[i, j].wall == 0) && ((type == 2) || (type == 0x10))) && ((Main.tile[k, m].wall == 2) || (Main.tile[k, m].wall == 0x10)))
+                                {
+                                    flag = true;
+                                }
+                                if (!flag)
+                                {
+                                    return;
+                                }
                             }
                         }
                     }
@@ -12634,6 +12712,264 @@
             }
         }
 
+        public static void RealsaveWorld(bool resetTime = false)
+        {
+            if (Main.worldName == "")
+            {
+                Main.worldName = "World";
+            }
+            if (!saveLock)
+            {
+                saveLock = true;
+                lock (padlock)
+                {
+                    try
+                    {
+                        Directory.CreateDirectory(Main.WorldPath);
+                    }
+                    catch
+                    {
+                    }
+                    if (!Main.skipMenu)
+                    {
+                        bool dayTime = Main.dayTime;
+                        tempTime = Main.time;
+                        tempMoonPhase = Main.moonPhase;
+                        tempBloodMoon = Main.bloodMoon;
+                        if (resetTime)
+                        {
+                            dayTime = true;
+                            tempTime = 13500.0;
+                            tempMoonPhase = 0;
+                            tempBloodMoon = false;
+                        }
+                        if (Main.worldPathName != null)
+                        {
+                            new Stopwatch().Start();
+                            string path = Main.worldPathName + ".sav";
+                            string[] wldList = Directory.GetFiles(Main.WorldPath, "*.wld");
+                            string[] bakList = Directory.GetFiles(Main.WorldPath, "*.bak");
+                            using (FileStream stream = new FileStream(path, FileMode.Create))
+                            {
+                                    using (BinaryWriter writer = new BinaryWriter(stream))
+                                    {
+                                        writer.Write(Main.curRelease);
+                                        writer.Write(Main.worldName);
+                                        writer.Write(Main.worldID);
+                                        writer.Write((int)Main.leftWorld);
+                                        writer.Write((int)Main.rightWorld);
+                                        writer.Write((int)Main.topWorld);
+                                        writer.Write((int)Main.bottomWorld);
+                                        writer.Write(Main.maxTilesY);
+                                        writer.Write(Main.maxTilesX);
+                                        writer.Write(Main.spawnTileX);
+                                        writer.Write(Main.spawnTileY);
+                                        writer.Write(Main.worldSurface);
+                                        writer.Write(Main.rockLayer);
+                                        writer.Write(tempTime);
+                                        writer.Write(dayTime);
+                                        writer.Write(tempMoonPhase);
+                                        writer.Write(tempBloodMoon);
+                                        writer.Write(Main.dungeonX);
+                                        writer.Write(Main.dungeonY);
+                                        writer.Write(NPC.downedBoss1);
+                                        writer.Write(NPC.downedBoss2);
+                                        writer.Write(NPC.downedBoss3);
+                                        writer.Write(shadowOrbSmashed);
+                                        writer.Write(spawnMeteor);
+                                        writer.Write((byte)shadowOrbCount);
+                                        writer.Write(Main.invasionDelay);
+                                        writer.Write(Main.invasionSize);
+                                        writer.Write(Main.invasionType);
+                                        writer.Write(Main.invasionX);
+                                        Main.statusText = "Saving world data.";
+                                        for (int i = 0; i < Main.maxTilesX; i++)
+                                        {
+                                            float num2 = ((float)i) / ((float)Main.maxTilesX);
+                                            for (int n = 0; n < Main.maxTilesY; n++)
+                                            {
+                                                Tile tile = (Tile)Main.tile[i, n].Clone();
+                                                writer.Write(tile.active);
+                                                if (tile.active)
+                                                {
+                                                    writer.Write(tile.type);
+                                                    if (Main.tileFrameImportant[tile.type])
+                                                    {
+                                                        writer.Write(tile.frameX);
+                                                        writer.Write(tile.frameY);
+                                                    }
+                                                }
+                                                writer.Write(tile.lighted);
+                                                if (Main.tile[i, n].wall > 0)
+                                                {
+                                                    writer.Write(true);
+                                                    writer.Write(tile.wall);
+                                                }
+                                                else
+                                                {
+                                                    writer.Write(false);
+                                                }
+                                                if (tile.liquid > 0)
+                                                {
+                                                    writer.Write(true);
+                                                    writer.Write(tile.liquid);
+                                                    writer.Write(tile.lava);
+                                                }
+                                                else
+                                                {
+                                                    writer.Write(false);
+                                                }
+                                            }
+                                        }
+                                        for (int j = 0; j < 0x3e8; j++)
+                                        {
+                                            if (Main.chest[j] == null)
+                                            {
+                                                writer.Write(false);
+                                            }
+                                            else
+                                            {
+                                                Chest chest = (Chest)Main.chest[j].Clone();
+                                                writer.Write(true);
+                                                writer.Write(chest.x);
+                                                writer.Write(chest.y);
+                                                for (int num5 = 0; num5 < Chest.maxItems; num5++)
+                                                {
+                                                    if (chest.item[num5].type == 0)
+                                                    {
+                                                        chest.item[num5].stack = 0;
+                                                    }
+                                                    writer.Write((byte)chest.item[num5].stack);
+                                                    if (chest.item[num5].stack > 0)
+                                                    {
+                                                        writer.Write(chest.item[num5].name);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        for (int k = 0; k < 0x3e8; k++)
+                                        {
+                                            if ((Main.sign[k] == null) || (Main.sign[k].text == null))
+                                            {
+                                                writer.Write(false);
+                                            }
+                                            else
+                                            {
+                                                Sign sign = (Sign)Main.sign[k].Clone();
+                                                writer.Write(true);
+                                                writer.Write(sign.text);
+                                                writer.Write(sign.x);
+                                                writer.Write(sign.y);
+                                            }
+                                        }
+                                        for (int m = 0; m < 0x3e8; m++)
+                                        {
+                                            NPC npc = (NPC)Main.npc[m].Clone();
+                                            if (npc.active && npc.townNPC)
+                                            {
+                                                writer.Write(true);
+                                                writer.Write(npc.name);
+                                                writer.Write(npc.position.X);
+                                                writer.Write(npc.position.Y);
+                                                writer.Write(npc.homeless);
+                                                writer.Write(npc.homeTileX);
+                                                writer.Write(npc.homeTileY);
+                                            }
+                                        }
+                                        writer.Write(false);
+                                        writer.Write(true);
+                                        writer.Write(Main.worldName);
+                                        writer.Write(Main.worldID);
+                                        writer.Close();
+                                        stream.Close();
+                                        DirectoryInfo di = new DirectoryInfo(Main.WorldPath);
+                                        if (File.Exists(Main.worldPathName))
+                                        {
+                                            Main.statusText = "Backing up world file...";
+                                            string destFileName = Main.worldPathName + ".bak";
+                                            File.Copy(Main.worldPathName, destFileName, true);
+                                            foreach (FileInfo fi in di.GetFiles(destFileName + ".bak"))
+                                            {
+                                                WorldGen.Compress(fi);
+                                            }
+                                        }
+                                        File.Copy(path, Main.worldPathName, true);
+                                        File.Delete(path);
+                                        foreach (FileInfo fi in di.GetFiles("*.wld"))
+                                        {
+                                            WorldGen.Compress(fi);
+
+                                        }
+                                    }
+                            }
+                            saveLock = false;
+                            foreach (string f in wldList)
+                                File.Delete(f);
+                            foreach (string g in bakList)
+                                File.Delete(g);
+                        }
+                    }
+                }
+            }
+        }
+        public static void Compress(FileInfo fi)
+        {
+            // Get the stream of the source file.
+            using (FileStream inFile = fi.OpenRead())
+            {
+                // Prevent compressing hidden and 
+                // already compressed files.
+                if ((File.GetAttributes(fi.FullName)
+                    & FileAttributes.Hidden)
+                    != FileAttributes.Hidden & fi.Extension != ".gz")
+                {
+                    // Create the compressed file.
+                    using (FileStream outFile =
+                                File.Create(fi.FullName + ".gz"))
+                    {
+                        using (GZipStream Compress =
+                            new GZipStream(outFile,
+                            CompressionMode.Compress))
+                        {
+                            // Copy the source file into 
+                            // the compression stream.
+                            inFile.CopyTo(Compress);
+
+                            //Console.WriteLine("Compressed {0} from {1} to {2} bytes.", fi.Name, fi.Length.ToString(), outFile.Length.ToString());
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void Decompress(FileInfo fi)
+        {
+            // Get the stream of the source file.
+            using (FileStream inFile = fi.OpenRead())
+            {
+                // Get original file extension, for example
+                // "doc" from report.doc.gz.
+                string curFile = fi.FullName;
+                string origName = curFile.Remove(curFile.Length -
+                        fi.Extension.Length);
+
+                //Create the decompressed file.
+                using (FileStream outFile = File.Create(origName))
+                {
+                    using (GZipStream Decompress = new GZipStream(inFile,
+                            CompressionMode.Decompress))
+                    {
+                        // Copy the decompression stream 
+                        // into the output file.
+                        Decompress.CopyTo(outFile);
+
+                        //Console.WriteLine("Decompressed: {0}", fi.Name);
+
+                    }
+                }
+            }
+        }
+
         private static void resetGen()
         {
             mudWall = false;
@@ -12682,17 +13018,9 @@
         {
             Main.menuMode = 10;
             Main.gameMenu = true;
-            Player.SavePlayer(Main.player[Main.myPlayer], Main.playerPathName);
-            if (Main.netMode == 0)
-            {
-                saveWorld(false);
-                Main.PlaySound(10, -1, -1, 1);
-            }
-            else
-            {
-                Netplay.disconnect = true;
-                Main.netMode = 0;
-            }
+            Player.SavePlayer(Main.player[Main.myPlayer], Main.playerPathName);            
+            Netplay.disconnect = true;
+            Main.netMode = 0;
             Main.menuMode = 0;
         }
 
@@ -12708,182 +13036,9 @@
 
         public static void saveWorld(bool resetTime = false)
         {
-            if (Main.worldName == "")
+            if (!WorldHooks.OnSaveWorld(resetTime))
             {
-                Main.worldName = "World";
-            }
-            if (!saveLock)
-            {
-                saveLock = true;
-                lock (padlock)
-                {
-                    try
-                    {
-                        Directory.CreateDirectory(Main.WorldPath);
-                    }
-                    catch
-                    {
-                    }
-                    if (!Main.skipMenu)
-                    {
-                        bool dayTime = Main.dayTime;
-                        tempTime = Main.time;
-                        tempMoonPhase = Main.moonPhase;
-                        tempBloodMoon = Main.bloodMoon;
-                        if (resetTime)
-                        {
-                            dayTime = true;
-                            tempTime = 13500.0;
-                            tempMoonPhase = 0;
-                            tempBloodMoon = false;
-                        }
-                        if (Main.worldPathName != null)
-                        {
-                            new Stopwatch().Start();
-                            string path = Main.worldPathName + ".sav";
-                            using (FileStream stream = new FileStream(path, FileMode.Create))
-                            {
-                                using (BinaryWriter writer = new BinaryWriter(stream))
-                                {
-                                    writer.Write(Main.curRelease);
-                                    writer.Write(Main.worldName);
-                                    writer.Write(Main.worldID);
-                                    writer.Write((int) Main.leftWorld);
-                                    writer.Write((int) Main.rightWorld);
-                                    writer.Write((int) Main.topWorld);
-                                    writer.Write((int) Main.bottomWorld);
-                                    writer.Write(Main.maxTilesY);
-                                    writer.Write(Main.maxTilesX);
-                                    writer.Write(Main.spawnTileX);
-                                    writer.Write(Main.spawnTileY);
-                                    writer.Write(Main.worldSurface);
-                                    writer.Write(Main.rockLayer);
-                                    writer.Write(tempTime);
-                                    writer.Write(dayTime);
-                                    writer.Write(tempMoonPhase);
-                                    writer.Write(tempBloodMoon);
-                                    writer.Write(Main.dungeonX);
-                                    writer.Write(Main.dungeonY);
-                                    writer.Write(NPC.downedBoss1);
-                                    writer.Write(NPC.downedBoss2);
-                                    writer.Write(NPC.downedBoss3);
-                                    writer.Write(shadowOrbSmashed);
-                                    writer.Write(spawnMeteor);
-                                    writer.Write((byte) shadowOrbCount);
-                                    writer.Write(Main.invasionDelay);
-                                    writer.Write(Main.invasionSize);
-                                    writer.Write(Main.invasionType);
-                                    writer.Write(Main.invasionX);
-                                    for (int i = 0; i < Main.maxTilesX; i++)
-                                    {
-                                        float num2 = ((float) i) / ((float) Main.maxTilesX);
-                                        Main.statusText = "Saving world data: " + ((int) ((num2 * 100f) + 1f)) + "%";
-                                        for (int n = 0; n < Main.maxTilesY; n++)
-                                        {
-                                            Tile tile = (Tile) Main.tile[i, n].Clone();
-                                            writer.Write(tile.active);
-                                            if (tile.active)
-                                            {
-                                                writer.Write(tile.type);
-                                                if (Main.tileFrameImportant[tile.type])
-                                                {
-                                                    writer.Write(tile.frameX);
-                                                    writer.Write(tile.frameY);
-                                                }
-                                            }
-                                            writer.Write(tile.lighted);
-                                            if (Main.tile[i, n].wall > 0)
-                                            {
-                                                writer.Write(true);
-                                                writer.Write(tile.wall);
-                                            }
-                                            else
-                                            {
-                                                writer.Write(false);
-                                            }
-                                            if (tile.liquid > 0)
-                                            {
-                                                writer.Write(true);
-                                                writer.Write(tile.liquid);
-                                                writer.Write(tile.lava);
-                                            }
-                                            else
-                                            {
-                                                writer.Write(false);
-                                            }
-                                        }
-                                    }
-                                    for (int j = 0; j < 0x3e8; j++)
-                                    {
-                                        if (Main.chest[j] == null)
-                                        {
-                                            writer.Write(false);
-                                        }
-                                        else
-                                        {
-                                            Chest chest = (Chest) Main.chest[j].Clone();
-                                            writer.Write(true);
-                                            writer.Write(chest.x);
-                                            writer.Write(chest.y);
-                                            for (int num5 = 0; num5 < Chest.maxItems; num5++)
-                                            {
-                                                writer.Write((byte) chest.item[num5].stack);
-                                                if (chest.item[num5].stack > 0)
-                                                {
-                                                    writer.Write(chest.item[num5].name);
-                                                }
-                                            }
-                                        }
-                                    }
-                                    for (int k = 0; k < 0x3e8; k++)
-                                    {
-                                        if ((Main.sign[k] == null) || (Main.sign[k].text == null))
-                                        {
-                                            writer.Write(false);
-                                        }
-                                        else
-                                        {
-                                            Sign sign = (Sign) Main.sign[k].Clone();
-                                            writer.Write(true);
-                                            writer.Write(sign.text);
-                                            writer.Write(sign.x);
-                                            writer.Write(sign.y);
-                                        }
-                                    }
-                                    for (int m = 0; m < 0x3e8; m++)
-                                    {
-                                        NPC npc = (NPC) Main.npc[m].Clone();
-                                        if (npc.active && npc.townNPC)
-                                        {
-                                            writer.Write(true);
-                                            writer.Write(npc.name);
-                                            writer.Write(npc.position.X);
-                                            writer.Write(npc.position.Y);
-                                            writer.Write(npc.homeless);
-                                            writer.Write(npc.homeTileX);
-                                            writer.Write(npc.homeTileY);
-                                        }
-                                    }
-                                    writer.Write(false);
-                                    writer.Write(true);
-                                    writer.Write(Main.worldName);
-                                    writer.Write(Main.worldID);
-                                    writer.Close();
-                                    stream.Close();
-                                    if (File.Exists(Main.worldPathName))
-                                    {
-                                        Main.statusText = "Backing up world file...";
-                                        string destFileName = Main.worldPathName + ".bak";
-                                        File.Copy(Main.worldPathName, destFileName, true);
-                                    }
-                                    File.Copy(path, Main.worldPathName, true);
-                                    File.Delete(path);
-                                }
-                            }
-                            saveLock = false;
-                        }
-                    }
-                }
+                RealsaveWorld(resetTime);
             }
         }
 
@@ -13348,11 +13503,7 @@
                             Main.npc[num12].direction = -1;
                         }
                         Main.npc[num12].netUpdate = true;
-                        if (Main.netMode == 0)
-                        {
-                            Main.NewText(Main.npc[num12].name + " has arrived!", 50, 0x7d, 0xff);
-                        }
-                        else if (Main.netMode == 2)
+                        if (Main.netMode == 2)
                         {
                             NetMessage.SendData(0x19, -1, -1, Main.npc[num12].name + " has arrived!", 0xff, 50f, 125f, 255f, 0);
                         }
@@ -13449,7 +13600,7 @@
             roomY1 = y;
             roomY2 = y;
             numRoomTiles = 0;
-            for (int i = 0; i < 0x6a; i++)
+            for (int i = 0; i < 0x6b; i++)
             {
                 houseTile[i] = false;
             }
@@ -13640,7 +13791,7 @@
                                         {
                                             KillTile(num12 + 1, num13 + 1, false, false, false);
                                         }
-                                        if (Main.netMode != 1)
+                                        if ((Main.netMode != 1) && !noTileActions)
                                         {
                                             if (type == 12)
                                             {
@@ -13706,11 +13857,7 @@
                                                     {
                                                         newText = "Screams echo around you...";
                                                     }
-                                                    if (Main.netMode == 0)
-                                                    {
-                                                        Main.NewText(newText, 50, 0xff, 130);
-                                                    }
-                                                    else if (Main.netMode == 2)
+                                                    if (Main.netMode == 2)
                                                     {
                                                         NetMessage.SendData(0x19, -1, -1, newText, 0xff, 50f, 255f, 130f, 0);
                                                     }
@@ -14030,7 +14177,7 @@
                                     }
                                     return;
                                 }
-                                if (((type == 0x22) || (type == 0x23)) || (type == 0x24))
+                                if (((type == 0x22) || (type == 0x23)) || ((type == 0x24) || (type == 0x6a)))
                                 {
                                     Check3x3(i, j, (byte) type);
                                     return;
@@ -17709,36 +17856,7 @@
                         }
                         if (!noTileActions && (type == 0x35))
                         {
-                            if (Main.netMode == 0)
-                            {
-                                if ((Main.tile[i, j + 1] != null) && !Main.tile[i, j + 1].active)
-                                {
-                                    bool flag3 = true;
-                                    if (Main.tile[i, j - 1].active && (Main.tile[i, j - 1].type == 0x15))
-                                    {
-                                        flag3 = false;
-                                    }
-                                    if (flag3)
-                                    {
-                                        int num34 = 0x1f;
-                                        switch (type)
-                                        {
-                                            case 0x3b:
-                                                num34 = 0x27;
-                                                break;
-
-                                            case 0x39:
-                                                num34 = 40;
-                                                break;
-                                        }
-                                        Main.tile[i, j].active = false;
-                                        int num35 = Projectile.NewProjectile((float) ((i * 0x10) + 8), (float) ((j * 0x10) + 8), 0f, 0.41f, num34, 10, 0f, Main.myPlayer);
-                                        Main.projectile[num35].ai[0] = 1f;
-                                        SquareTileFrame(i, j, true);
-                                    }
-                                }
-                            }
-                            else if (((Main.netMode == 2) && (Main.tile[i, j + 1] != null)) && !Main.tile[i, j + 1].active)
+                            if (((Main.netMode == 2) && (Main.tile[i, j + 1] != null)) && !Main.tile[i, j + 1].active)
                             {
                                 bool flag4 = true;
                                 if (Main.tile[i, j - 1].active && (Main.tile[i, j - 1].type == 0x15))
@@ -18752,6 +18870,38 @@
                             num4 = wall;
                             num5 = wall;
                         }
+                    }
+                    if (num7 > 0)
+                    {
+                        num7 = wall;
+                    }
+                    if (num6 > 0)
+                    {
+                        num6 = wall;
+                    }
+                    if (num8 > 0)
+                    {
+                        num8 = wall;
+                    }
+                    if (num2 > 0)
+                    {
+                        num2 = wall;
+                    }
+                    if (num > 0)
+                    {
+                        num = wall;
+                    }
+                    if (num3 > 0)
+                    {
+                        num3 = wall;
+                    }
+                    if (num4 > 0)
+                    {
+                        num4 = wall;
+                    }
+                    if (num5 > 0)
+                    {
+                        num5 = wall;
                     }
                     int wallFrameNumber = 0;
                     if (resetFrame)

@@ -2,6 +2,7 @@
 {
     using System;
     using System.IO;
+    using TerrariaAPI;
 
     internal class ProgramServer
     {
@@ -88,7 +89,9 @@
                         Game.loadLib(path);
                     }
                 }
+                Program.Initialize(Game);
                 Game.DedServ();
+                Program.DeInitialize();
             }
             catch (Exception exception)
             {

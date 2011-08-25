@@ -2,6 +2,7 @@
 {
     using System;
     using System.Net.Sockets;
+    using TerrariaAPI.Hooks;
 
     public class ServerSock
     {
@@ -35,6 +36,7 @@
 
         public void Reset()
         {
+            ServerHooks.OnSocketReset(this);
             for (int i = 0; i < Main.maxSectionsX; i++)
             {
                 for (int j = 0; j < Main.maxSectionsY; j++)
