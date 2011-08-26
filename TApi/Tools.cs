@@ -146,7 +146,7 @@ namespace TShockAPI
             TSPlayer.Server.SendMessage(log, color);
             foreach (TSPlayer player in TShock.Players)
             {
-                if (player != null && player.Active && player.Group.HasPermission("logs") && player.DisplayLogs && TShock.Config.DisableSpewLogs == false)
+                if (player != null && player.Active && player.Group.HasPermission(Permissions.logs) && player.DisplayLogs && TShock.Config.DisableSpewLogs == false)
                     player.SendMessage(log, color);
             }
         }
@@ -306,6 +306,30 @@ namespace TShockAPI
             return found;
         }
 
+        public static string GetBuffName(int id)
+        {
+            return (id > 0 && id < Main.maxBuffs) ? Main.buffName[id] : "null";
+        }
+        public static string GetBuffDescription(int id)
+        {
+            return (id > 0 && id < Main.maxBuffs) ? Main.buffTip[id] : "null";
+        }
+        public static List<int> GetBuffByName(string name)
+        {
+            for (int i = 1; i < Main.maxBuffs; i++)
+            {
+                if (Main.buffName[i].ToLower() == name)
+                    return new List<int> { i };
+            }
+            var found = new List<int>();
+            for (int i = 1; i < Main.maxBuffs; i++)
+            {
+                if (Main.buffName[i].ToLower().StartsWith(name.ToLower()))
+                    found.Add(i);
+            }
+            return found;
+        }
+
         /// <summary>
         /// Kicks all player from the server without checking for immunetokick permission.
         /// </summary>
@@ -332,7 +356,7 @@ namespace TShockAPI
             if (!player.ConnectionAlive)
                 return;
             player.Disconnect(reason);
-            Log.Info(string.Format("{0} was force kicked for : {1}", player.IP, reason));
+            Log.ConsoleInfo(string.Format("{0} was force kicked for : {1}", player.IP, reason));
         }
 
         /// <summary>
@@ -344,11 +368,11 @@ namespace TShockAPI
         {
             if (!player.ConnectionAlive)
                 return true;
-            if (!player.Group.HasPermission("immunetokick"))
+            if (!player.Group.HasPermission(Permissions.immunetokick))
             {
                 string playerName = player.Name;
                 player.Disconnect(string.Format("Kicked: {0}", reason));
-                Log.Info(string.Format("Kicked {0} for : {1}", playerName, reason));
+                Log.ConsoleInfo(string.Format("Kicked {0} for : {1}", playerName, reason));
                 if (adminUserName.Length == 0)
                     Broadcast(string.Format("{0} was kicked for {1}", playerName, reason.ToLower()));
                 else
@@ -367,13 +391,13 @@ namespace TShockAPI
         {
             if (!player.ConnectionAlive)
                 return true;
-            if (!player.Group.HasPermission("immunetoban"))
+            if (!player.Group.HasPermission(Permissions.immunetoban))
             {
                 string ip = player.IP;
                 string playerName = player.Name;
                 TShock.Bans.AddBan(ip, playerName, reason);
                 player.Disconnect(string.Format("Banned: {0}", reason));
-                Log.Info(string.Format("Banned {0} for : {1}", playerName, reason));
+                Log.ConsoleInfo(string.Format("Banned {0} for : {1}", playerName, reason));
                 if (adminUserName.Length == 0)
                     Broadcast(string.Format("{0} was banned for {1}", playerName, reason.ToLower()));
                 else
@@ -390,17 +414,17 @@ namespace TShockAPI
 
         public static bool HandleGriefer(TSPlayer player, string reason)
         {
-            return HandleBadPlayer(player, "ignoregriefdetection", TShock.Config.BanGriefers, TShock.Config.KickGriefers, reason);
+            return HandleBadPlayer(player, Permissions.ignoregriefdetection, TShock.Config.BanGriefers, TShock.Config.KickGriefers, reason);
         }
 
         public static bool HandleTntUser(TSPlayer player, string reason)
         {
-            return HandleBadPlayer(player, "ignoregriefdetection", TShock.Config.BanKillTileAbusers, TShock.Config.KickKillTileAbusers, reason);
+            return HandleBadPlayer(player, Permissions.ignoregriefdetection, TShock.Config.BanKillTileAbusers, TShock.Config.KickKillTileAbusers, reason);
         }
 
         public static bool HandleExplosivesUser(TSPlayer player, string reason)
         {
-            return HandleBadPlayer(player, "ignoregriefdetection", TShock.Config.BanExplosives, TShock.Config.KickExplosives, reason);
+            return HandleBadPlayer(player, Permissions.ignoregriefdetection, TShock.Config.BanExplosives, TShock.Config.KickExplosives, reason);
         }
 
         private static bool HandleBadPlayer(TSPlayer player, string overridePermission, bool ban, bool kick, string reason)
@@ -483,10 +507,17 @@ namespace TShockAPI
         /// <param name="hostname">string ip</param>
         public static string GetIPv4Address(string hostname)
         {
-            //Get the ipv4 address from GetHostAddresses, if an ip is passed it will return that ip
-            var ip = Dns.GetHostAddresses(hostname).FirstOrDefault(i => i.AddressFamily == AddressFamily.InterNetwork);
-            //if the dns query was successful then return it, otherwise return an empty string
-            return ip != null ? ip.ToString() : "";
+            try
+            {
+                //Get the ipv4 address from GetHostAddresses, if an ip is passed it will return that ip
+                var ip = Dns.GetHostAddresses(hostname).FirstOrDefault(i => i.AddressFamily == AddressFamily.InterNetwork);
+                //if the dns query was successful then return it, otherwise return an empty string
+                return ip != null ? ip.ToString() : "";
+            }
+            catch (SocketException)
+            {
+            }
+            return "";
         }
 
         public static string HashAlgo = "md5";

@@ -23,6 +23,7 @@ using Microsoft.Xna.Framework;
 using Toaria;
 using TerrariaAPI;
 using TShockAPI.Net;
+using XNAHelpers;
 
 namespace TShockAPI
 {
@@ -38,9 +39,9 @@ namespace TShockAPI
         public bool ReceivedInfo { get; set; }
         public int Index { get; protected set; }
         public DateTime LastPvpChange { get; protected set; }
-        public Rectangle TempArea;
-        public bool AwaitingTemp1 { get; set; }
-        public bool AwaitingTemp2 { get; set; }
+        public Point[] TempPoints = new Point[2];
+        public int AwaitingTempPoint { get; set; }
+        public bool AwaitingName { get; set; }
         public DateTime LastExplosive { get; set; }
         public DateTime LastTileChangeNotify { get; set; }
         public bool InitSpawn;
@@ -56,6 +57,9 @@ namespace TShockAPI
         public bool HasBeenNaggedAboutLoggingIn;
         public bool TpLock = false;
         Player FakePlayer;
+        public bool RequestedSection = false;
+        public DateTime LastDeath { get; set; }
+        public bool ForceSpawn = false;
 
         public bool RealPlayer
         {
@@ -157,31 +161,41 @@ namespace TShockAPI
             SendData(PacketTypes.Disconnect, reason);
         }
 
-        void SendTeleport(int tilex, int tiley)
+        public virtual void Flush()
         {
-            var msg = new WorldInfoMsg
-            {
-                Time = (int)Main.time,
-                DayTime = Main.dayTime,
-                MoonPhase = (byte)Main.moonPhase,
-                BloodMoon = Main.bloodMoon,
-                MaxTilesX = Main.maxTilesX,
-                MaxTilesY = Main.maxTilesY,
-                SpawnX = tilex,
-                SpawnY = tiley,
-                WorldSurface = (int)Main.worldSurface,
-                RockLayer = (int)Main.rockLayer,
-                WorldID = Main.worldID,
-                WorldFlags = (WorldGen.shadowOrbSmashed ? WorldInfoFlag.OrbSmashed : WorldInfoFlag.None) |
-                (NPC.downedBoss1 ? WorldInfoFlag.DownedBoss1 : WorldInfoFlag.None) |
-                (NPC.downedBoss2 ? WorldInfoFlag.DownedBoss2 : WorldInfoFlag.None) |
-                (NPC.downedBoss3 ? WorldInfoFlag.DownedBoss3 : WorldInfoFlag.None),
-                WorldName = Main.worldName
-            };
+            var sock = Netplay.serverSock[Index];
+            if (sock == null)
+                return;
+
+            TShock.PacketBuffer.Flush(sock);
+        }
 
 
+        void SendWorldInfo(int tilex, int tiley, bool fakeid)
+        {
             using (var ms = new MemoryStream())
             {
+                var msg = new WorldInfoMsg
+                {
+                    Time = (int)Main.time,
+                    DayTime = Main.dayTime,
+                    MoonPhase = (byte)Main.moonPhase,
+                    BloodMoon = Main.bloodMoon,
+                    MaxTilesX = Main.maxTilesX,
+                    MaxTilesY = Main.maxTilesY,
+                    SpawnX = tilex,
+                    SpawnY = tiley,
+                    WorldSurface = (int)Main.worldSurface,
+                    RockLayer = (int)Main.rockLayer,
+                    //Sending a fake world id causes the client to not be able to find a stored spawnx/y.
+                    //This fixes the bed spawn point bug. With a fake world id it wont be able to find the bed spawn.
+                    WorldID = !fakeid ? Main.worldID : -1,
+                    WorldFlags = (WorldGen.shadowOrbSmashed ? WorldInfoFlag.OrbSmashed : WorldInfoFlag.None) |
+                    (NPC.downedBoss1 ? WorldInfoFlag.DownedBoss1 : WorldInfoFlag.None) |
+                    (NPC.downedBoss2 ? WorldInfoFlag.DownedBoss2 : WorldInfoFlag.None) |
+                    (NPC.downedBoss3 ? WorldInfoFlag.DownedBoss3 : WorldInfoFlag.None),
+                    WorldName = Main.worldName
+                };
                 msg.PackFull(ms);
                 SendRawData(ms.ToArray());
             }
@@ -191,55 +205,45 @@ namespace TShockAPI
         {
             InitSpawn = false;
 
-            SendTeleport(tilex, tiley);
+
+            SendWorldInfo(tilex, tiley, true);
 
             //150 Should avoid all client crash errors
             //The error occurs when a tile trys to update which the client hasnt load yet, Clients only update tiles withen 150 blocks
             //Try 300 if it does not work (Higher number - Longer load times - Less chance of error)
             if (!SendTileSquare(tilex, tiley, 150))
             {
+                InitSpawn = true;
+                SendWorldInfo(Main.spawnTileX, Main.spawnTileY, false);
                 SendMessage("Warning, teleport failed due to being too close to the edge of the map.", Color.Red);
                 return false;
             }
 
-            if (TPlayer.SpawnX > 0 && TPlayer.SpawnY > 0)
-            {
-                int spX = TPlayer.SpawnX;
-                int spY = TPlayer.SpawnY;
-                Main.tile[spX, spY].active = false;
-                SendTileSquare(spX, spY);
-                Spawn();
-                Main.tile[spX, spY].active = true;
-                SendTileSquare(spX, spY);
-                oldSpawn = new Vector2(spX, spY);
-            }
-            else
-            {
-                //Checks if Player has spawn point set (Server may think player does not have spawn)
-                if (oldSpawn != Vector2.Zero)
-                {
-                    Main.tile[(int)oldSpawn.X, (int)oldSpawn.Y].active = false;
-                    SendTileSquare((int)oldSpawn.X, (int)oldSpawn.Y);
-                    Spawn();
-                    Main.tile[(int)oldSpawn.X, (int)oldSpawn.Y].active = true;
-                    SendTileSquare((int)oldSpawn.X, (int)oldSpawn.Y);
-                    NetMessage.syncPlayers();
-                }
-                //Player has no spawn point set
-                else
-                {
-                    Spawn();
-                }
-            }
+            Spawn(-1, -1);
 
-            SendTeleport(Main.spawnTileX, Main.spawnTileY);
+            SendWorldInfo(Main.spawnTileX, Main.spawnTileY, false);
 
             return true;
         }
 
         public void Spawn()
         {
-            SendData(PacketTypes.PlayerSpawn, "", Index, 0.0f, 0.0f, 0.0f);
+            Spawn(TPlayer.SpawnX, TPlayer.SpawnY);
+        }
+
+        public void Spawn(int tilex, int tiley)
+        {
+            using (var ms = new MemoryStream())
+            {
+                var msg = new SpawnMsg()
+                {
+                    PlayerIndex = (byte)Index,
+                    TileX = tilex,
+                    TileY = tiley
+                };
+                msg.PackFull(ms);
+                SendRawData(ms.ToArray());
+            }
         }
 
         public virtual bool SendTileSquare(int x, int y, int size = 10)
@@ -311,28 +315,18 @@ namespace TShockAPI
         {
             var time2 = (int)time;
             var launch = DateTime.UtcNow;
-            var player = 0;
-            for (int i = 0; i < Main.maxPlayers; i++)
-                if (Main.player[i] != null & Main.player[i].active && i != Index)
-                    player = i;
+            var startname = Name;
             SendMessage("You are now being annoyed.", Color.Red);
-            var oriinv = Main.player[0].inventory[player];
-            while ((DateTime.UtcNow - launch).TotalSeconds < time2)
+            while ((DateTime.UtcNow - launch).TotalSeconds < time2 && startname == Name)
             {
-                Main.player[0].inventory[player].SetDefaults("Whoopie Cushion");
-                Main.player[0].inventory[player].stack = 1;
-                SendData(PacketTypes.PlayerSlot, "Whoopie Cushion", player, 0f);
-                Main.player[player].position = TPlayer.position;
-                Main.player[player].selectedItem = 0;
-                Main.player[player].controlUseItem = true;
-                SendData(PacketTypes.PlayerUpdate, number: player);
-                Thread.Sleep(500);
-                Main.player[player].controlUseItem = false;
-                SendData(PacketTypes.PlayerUpdate, number: player);
+                SendData(PacketTypes.NpcSpecial, number: Index, number2: 2f);
                 Thread.Sleep(50);
             }
-            Main.player[0].inventory[0] = oriinv;
-            SendData(PacketTypes.PlayerSlot, oriinv.name, player, 0f);
+        }
+
+        public virtual void SetBuff(int type, int time = 3600)
+        {
+            SendData(PacketTypes.PlayerAddBuff, number: Index, number2: (float)type, number3: (float)time);
         }
 
         //Todo: Separate this into a few functions. SendTo, SendToAll, etc
@@ -340,6 +334,7 @@ namespace TShockAPI
         {
             if (RealPlayer && !ConnectionAlive)
                 return;
+
             NetMessage.SendData((int)msgType, Index, -1, text, number, number2, number3, number4, number5);
         }
 
@@ -348,20 +343,7 @@ namespace TShockAPI
             if (!RealPlayer || !ConnectionAlive)
                 return false;
 
-            try
-            {
-                if (Netplay.serverSock[Index].tcpClient.Connected)
-                {
-                    Netplay.serverSock[Index].networkStream.Write(data, 0, data.Length);
-                    return true;
-                }
-
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex.ToString());
-            }
-            return false;
+            return TShock.SendBytes(Netplay.serverSock[Index], data);
         }
     }
 

@@ -92,29 +92,42 @@ namespace TShockAPI
 
         void GameHooks_Update(GameTime obj)
         {
+            FlushAll();
+        }
+
+        public void FlushAll()
+        {
             for (int i = 0; i < Netplay.serverSock.Length; i++)
             {
-                if (Netplay.serverSock[i] == null || !Netplay.serverSock[i].active)
-                    continue;
+                Flush(Netplay.serverSock[i]);
+            }
+        }
 
-                if (!Netplay.serverSock[i].tcpClient.Client.Poll(0, SelectMode.SelectWrite))
-                    continue;
+        public bool Flush(ServerSock socket)
+        {
+            try
+            {
+                if (socket == null || !socket.active)
+                    return false;
 
-                byte[] buff = buffers[i].GetBytes(BytesPerUpdate);
+                if (buffers[socket.whoAmI].Count < 1)
+                    return false;
+
+                byte[] buff = buffers[socket.whoAmI].GetBytes(BytesPerUpdate);
                 if (buff == null)
-                    continue;
+                    return false;
 
-                try
+                if (SendBytes(socket, buff))
                 {
-                    Netplay.serverSock[i].tcpClient.Client.Send(buff);
-                }
-                catch (ObjectDisposedException)
-                {
-                }
-                catch (SocketException)
-                {
+                    buffers[socket.whoAmI].Pop(buff.Length);
+                    return true;
                 }
             }
+            catch (Exception e)
+            {
+                Log.ConsoleError(e.ToString());
+            }
+            return false;
         }
 
 
@@ -123,9 +136,17 @@ namespace TShockAPI
             buffers[socket.whoAmI] = new PacketBuffer();
         }
 
-        void ServerHooks_SendBytes(ServerSock socket, byte[] buffer, int offset, int count, HandledEventArgs e)
+        public bool SendBytes(ServerSock socket, byte[] buffer)
         {
-            e.Handled = true;
+            return SendBytes(socket, buffer, 0, buffer.Length);
+        }
+        public void BufferBytes(ServerSock socket, byte[] buffer)
+        {
+            BufferBytes(socket, buffer, 0, buffer.Length);
+        }
+
+        public void BufferBytes(ServerSock socket, byte[] buffer, int offset, int count)
+        {
             lock (buffers[socket.whoAmI])
             {
 #if DEBUG_NET
@@ -141,6 +162,31 @@ namespace TShockAPI
                     buffers[socket.whoAmI].AddRange(ms.ToArray());
                 }
             }
+        }
+
+        public bool SendBytes(ServerSock socket, byte[] buffer, int offset, int count)
+        {
+            try
+            {
+                if (socket.tcpClient.Client != null && socket.tcpClient.Client.Poll(0, SelectMode.SelectWrite))
+                {
+                    socket.tcpClient.Client.Send(buffer, offset, count, SocketFlags.None);
+                    return true;
+                }
+            }
+            catch (ObjectDisposedException)
+            {
+            }
+            catch (SocketException)
+            {
+            }
+            return false;
+        }
+
+        void ServerHooks_SendBytes(ServerSock socket, byte[] buffer, int offset, int count, HandledEventArgs e)
+        {
+            e.Handled = true;
+            BufferBytes(socket, buffer, offset, count);
         }
 #if DEBUG_NET
         static int Compress(byte[] buffer, int offset, int count)
@@ -168,8 +214,15 @@ namespace TShockAPI
 
                 var ret = new byte[Math.Min(max, this.Count)];
                 this.CopyTo(0, ret, 0, ret.Length);
-                this.RemoveRange(0, ret.Length);
                 return ret;
+            }
+        }
+
+        public void Pop(int count)
+        {
+            lock (this)
+            {
+                this.RemoveRange(0, count);
             }
         }
     }

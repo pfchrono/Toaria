@@ -57,19 +57,19 @@ namespace TShockAPI
         public string Name { get { return Names[0]; } }
         public List<string> Names { get; protected set; }
         public bool DoLog { get; set; }
-        private string permission;
+        public string Permission { get; protected set; }
         private CommandDelegate command;
 
         public Command(string permissionneeded, CommandDelegate cmd, params string[] names)
             : this(cmd, names)
         {
-            permission = permissionneeded;
+            Permission = permissionneeded;
         }
         public Command(CommandDelegate cmd, params string[] names)
         {
             if (names == null || names.Length < 1)
                 throw new NotSupportedException();
-            permission = null;
+            Permission = null;
             Names = new List<string>(names);
             command = cmd;
             DoLog = true;
@@ -77,7 +77,7 @@ namespace TShockAPI
 
         public bool Run(string msg, TSPlayer ply, List<string> parms)
         {
-            if (!ply.Group.HasPermission(permission))
+            if (!ply.Group.HasPermission(Permission))
                 return false;
 
             try
@@ -100,88 +100,89 @@ namespace TShockAPI
 
         public bool CanRun(TSPlayer ply)
         {
-            return ply.Group.HasPermission(permission);
+            return ply.Group.HasPermission(Permission);
         }
     }
     public static class Commands
     {
         public static List<Command> ChatCommands = new List<Command>();
 
+        delegate void AddChatCommand(string permission, CommandDelegate command, params string[] names);
         public static void InitCommands()
         {
             //When adding new perm in here, add new perm to CommandList in DBEditor
-            ChatCommands.Add(new Command("kick", Kick, "kick"));
-            ChatCommands.Add(new Command("ban", Ban, "ban"));
-            ChatCommands.Add(new Command("ban", BanIP, "banip"));
-            ChatCommands.Add(new Command("unban", UnBan, "unban"));
-            ChatCommands.Add(new Command("unban", UnBanIP, "unbanip"));
-            ChatCommands.Add(new Command("maintenance", ClearBans, "clearbans"));
-            ChatCommands.Add(new Command("whitelist", Whitelist, "whitelist"));
-            ChatCommands.Add(new Command("maintenance", Off, "off"));
-            ChatCommands.Add(new Command("maintenance", OffNoSave, "off-nosave"));
-            ChatCommands.Add(new Command("maintenance", CheckUpdates, "checkupdates"));
-            ChatCommands.Add(new Command("causeevents", DropMeteor, "dropmeteor"));
-            ChatCommands.Add(new Command("causeevents", Star, "star"));
-            ChatCommands.Add(new Command("causeevents", Bloodmoon, "bloodmoon"));
-            ChatCommands.Add(new Command("causeevents", Invade, "invade"));
-            ChatCommands.Add(new Command("spawnboss", Eater, "eater"));
-            ChatCommands.Add(new Command("spawnboss", Eye, "eye"));
-            ChatCommands.Add(new Command("spawnboss", King, "king"));
-            ChatCommands.Add(new Command("spawnboss", Skeletron, "skeletron"));
-            ChatCommands.Add(new Command("spawnboss", Hardcore, "hardcore"));
-            ChatCommands.Add(new Command("spawnmob", SpawnMob, "spawnmob", "sm"));
-            ChatCommands.Add(new Command("tp", Home, "home"));
-            ChatCommands.Add(new Command("tp", Spawn, "spawn"));
-            ChatCommands.Add(new Command("tp", TP, "tp"));
-            ChatCommands.Add(new Command("tphere", TPHere, "tphere"));
-            ChatCommands.Add(new Command("warp", UseWarp, "warp"));
-            ChatCommands.Add(new Command("managewarp", SetWarp, "setwarp"));
-            ChatCommands.Add(new Command("managewarp", DeleteWarp, "delwarp"));
-            ChatCommands.Add(new Command("managewarp", HideWarp, "hidewarp"));
-            ChatCommands.Add(new Command("managegroup", AddGroup, "addgroup"));
-            ChatCommands.Add(new Command("managegroup", DeleteGroup, "delgroup"));
-            ChatCommands.Add(new Command("managegroup", ModifyGroup, "modgroup"));
-            ChatCommands.Add(new Command("manageitem", AddItem, "additem"));
-            ChatCommands.Add(new Command("manageitem", DeleteItem, "delitem"));
-            ChatCommands.Add(new Command("cfg", SetSpawn, "setspawn"));
-            ChatCommands.Add(new Command("cfg", Reload, "reload"));
-            ChatCommands.Add(new Command("cfg", ShowConfiguration, "showconfig"));
-            ChatCommands.Add(new Command("cfg", ServerPassword, "serverpassword"));
-            ChatCommands.Add(new Command("cfg", Save, "save"));
-            ChatCommands.Add(new Command("cfg", MaxSpawns, "maxspawns"));
-            ChatCommands.Add(new Command("cfg", SpawnRate, "spawnrate"));
-            ChatCommands.Add(new Command("time", Time, "time"));
-            ChatCommands.Add(new Command("pvpfun", Slap, "slap"));
-            ChatCommands.Add(new Command("editspawn", ToggleAntiBuild, "antibuild"));
-            ChatCommands.Add(new Command("editspawn", ProtectSpawn, "protectspawn"));
-            ChatCommands.Add(new Command("editspawn", Region, "region"));
-            ChatCommands.Add(new Command("editspawn", DebugRegions, "debugreg"));
-            ChatCommands.Add(new Command(Help, "help"));
-            ChatCommands.Add(new Command(Playing, "playing", "online", "who"));
-            ChatCommands.Add(new Command(AuthToken, "auth"));
-            ChatCommands.Add(new Command(ThirdPerson, "me"));
-            ChatCommands.Add(new Command(PartyChat, "p"));
-            ChatCommands.Add(new Command(Rules, "rules"));
-            ChatCommands.Add(new Command("logs", DisplayLogs, "displaylogs"));
+            AddChatCommand add = (p, c, n) => ChatCommands.Add(new Command(p, c, n));
+            add(Permissions.kick, Kick, "kick");
+            add(Permissions.ban, Ban, "ban");
+            add(Permissions.ban, BanIP, "banip");
+            add(Permissions.ban, UnBan, "unban");
+            add(Permissions.ban, UnBanIP, "unbanip");
+            add(Permissions.maintenance, ClearBans, "clearbans");
+            add(Permissions.whitelist, Whitelist, "whitelist");
+            add(Permissions.maintenance, Off, "off");
+            add(Permissions.maintenance, OffNoSave, "off-nosave");
+            add(Permissions.maintenance, CheckUpdates, "checkupdates");
+            add(Permissions.causeevents, DropMeteor, "dropmeteor");
+            add(Permissions.causeevents, Star, "star");
+            add(Permissions.causeevents, Bloodmoon, "bloodmoon");
+            add(Permissions.causeevents, Invade, "invade");
+            add(Permissions.spawnboss, Eater, "eater");
+            add(Permissions.spawnboss, Eye, "eye");
+            add(Permissions.spawnboss, King, "king");
+            add(Permissions.spawnboss, Skeletron, "skeletron");
+            add(Permissions.spawnboss, Hardcore, "hardcore");
+            add(Permissions.spawnmob, SpawnMob, "spawnmob", "sm");
+            add(Permissions.tp, Home, "home");
+            add(Permissions.tp, Spawn, "spawn");
+            add(Permissions.tp, TP, "tp");
+            add(Permissions.tphere, TPHere, "tphere");
+            add(Permissions.warp, UseWarp, "warp");
+            add(Permissions.managewarp, SetWarp, "setwarp");
+            add(Permissions.managewarp, DeleteWarp, "delwarp");
+            add(Permissions.managewarp, HideWarp, "hidewarp");
+            add(Permissions.managegroup, AddGroup, "addgroup");
+            add(Permissions.managegroup, DeleteGroup, "delgroup");
+            add(Permissions.managegroup, ModifyGroup, "modgroup");
+            add(Permissions.manageitem, AddItem, "additem");
+            add(Permissions.manageitem, DeleteItem, "delitem");
+            add(Permissions.cfg, SetSpawn, "setspawn");
+            add(Permissions.cfg, Reload, "reload");
+            add(Permissions.cfg, ShowConfiguration, "showconfig");
+            add(Permissions.cfg, ServerPassword, "serverpassword");
+            add(Permissions.cfg, Save, "save");
+            add(Permissions.cfg, MaxSpawns, "maxspawns");
+            add(Permissions.cfg, SpawnRate, "spawnrate");
+            add(Permissions.time, Time, "time");
+            add(Permissions.pvpfun, Slap, "slap");
+            add(Permissions.editspawn, ToggleAntiBuild, "antibuild");
+            add(Permissions.editspawn, ProtectSpawn, "protectspawn");
+            add(Permissions.manageregion, Region, "region");
+            add(Permissions.manageregion, DebugRegions, "debugreg");
+            add(null, Help, "help");
+            add(null, Playing, "playing", "online", "who");
+            add(null, AuthToken, "auth");
+            add(null, ThirdPerson, "me");
+            add(null, PartyChat, "p");
+            add(null, Rules, "rules");
+            add(Permissions.logs, DisplayLogs, "displaylogs");
             ChatCommands.Add(new Command(PasswordUser, "password") { DoLog = false });
             ChatCommands.Add(new Command(RegisterUser, "register") { DoLog = false });
-            ChatCommands.Add(new Command("root-only", ManageUsers, "user") { DoLog = false });
-            ChatCommands.Add(new Command("root-only", GrabUserUserInfo, "userinfo", "ui"));
-            ChatCommands.Add(new Command("root-only", AuthVerify, "auth-verify"));
+            ChatCommands.Add(new Command(Permissions.rootonly, ManageUsers, "user") { DoLog = false });
+            add(Permissions.rootonly, GrabUserUserInfo, "userinfo", "ui");
+            add(Permissions.rootonly, AuthVerify, "auth-verify");
             ChatCommands.Add(new Command(AttemptLogin, "login") { DoLog = false });
-            ChatCommands.Add(new Command("cfg", Broadcast, "broadcast", "bc"));
-            ChatCommands.Add(new Command("whisper", Whisper, "whisper", "w", "tell"));
-            ChatCommands.Add(new Command("whisper", Reply, "reply", "r"));
-            ChatCommands.Add(new Command("annoy", Annoy, "annoy"));
-            ChatCommands.Add(new Command("cfg", ConvertWaR, "convert"));
-            if (TShock.Config.DistributationAgent != "terraria-online")
-            {
-                ChatCommands.Add(new Command("kill", Kill, "kill"));
-                ChatCommands.Add(new Command("butcher", Butcher, "butcher"));
-                ChatCommands.Add(new Command("item", Item, "item", "i"));
-                ChatCommands.Add(new Command("item", Give, "give"));
-                ChatCommands.Add(new Command("heal", Heal, "heal"));
-            }
+            add(Permissions.cfg, Broadcast, "broadcast", "bc");
+            add(Permissions.whisper, Whisper, "whisper", "w", "tell");
+            add(Permissions.whisper, Reply, "reply", "r");
+            add(Permissions.annoy, Annoy, "annoy");
+            add(Permissions.cfg, ConvertWaR, "convert");
+            add(Permissions.kill, Kill, "kill");
+            add(Permissions.butcher, Butcher, "butcher");
+            add(Permissions.item, Item, "item", "i");
+            add(Permissions.item, Give, "give");
+            add(Permissions.heal, Heal, "heal");
+            add(Permissions.buff, Buff, "buff");
+            add(Permissions.buffplayer, GBuff, "gbuff", "buffplayer");
         }
 
         public static bool HandleCommand(TSPlayer player, string text)
@@ -958,6 +959,7 @@ namespace TShockAPI
                 args.Player.SendMessage("Invalid syntax! Proper syntax: /eater [amount]", Color.Red);
                 return;
             }
+            amount = Math.Min(amount, Main.maxNPCs);
             NPC eater = Tools.GetNPCById(13);
             TSPlayer.Server.SpawnNPC(eater.type, eater.name, amount, args.Player.TileX, args.Player.TileY);
             Tools.Broadcast(string.Format("{0} has spawned eater of worlds {1} times!", args.Player.Name, amount));
@@ -976,6 +978,7 @@ namespace TShockAPI
                 args.Player.SendMessage("Invalid syntax! Proper syntax: /eye [amount]", Color.Red);
                 return;
             }
+            amount = Math.Min(amount, Main.maxNPCs);
             NPC eye = Tools.GetNPCById(4);
             TSPlayer.Server.SetTime(false, 0.0);
             TSPlayer.Server.SpawnNPC(eye.type, eye.name, amount, args.Player.TileX, args.Player.TileY);
@@ -995,6 +998,7 @@ namespace TShockAPI
                 args.Player.SendMessage("Invalid syntax! Proper syntax: /king [amount]", Color.Red);
                 return;
             }
+            amount = Math.Min(amount, Main.maxNPCs);
             NPC king = Tools.GetNPCById(50);
             TSPlayer.Server.SpawnNPC(king.type, king.name, amount, args.Player.TileX, args.Player.TileY);
             Tools.Broadcast(string.Format("{0} has spawned king slime {1} times!", args.Player.Name, amount));
@@ -1013,6 +1017,7 @@ namespace TShockAPI
                 args.Player.SendMessage("Invalid syntax! Proper syntax: /skeletron [amount]", Color.Red);
                 return;
             }
+            amount = Math.Min(amount, Main.maxNPCs);
             NPC skeletron = Tools.GetNPCById(35);
             TSPlayer.Server.SetTime(false, 0.0);
             TSPlayer.Server.SpawnNPC(skeletron.type, skeletron.name, amount, args.Player.TileX, args.Player.TileY);
@@ -1032,6 +1037,7 @@ namespace TShockAPI
                 args.Player.SendMessage("Invalid syntax! Proper syntax: /hardcore [amount]", Color.Red);
                 return;
             }
+            amount = Math.Min(amount, Main.maxNPCs / 4);
             NPC eater = Tools.GetNPCById(13);
             NPC eye = Tools.GetNPCById(4);
             NPC king = Tools.GetNPCById(50);
@@ -1062,6 +1068,8 @@ namespace TShockAPI
                 args.Player.SendMessage("Invalid syntax! Proper syntax: /spawnmob <mob name/id> [amount]", Color.Red);
                 return;
             }
+
+            amount = Math.Min(amount, Main.maxNPCs);
 
             var npcs = Tools.GetNPCByIdOrName(args.Parameters[0]);
             if (npcs.Count == 0)
@@ -1418,8 +1426,8 @@ namespace TShockAPI
                     var item = items[0];
                     if (item.type >= 1)
                     {
-                        TShock.Itembans.AddNewBan(args.Parameters[0]);
-                        args.Player.SendMessage(Tools.GetItemByIdOrName(args.Parameters[0])[0].name + " has been banned.", Color.Green);
+                        TShock.Itembans.AddNewBan(item.name);
+                        args.Player.SendMessage(item.name + " has been banned.", Color.Green);
                     }
                     else
                     {
@@ -1451,8 +1459,8 @@ namespace TShockAPI
                     var item = items[0];
                     if (item.type >= 1)
                     {
-                        TShock.Itembans.RemoveBan(args.Parameters[0]);
-                        args.Player.SendMessage(Tools.GetItemByIdOrName(args.Parameters[0])[0].name + " has been unbanned.", Color.Green);
+                        TShock.Itembans.RemoveBan(item.name);
+                        args.Player.SendMessage(item.name + " has been unbanned.", Color.Green);
                     }
                     else
                     {
@@ -1630,7 +1638,7 @@ namespace TShockAPI
                 {
                     int.TryParse(args.Parameters[1], out damage);
                 }
-                if (!args.Player.Group.HasPermission("kill"))
+                if (!args.Player.Group.HasPermission(Permissions.kill))
                 {
                     damage = Tools.Clamp(damage, 15, 0);
                 }
@@ -1678,56 +1686,48 @@ namespace TShockAPI
             }
             switch (cmd)
             {
+
+                case "name":
+                    {
+                        {
+                            args.Player.SendMessage("Hit a block to get the name of the region", Color.Yellow);
+                            args.Player.AwaitingName = true;
+                        }
+                        break;
+                    }
+
                 case "set":
                     {
-                        if (args.Parameters.Count == 2)
+                        int choice = 0;
+                        if (args.Parameters.Count == 2 &&
+                            int.TryParse(args.Parameters[1], out choice) &&
+                            choice >= 1 && choice <= 2)
                         {
-                            if (args.Parameters[1] == "1")
-                            {
-                                if (!args.Player.AwaitingTemp2)
-                                {
-                                    args.Player.SendMessage("Hit a block to Set Point 1", Color.Yellow);
-                                    args.Player.AwaitingTemp1 = true;
-                                }
-                                else
-                                    args.Player.SendMessage("Awaiting you to Set Point 2", Color.Yellow);
-                            }
-                            else if (args.Parameters[1] == "2")
-                            {
-                                if (args.Player.TempArea.X != 0)
-                                {
-                                    if (!args.Player.AwaitingTemp1)
-                                    {
-                                        args.Player.SendMessage("Hit a block to Set Point 2", Color.Yellow);
-                                        args.Player.AwaitingTemp2 = true;
-                                    }
-                                    else
-                                        args.Player.SendMessage("Awaiting you to Set Point 1", Color.Yellow);
-                                }
-                                else
-                                {
-                                    args.Player.SendMessage("You have not set Point 1 yet", Color.Red);
-                                }
-                            }
-                            else
-                                args.Player.SendMessage("Invalid syntax! Proper syntax: /region set [1/2]", Color.Red);
+                            args.Player.SendMessage("Hit a block to Set Point " + choice, Color.Yellow);
+                            args.Player.AwaitingTempPoint = choice;
                         }
                         else
+                        {
                             args.Player.SendMessage("Invalid syntax! Proper syntax: /region set [1/2]", Color.Red);
+                        }
                         break;
                     }
                 case "define":
                     {
                         if (args.Parameters.Count > 1)
                         {
-                            if (!args.Player.TempArea.IsEmpty)
+                            if (!args.Player.TempPoints.Any(p => p == Point.Zero))
                             {
                                 string regionName = String.Join(" ", args.Parameters.GetRange(1, args.Parameters.Count - 1));
-                                if (TShock.Regions.AddRegion(args.Player.TempArea.X, args.Player.TempArea.Y,
-                                                            args.Player.TempArea.Width, args.Player.TempArea.Height,
-                                                            regionName, Main.worldID.ToString()))
+                                var x = Math.Min(args.Player.TempPoints[0].X, args.Player.TempPoints[1].X);
+                                var y = Math.Min(args.Player.TempPoints[0].Y, args.Player.TempPoints[1].Y);
+                                var width = Math.Abs(args.Player.TempPoints[0].X - args.Player.TempPoints[1].X);
+                                var height = Math.Abs(args.Player.TempPoints[0].Y - args.Player.TempPoints[1].Y);
+
+                                if (TShock.Regions.AddRegion(x, y, width, height, regionName, Main.worldID.ToString()))
                                 {
-                                    args.Player.TempArea = Rectangle.Empty;
+                                    args.Player.TempPoints[0] = Point.Zero;
+                                    args.Player.TempPoints[1] = Point.Zero;
                                     args.Player.SendMessage("Set region " + regionName, Color.Yellow);
                                 }
                                 else
@@ -1736,7 +1736,9 @@ namespace TShockAPI
                                 }
                             }
                             else
+                            {
                                 args.Player.SendMessage("Points not set up yet", Color.Red);
+                            }
                         }
                         else
                             args.Player.SendMessage("Invalid syntax! Proper syntax: /region define [name]", Color.Red);
@@ -1784,10 +1786,10 @@ namespace TShockAPI
                     }
                 case "clear":
                     {
-                        args.Player.TempArea = Rectangle.Empty;
+                        args.Player.TempPoints[0] = Point.Zero;
+                        args.Player.TempPoints[1] = Point.Zero;
                         args.Player.SendMessage("Cleared temp area", Color.Yellow);
-                        args.Player.AwaitingTemp1 = false;
-                        args.Player.AwaitingTemp2 = false;
+                        args.Player.AwaitingTempPoint = 0;
                         break;
                     }
                 case "allow":
@@ -1796,7 +1798,6 @@ namespace TShockAPI
                         {
                             string playerName = args.Parameters[1];
                             string regionName = "";
-                            User playerID;
 
                             for (int i = 2; i < args.Parameters.Count; i++)
                             {
@@ -1809,7 +1810,7 @@ namespace TShockAPI
                                     regionName = regionName + " " + args.Parameters[i];
                                 }
                             }
-                            if ((playerID = TShock.Users.GetUserByName(playerName)) != null)
+                            if (TShock.Users.GetUserByName(playerName) != null)
                             {
                                 if (TShock.Regions.AddNewUser(regionName, playerName))
                                 {
@@ -1827,6 +1828,40 @@ namespace TShockAPI
                             args.Player.SendMessage("Invalid syntax! Proper syntax: /region allow [name] [region]", Color.Red);
                         break;
                     }
+                case "remove":
+                    if (args.Parameters.Count > 2)
+                    {
+                        string playerName = args.Parameters[1];
+                        string regionName = "";
+
+                        for (int i = 2; i < args.Parameters.Count; i++)
+                        {
+                            if (regionName == "")
+                            {
+                                regionName = args.Parameters[2];
+                            }
+                            else
+                            {
+                                regionName = regionName + " " + args.Parameters[i];
+                            }
+                        }
+                        if (TShock.Users.GetUserByName(playerName) != null)
+                        {
+                            if (TShock.Regions.RemoveUser(regionName, playerName))
+                            {
+                                args.Player.SendMessage("Removed user " + playerName + " from " + regionName, Color.Yellow);
+                            }
+                            else
+                                args.Player.SendMessage("Region " + regionName + " not found", Color.Red);
+                        }
+                        else
+                        {
+                            args.Player.SendMessage("Player " + playerName + " not found", Color.Red);
+                        }
+                    }
+                    else
+                        args.Player.SendMessage("Invalid syntax! Proper syntax: /region allow [name] [region]", Color.Red);
+                    break;
                 case "list":
                     {
                         //How many regions per page
@@ -1888,11 +1923,39 @@ namespace TShockAPI
 
                         break;
                     }
+                case "info":
+                    {
+                        if (args.Parameters.Count > 1)
+                        {
+                            string regionName = String.Join(" ", args.Parameters.GetRange(1, args.Parameters.Count - 1));
+                            Region r = TShock.Regions.GetRegionByName(regionName);
+
+                            if (r == null)
+                            {
+                                args.Player.SendMessage("Region {0} does not exist");
+                                break;
+                            }
+
+                            args.Player.SendMessage(r.Name + ": P: " + r.DisableBuild + " X: " + r.Area.X + " Y: " + r.Area.Y + " W: " + r.Area.Width + " H: " + r.Area.Height);
+                            foreach (int s in r.AllowedIDs)
+                            {
+                                var user = TShock.Users.GetUserByID(s);
+                                args.Player.SendMessage(r.Name + ": " + (user != null ? user.Name : "Unknown"));
+                            }
+                        }
+                        else
+                        {
+                            args.Player.SendMessage("Invalid syntax! Proper syntax: /region info [name]", Color.Red);
+                        }
+
+                        break;
+                    }
                 case "help":
                 default:
                     {
                         args.Player.SendMessage("Avialable region commands:", Color.Green);
                         args.Player.SendMessage("/region set [1/2] /region define [name] /region protect [name] [true/false]", Color.Yellow);
+                        args.Player.SendMessage("/region name (provides region name)", Color.Yellow);
                         args.Player.SendMessage("/region delete [name] /region clear (temporary region)", Color.Yellow);
                         args.Player.SendMessage("/region allow [name] [regionname]", Color.Yellow);
                         break;
@@ -2343,6 +2406,97 @@ namespace TShockAPI
             }
         }
 
+        private static void Buff(CommandArgs args)
+        {
+            if (args.Parameters.Count < 1 || args.Parameters.Count > 2)
+            {
+                args.Player.SendMessage("Invalid syntax! Proper syntax: /buff <buff id/name> [time(seconds*60)]", Color.Red);
+                return;
+            }
+            int id = 0;
+            int time = 3600;
+            if (!int.TryParse(args.Parameters[0], out id))
+            {
+                var found = Tools.GetBuffByName(args.Parameters[0]);
+                if (found.Count == 0)
+                {
+                    args.Player.SendMessage("Invalid buff name!", Color.Red);
+                    return;
+                }
+                else if (found.Count > 1)
+                {
+                    args.Player.SendMessage(string.Format("More than one ({0}) buff matched!", found.Count), Color.Red);
+                    return;
+                }
+                id = found[0];
+                if (args.Parameters.Count == 2)
+                    int.TryParse(args.Parameters[1], out time);
+            }
+            if (id > 0 && id < Main.maxBuffs)
+            {
+                if (time < 0 || time > short.MaxValue)
+                    time = 3600;
+                args.Player.SetBuff(id, time);
+                args.Player.SendMessage(string.Format("You have buffed yourself with {0}({1}) for {2} seconds!",
+                    Tools.GetBuffName(id), Tools.GetBuffDescription(id), (time / 60)), Color.Green);
+            }
+            else
+                args.Player.SendMessage("Invalid buff ID!", Color.Red);
+        }
+
+        private static void GBuff(CommandArgs args)
+        {
+            if (args.Parameters.Count < 2 || args.Parameters.Count > 3)
+            {
+                args.Player.SendMessage("Invalid syntax! Proper syntax: /gbuff <player> <buff id/name> [time(seconds*60)]", Color.Red);
+                return;
+            }
+            int id = 0;
+            int time = 3600;
+            var foundplr = Tools.FindPlayer(args.Parameters[0]);
+            if (foundplr.Count == 0)
+            {
+                args.Player.SendMessage("Invalid player!", Color.Red);
+                return;
+            }
+            else if (foundplr.Count > 1)
+            {
+                args.Player.SendMessage(string.Format("More than one ({0}) player matched!", args.Parameters.Count), Color.Red);
+                return;
+            }
+            else
+            {
+                if (!int.TryParse(args.Parameters[1], out id))
+                {
+                    var found = Tools.GetBuffByName(args.Parameters[1]);
+                    if (found.Count == 0)
+                    {
+                        args.Player.SendMessage("Invalid buff name!", Color.Red);
+                        return;
+                    }
+                    else if (found.Count > 1)
+                    {
+                        args.Player.SendMessage(string.Format("More than one ({0}) buff matched!", found.Count), Color.Red);
+                        return;
+                    }
+                    id = found[0];
+                    if (args.Parameters.Count == 3)
+                        int.TryParse(args.Parameters[2], out time);
+                }
+                if (id > 0 && id < Main.maxBuffs)
+                {
+                    if (time < 0 || time > short.MaxValue)
+                        time = 3600;
+                    foundplr[0].SetBuff(id, time);
+                    args.Player.SendMessage(string.Format("You have buffed {0} with {1}({2}) for {3} seconds!",
+                        foundplr[0].Name, Tools.GetBuffName(id), Tools.GetBuffDescription(id), (time / 60)), Color.Green);
+                    foundplr[0].SendMessage(string.Format("{0} has buffed you with {1}({2}) for {3} seconds!",
+                        args.Player.Name, Tools.GetBuffName(id), Tools.GetBuffDescription(id), (time / 60)), Color.Green);
+                }
+                else
+                    args.Player.SendMessage("Invalid buff ID!", Color.Red);
+            }
+        }
         #endregion Cheat Comamnds
     }
 }

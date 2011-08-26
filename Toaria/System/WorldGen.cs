@@ -9689,11 +9689,11 @@
         public static void loadWorld()
         {
             DirectoryInfo di = new DirectoryInfo(Main.WorldPath);
-            foreach (FileInfo fi in di.GetFiles("*.gz"))
+            /*foreach (FileInfo fi in di.GetFiles("*.gz"))
             {
                 Decompress(fi);
 
-            }
+            }*/
             if (!File.Exists(Main.worldPathName) && Main.autoGen)
             {
                 for (int i = Main.worldPathName.Length - 1; i >= 0; i--)
@@ -12888,25 +12888,25 @@
                                             Main.statusText = "Backing up world file...";
                                             string destFileName = Main.worldPathName + ".bak";
                                             File.Copy(Main.worldPathName, destFileName, true);
-                                            foreach (FileInfo fi in di.GetFiles(destFileName + ".bak"))
+                                            /*foreach (FileInfo fi in di.GetFiles(destFileName + ".bak"))
                                             {
                                                 WorldGen.Compress(fi);
-                                            }
+                                            }*/
                                         }
                                         File.Copy(path, Main.worldPathName, true);
                                         File.Delete(path);
-                                        foreach (FileInfo fi in di.GetFiles("*.wld"))
+                                        /*foreach (FileInfo fi in di.GetFiles("*.wld"))
                                         {
                                             WorldGen.Compress(fi);
 
-                                        }
+                                        }*/
                                     }
                             }
                             saveLock = false;
-                            foreach (string f in wldList)
+                            /*foreach (string f in wldList)
                                 File.Delete(f);
                             foreach (string g in bakList)
-                                File.Delete(g);
+                                File.Delete(g);*/
                         }
                     }
                 }

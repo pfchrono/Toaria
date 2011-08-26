@@ -95,10 +95,14 @@
     <Compile Include="Group.cs" />
     <Compile Include="Extensions\LinqExt.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="Net\BaseMsg.cs" />
+    <Compile Include="Net\DisconnectMsg.cs" />
     <Compile Include="Net\NetTile.cs" />
+    <Compile Include="Net\SpawnMsg.cs" />
     <Compile Include="Net\WorldInfoMsg.cs" />
     <Compile Include="DB\RegionManager.cs" />
     <Compile Include="PacketBufferer.cs" />
+    <Compile Include="Permissions.cs" />
     <Compile Include="RconHandler.cs" />
     <Compile Include="DB\RememberPosManager.cs" />
     <Compile Include="Resources.Designer.cs">
@@ -167,11 +171,12 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>"$(ProjectDir)postbuild.bat"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_IncrementBeforeBuild="False" BuildVersion_StartDate="2011/6/17" BuildVersion_BuildVersioningStyle="None.None.None.MonthAndDayStamp" BuildVersion_BuildAction="Both" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" />
+      <UserProperties BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_BuildAction="Both" BuildVersion_BuildVersioningStyle="None.None.None.MonthAndDayStamp" BuildVersion_StartDate="2011/6/17" BuildVersion_IncrementBeforeBuild="False" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -574,11 +574,11 @@
             DirectoryInfo di = new DirectoryInfo(WorldPath);
             while ((worldPathName == null) || (worldPathName == ""))
             {
-                foreach (FileInfo fi in di.GetFiles("*.gz"))
+                /*foreach (FileInfo fi in di.GetFiles("*.gz"))
                 {
                     WorldGen.Decompress(fi);
 
-                }
+                }*/
                 LoadWorlds();
                 bool flag = true;
                 while (flag)

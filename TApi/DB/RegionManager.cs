@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -41,8 +42,8 @@ namespace TShockAPI.DB
             var table = new SqlTable("Regions",
                 new SqlColumn("X1", MySqlDbType.Int32),
                 new SqlColumn("Y1", MySqlDbType.Int32),
-                new SqlColumn("height", MySqlDbType.Int32),
                 new SqlColumn("width", MySqlDbType.Int32),
+                new SqlColumn("height", MySqlDbType.Int32),
                 new SqlColumn("RegionName", MySqlDbType.VarChar, 50) { Primary = true },
                 new SqlColumn("WorldID", MySqlDbType.Text),
                 new SqlColumn("UserIds", MySqlDbType.Text),
@@ -52,10 +53,11 @@ namespace TShockAPI.DB
             creator.EnsureExists(table);
 
             ImportOld();
+            ReloadAllRegions();
 
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public void ImportOld()
         {
             String file = Path.Combine(TShock.SavePath, "regions.xml");
@@ -254,9 +256,14 @@ namespace TShockAPI.DB
 
         public bool AddRegion(int tx, int ty, int width, int height, string regionname, string worldid)
         {
+            if (TShock.Regions.GetRegionByName(regionname) != null)
+            {
+                return false;
+            }
             try
             {
-                database.Query("INSERT INTO Regions VALUES (@0, @1, @2, @3, @4, @5, @6, @7);", tx, ty, width, height, regionname, worldid, "", 1);
+                database.Query("INSERT INTO Regions (X1, Y1, width, height, RegionName, WorldID, UserIds, Protected) VALUES (@0, @1, @2, @3, @4, @5, @6, @7);",
+                    tx, ty, width, height, regionname, worldid, "", 1);
                 Regions.Add(new Region(new Rectangle(tx, ty, width, height), regionname, true, worldid));
                 return true;
             }
@@ -272,7 +279,8 @@ namespace TShockAPI.DB
             try
             {
                 database.Query("DELETE FROM Regions WHERE RegionName=@0 AND WorldID=@1", name, Main.worldID.ToString());
-                Regions.Remove(getRegion(name));
+                var worldid = Main.worldID.ToString();
+                Regions.RemoveAll(r => r.Name == name && r.WorldID == worldid);
                 return true;
             }
             catch (Exception ex)
@@ -287,7 +295,9 @@ namespace TShockAPI.DB
             try
             {
                 database.Query("UPDATE Regions SET Protected=@0 WHERE RegionName=@1 AND WorldID=@2", state ? 1 : 0, name, Main.worldID.ToString());
-                getRegion(name).DisableBuild = state;
+                var region = GetRegionByName(name);
+                if (region != null)
+                    region.DisableBuild = state;
                 return true;
             }
             catch (Exception ex)
@@ -302,7 +312,9 @@ namespace TShockAPI.DB
             try
             {
                 database.Query("UPDATE Regions SET Protected=@0 WHERE RegionName=@1 AND WorldID=@2", state ? 1 : 0, name, world);
-                getRegion(name).DisableBuild = state;
+                var region = GetRegionByName(name);
+                if (region != null)
+                    region.DisableBuild = state;
                 return true;
             }
             catch (Exception ex)
@@ -314,7 +326,7 @@ namespace TShockAPI.DB
 
         public bool CanBuild(int x, int y, TSPlayer ply)
         {
-            if (!ply.Group.HasPermission("canbuild"))
+            if (!ply.Group.HasPermission(Permissions.canbuild))
             {
                 return false;
             }
@@ -342,11 +354,39 @@ namespace TShockAPI.DB
             return false;
         }
 
+        public string InAreaRegionName(int x, int y)
+        {
+            foreach (Region region in Regions)
+            {
+                if (x >= region.Area.Left && x <= region.Area.Right &&
+                    y >= region.Area.Top && y <= region.Area.Bottom &&
+                    region.DisableBuild)
+                {
+                    return region.Name;
+                }
+            }
+            return null;
+        }
+
         public static List<string> ListIDs(string MergedIDs)
         {
             return  MergedIDs.Split(new []{','}, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
 
+        public bool RemoveUser(string regionName, string userName )
+        {
+            Region r = GetRegionByName(regionName);
+            if( r != null )
+            {
+                r.RemoveID(TShock.Users.GetUserID(userName));
+                string ids = string.Join(",", r.AllowedIDs);
+                int q = database.Query("UPDATE Regions SET UserIds=@0 WHERE RegionName=@1 AND WorldID=@2", ids,
+                                       regionName, Main.worldID.ToString());
+                if (q > 0)
+                    return true;
+            }
+            return false;
+        }
         public bool AddNewUser(string regionName, String userName)
         {
             try
@@ -363,11 +403,14 @@ namespace TShockAPI.DB
                 else
                     MergedIDs = MergedIDs + "," + Convert.ToString(TShock.Users.GetUserID(userName));
 
-                if (database.Query("UPDATE Regions SET UserIds=@0 WHERE RegionName=@1 AND WorldID=@2", MergedIDs, regionName, Main.worldID.ToString()) > 0)
+                int q = database.Query("UPDATE Regions SET UserIds=@0 WHERE RegionName=@1 AND WorldID=@2", MergedIDs,
+                                       regionName, Main.worldID.ToString());
+                foreach (var r in Regions)
                 {
-                    ReloadAllRegions();
-                    return true;
+                    if (r.Name == regionName && r.WorldID == Main.worldID.ToString())
+                        r.setAllowedIDs( MergedIDs );
                 }
+                return q != 0;
             }
             catch (Exception ex)
             {
@@ -399,14 +442,9 @@ namespace TShockAPI.DB
             return regions;
         }
 
-        public Region getRegion(String name)
+        public Region GetRegionByName(String name)
         {
-            foreach (Region r in Regions)
-            {
-                if (r.Name.Equals(name))
-                    return r;
-            }
-            return new Region();
+            return Regions.FirstOrDefault(r => r.Name.Equals(name) && r.WorldID == Main.worldID.ToString());
         }
     }
 
@@ -469,6 +507,34 @@ namespace TShockAPI.DB
                 }
             }
             return false;
+        }
+
+        public void setAllowedIDs( String ids )
+        {
+            String[] id_arr = ids.Split(',');
+            List<int> id_list = new List<int>();
+            foreach( String id in id_arr )
+            {
+                int i = 0;
+                int.TryParse(id, out i);
+                if( i != 0 )
+                    id_list.Add( i );
+            }
+            AllowedIDs = id_list;
+        }
+
+        public void RemoveID(int id)
+        {
+            var index = -1;
+            for (int i = 0; i < AllowedIDs.Count; i++ )
+            {
+                if (AllowedIDs[i] == id)
+                {
+                    index = i;
+                    break;
+                }
+            }
+            AllowedIDs.RemoveAt( index );
         }
     }
 }
