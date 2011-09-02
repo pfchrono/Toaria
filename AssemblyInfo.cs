@@ -1,4 +1,4 @@
-﻿// Assembly TerrariaServer, Version 1.0.6.1
+﻿// Assembly Toaria/TerrariaServer, Version 1.0.6.1
 
 [assembly: System.Reflection.AssemblyVersion("1.0.6.1")]
 [assembly: System.Runtime.CompilerServices.RuntimeCompatibility(WrapNonExceptionThrows=true)]

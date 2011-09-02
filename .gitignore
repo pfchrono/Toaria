@@ -4,6 +4,7 @@
 *.suo
 /TerrariaAPI/obj
 /XNAHelpers/obj
+/XNAHelpers/XNAHelpers.pidb
 /TApi/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
 /TApi/obj/Release/DesignTimeResolveAssemblyReferencesInput.cache
 /TApi/obj/Release/GenerateResource.read.1.tlog
@@ -12,5 +13,8 @@
 /TApi/obj/Release/TShockAPI.Resources.resources
 /TApi/obj/Release/TShockAPI.csproj.FileListAbsolute.txt
 /TApi/obj/Release/TShockAPI.dll
+/TApi/TShockAPI.pidb
 /TApi/obj/Release/TShockAPI.pdb
 /TApi/obj/Release/TempPE/Resources.Designer.cs.dll
+/Toaria.userprefs
+/Toaria.pidb
