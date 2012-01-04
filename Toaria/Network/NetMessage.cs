@@ -1710,11 +1710,6 @@ namespace Toaria
                     }
                 IL_4A54:
                     NetMessage.buffer[num].writeLocked = false;
-                    if (msgType == 19 && Main.netMode == 1)
-                    {
-                        int size = 5;
-                        NetMessage.SendTileSquare(num, (int)number2, (int)number3, size);
-                    }
                     if (msgType == 2 && Main.netMode == 2)
                     {
                         Netplay.serverSock[num].kill = true;
@@ -1734,13 +1729,6 @@ namespace Toaria
                 }
                 catch
                 {
-                    if (Main.netMode == 1)
-                    {
-                        Main.menuMode = 15;
-                        Main.statusText = "Bad header lead to a read buffer overflow.";
-                        Netplay.disconnect = true;
-                    }
-                    else
                     {
                         Netplay.serverSock[i].kill = true;
                     }
@@ -1863,11 +1851,6 @@ namespace Toaria
         }
         public static void sendWater(int x, int y)
         {
-            if (Main.netMode == 1)
-            {
-                NetMessage.SendData(48, -1, -1, "", x, (float)y, 0f, 0f, 0);
-                return;
-            }
             for (int i = 0; i < 256; i++)
             {
                 if ((NetMessage.buffer[i].broadcast || Netplay.serverSock[i].state >= 3) && Netplay.serverSock[i].tcpClient.Connected)

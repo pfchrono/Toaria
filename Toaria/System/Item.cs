@@ -2,1832 +2,1832 @@ using Hooks;
 using System;
 namespace Toaria
 {
-	public class Item
-	{
-		public static int potionDelay = 3600;
-		public static int[] headType = new int[45];
-		public static int[] bodyType = new int[26];
-		public static int[] legType = new int[25];
-		public bool mech;
-		public bool wet;
-		public byte wetCount;
-		public bool lavaWet;
-		public Vector2 position;
-		public Vector2 velocity;
-		public int width;
-		public int height;
-		public bool active;
-		public int noGrabDelay;
-		public bool beingGrabbed;
-		public int spawnTime;
-		public bool wornArmor;
-		public int ownIgnore = -1;
-		public int ownTime;
-		public int keepTime;
-		public int type;
-		public string name;
-		public int holdStyle;
-		public int useStyle;
-		public bool channel;
-		public bool accessory;
-		public int useAnimation;
-		public int useTime;
-		public int stack;
-		public int maxStack;
-		public int pick;
-		public int axe;
-		public int hammer;
-		public int tileBoost;
-		public int createTile = -1;
-		public int createWall = -1;
-		public int placeStyle;
-		public int damage;
-		public float knockBack;
-		public int healLife;
-		public int healMana;
-		public bool potion;
-		public bool consumable;
-		public bool autoReuse;
-		public bool useTurn;
-		public Color color;
-		public int alpha;
-		public float scale = 1f;
-		public int useSound;
-		public int defense;
-		public int headSlot = -1;
-		public int bodySlot = -1;
-		public int legSlot = -1;
-		public string toolTip;
-		public string toolTip2;
-		public int owner = 255;
-		public int rare;
-		public int shoot;
-		public float shootSpeed;
-		public int ammo;
-		public int useAmmo;
-		public int lifeRegen;
-		public int manaIncrease;
-		public bool buyOnce;
-		public int mana;
-		public bool noUseGraphic;
-		public bool noMelee;
-		public int release;
-		public int value;
-		public bool buy;
-		public bool social;
-		public bool vanity;
-		public bool material;
-		public bool noWet;
-		public int buffType;
-		public int buffTime;
-		public int netID;
-		public int crit;
-		public byte prefix;
-		public bool melee;
-		public bool magic;
-		public bool ranged;
-		public int reuseDelay;
-		public bool Prefix(int pre)
-		{
-			if (pre == 0 || this.type == 0)
-			{
-				return false;
-			}
-			int num = pre;
-			float num2 = 1f;
-			float num3 = 1f;
-			float num4 = 1f;
-			float num5 = 1f;
-			float num6 = 1f;
-			float num7 = 1f;
-			int num8 = 0;
-			bool flag = true;
-			while (flag)
-			{
-				num2 = 1f;
-				num3 = 1f;
-				num4 = 1f;
-				num5 = 1f;
-				num6 = 1f;
-				num7 = 1f;
-				num8 = 0;
-				flag = false;
-				if (num == -1 && Main.rand.Next(4) == 0)
-				{
-					num = 0;
-				}
-				if (pre < -1)
-				{
-					num = -1;
-				}
-				if (num == -1 || num == -2 || num == -3)
-				{
-					switch (this.type)
-					{
-					    case 484:
-					    case 483:
-					    case 482:
-					    case 426:
-					    case 368:
-					    case 367:
-					    case 273:
-					    case 217:
-					    case 213:
-					    case 204:
-					    case 203:
-					    case 202:
-					    case 201:
-					    case 200:
-					    case 199:
-					    case 198:
-					    case 196:
-					    case 190:
-					    case 155:
-					    case 122:
-					    case 121:
-					    case 104:
-					    case 103:
-					    case 46:
-					    case 45:
-					    case 24:
-					    case 10:
-					    case 7:
-					    case 6:
-					    case 4:
-					    case 1:
-					        {
-					            int num9 = Main.rand.Next(40);
-					            switch (num9)
-					            {
-					                case 0:
-					                    num = 1;
-					                    break;
-					                case 1:
-					                    num = 2;
-					                    break;
-					                case 2:
-					                    num = 3;
-					                    break;
-					                case 3:
-					                    num = 4;
-					                    break;
-					                case 4:
-					                    num = 5;
-					                    break;
-					                case 5:
-					                    num = 6;
-					                    break;
-					                case 6:
-					                    num = 7;
-					                    break;
-					                case 7:
-					                    num = 8;
-					                    break;
-					                case 8:
-					                    num = 9;
-					                    break;
-					                case 9:
-					                    num = 10;
-					                    break;
-					                case 10:
-					                    num = 11;
-					                    break;
-					                case 11:
-					                    num = 12;
-					                    break;
-					                case 12:
-					                    num = 13;
-					                    break;
-					                case 13:
-					                    num = 14;
-					                    break;
-					                case 14:
-					                    num = 15;
-					                    break;
-					                case 15:
-					                    num = 36;
-					                    break;
-					                case 16:
-					                    num = 37;
-					                    break;
-					                case 17:
-					                    num = 38;
-					                    break;
-					                case 18:
-					                    num = 53;
-					                    break;
-					                case 19:
-					                    num = 54;
-					                    break;
-					                case 20:
-					                    num = 55;
-					                    break;
-					                case 21:
-					                    num = 39;
-					                    break;
-					                case 22:
-					                    num = 40;
-					                    break;
-					                case 23:
-					                    num = 56;
-					                    break;
-					                case 24:
-					                    num = 41;
-					                    break;
-					                case 25:
-					                    num = 57;
-					                    break;
-					                case 26:
-					                    num = 42;
-					                    break;
-					                case 27:
-					                    num = 43;
-					                    break;
-					                case 28:
-					                    num = 44;
-					                    break;
-					                case 29:
-					                    num = 45;
-					                    break;
-					                case 30:
-					                    num = 46;
-					                    break;
-					                case 31:
-					                    num = 47;
-					                    break;
-					                case 32:
-					                    num = 48;
-					                    break;
-					                case 33:
-					                    num = 49;
-					                    break;
-					                case 34:
-					                    num = 50;
-					                    break;
-					                case 35:
-					                    num = 51;
-					                    break;
-					                case 36:
-					                    num = 59;
-					                    break;
-					                case 37:
-					                    num = 60;
-					                    break;
-					                case 38:
-					                    num = 61;
-					                    break;
-					                case 39:
-					                    num = 81;
-					                    break;
-					            }
-					        }
-					        break;
-					    case 579:
-					    case 550:
-					    case 537:
-					    case 406:
-					    case 390:
-					    case 389:
-					    case 388:
-					    case 387:
-					    case 386:
-					    case 385:
-					    case 384:
-					    case 383:
-					    case 280:
-					    case 277:
-					    case 274:
-					    case 220:
-					    case 163:
-					    case 160:
-					    case 162:
-					        {
-					            int num10 = Main.rand.Next(14);
-					            switch (num10)
-					            {
-					                case 0:
-					                    num = 36;
-					                    break;
-					                case 1:
-					                    num = 37;
-					                    break;
-					                case 2:
-					                    num = 38;
-					                    break;
-					                case 3:
-					                    num = 53;
-					                    break;
-					                case 4:
-					                    num = 54;
-					                    break;
-					                case 5:
-					                    num = 55;
-					                    break;
-					                case 6:
-					                    num = 39;
-					                    break;
-					                case 7:
-					                    num = 40;
-					                    break;
-					                case 8:
-					                    num = 56;
-					                    break;
-					                case 9:
-					                    num = 41;
-					                    break;
-					                case 10:
-					                    num = 57;
-					                    break;
-					                case 11:
-					                    num = 59;
-					                    break;
-					                case 12:
-					                    num = 60;
-					                    break;
-					                case 13:
-					                    num = 61;
-					                    break;
-					            }
-					        }
-					        break;
-					    case 578:
-					    case 534:
-					    case 533:
-					    case 506:
-					    case 481:
-					    case 436:
-					    case 435:
-					    case 434:
-					    case 281:
-					    case 266:
-					    case 219:
-					    case 197:
-					    case 164:
-					    case 120:
-					    case 99:
-					    case 98:
-					    case 96:
-					    case 95:
-					    case 44:
-					    case 39:
-					        {
-					            int num11 = Main.rand.Next(36);
-					            switch (num11)
-					            {
-					                case 0:
-					                    num = 16;
-					                    break;
-					                case 1:
-					                    num = 17;
-					                    break;
-					                case 2:
-					                    num = 18;
-					                    break;
-					                case 3:
-					                    num = 19;
-					                    break;
-					                case 4:
-					                    num = 20;
-					                    break;
-					                case 5:
-					                    num = 21;
-					                    break;
-					                case 6:
-					                    num = 22;
-					                    break;
-					                case 7:
-					                    num = 23;
-					                    break;
-					                case 8:
-					                    num = 24;
-					                    break;
-					                case 9:
-					                    num = 25;
-					                    break;
-					                case 10:
-					                    num = 58;
-					                    break;
-					                case 11:
-					                    num = 36;
-					                    break;
-					                case 12:
-					                    num = 37;
-					                    break;
-					                case 13:
-					                    num = 38;
-					                    break;
-					                case 14:
-					                    num = 53;
-					                    break;
-					                case 15:
-					                    num = 54;
-					                    break;
-					                case 16:
-					                    num = 55;
-					                    break;
-					                case 17:
-					                    num = 39;
-					                    break;
-					                case 18:
-					                    num = 40;
-					                    break;
-					                case 19:
-					                    num = 56;
-					                    break;
-					                case 20:
-					                    num = 41;
-					                    break;
-					                case 21:
-					                    num = 57;
-					                    break;
-					                case 22:
-					                    num = 42;
-					                    break;
-					                case 23:
-					                    num = 43;
-					                    break;
-					                case 24:
-					                    num = 44;
-					                    break;
-					                case 25:
-					                    num = 45;
-					                    break;
-					                case 26:
-					                    num = 46;
-					                    break;
-					                case 27:
-					                    num = 47;
-					                    break;
-					                case 28:
-					                    num = 48;
-					                    break;
-					                case 29:
-					                    num = 49;
-					                    break;
-					                case 30:
-					                    num = 50;
-					                    break;
-					                case 31:
-					                    num = 51;
-					                    break;
-					                case 32:
-					                    num = 59;
-					                    break;
-					                case 33:
-					                    num = 60;
-					                    break;
-					                case 34:
-					                    num = 61;
-					                    break;
-					                case 35:
-					                    num = 82;
-					                    break;
-					            }
-					        }
-					        break;
-					    case 519:
-					    case 518:
-					    case 517:
-					    case 514:
-					    case 496:
-					    case 495:
-					    case 494:
-					    case 272:
-					    case 218:
-					    case 165:
-					    case 157:
-					    case 127:
-					    case 113:
-					    case 112:
-					    case 65:
-					    case 64:
-					        {
-					            int num12 = Main.rand.Next(36);
-					            switch (num12)
-					            {
-					                case 0:
-					                    num = 26;
-					                    break;
-					                case 1:
-					                    num = 27;
-					                    break;
-					                case 2:
-					                    num = 28;
-					                    break;
-					                case 3:
-					                    num = 29;
-					                    break;
-					                case 4:
-					                    num = 30;
-					                    break;
-					                case 5:
-					                    num = 31;
-					                    break;
-					                case 6:
-					                    num = 32;
-					                    break;
-					                case 7:
-					                    num = 33;
-					                    break;
-					                case 8:
-					                    num = 34;
-					                    break;
-					                case 9:
-					                    num = 35;
-					                    break;
-					                case 10:
-					                    num = 52;
-					                    break;
-					                case 11:
-					                    num = 36;
-					                    break;
-					                case 12:
-					                    num = 37;
-					                    break;
-					                case 13:
-					                    num = 38;
-					                    break;
-					                case 14:
-					                    num = 53;
-					                    break;
-					                case 15:
-					                    num = 54;
-					                    break;
-					                case 16:
-					                    num = 55;
-					                    break;
-					                case 17:
-					                    num = 39;
-					                    break;
-					                case 18:
-					                    num = 40;
-					                    break;
-					                case 19:
-					                    num = 56;
-					                    break;
-					                case 20:
-					                    num = 41;
-					                    break;
-					                case 21:
-					                    num = 57;
-					                    break;
-					                case 22:
-					                    num = 42;
-					                    break;
-					                case 23:
-					                    num = 43;
-					                    break;
-					                case 24:
-					                    num = 44;
-					                    break;
-					                case 25:
-					                    num = 45;
-					                    break;
-					                case 26:
-					                    num = 46;
-					                    break;
-					                case 27:
-					                    num = 47;
-					                    break;
-					                case 28:
-					                    num = 48;
-					                    break;
-					                case 29:
-					                    num = 49;
-					                    break;
-					                case 30:
-					                    num = 50;
-					                    break;
-					                case 31:
-					                    num = 51;
-					                    break;
-					                case 32:
-					                    num = 59;
-					                    break;
-					                case 33:
-					                    num = 60;
-					                    break;
-					                case 34:
-					                    num = 61;
-					                    break;
-					                case 35:
-					                    num = 83;
-					                    break;
-					            }
-					        }
-					        break;
-					    case 284:
-					    case 191:
-					    case 119:
-					    case 55:
-					        {
-					            int num13 = Main.rand.Next(14);
-					            switch (num13)
-					            {
-					                case 0:
-					                    num = 36;
-					                    break;
-					                case 1:
-					                    num = 37;
-					                    break;
-					                case 2:
-					                    num = 38;
-					                    break;
-					                case 3:
-					                    num = 53;
-					                    break;
-					                case 4:
-					                    num = 54;
-					                    break;
-					                case 5:
-					                    num = 55;
-					                    break;
-					                case 6:
-					                    num = 39;
-					                    break;
-					                case 7:
-					                    num = 40;
-					                    break;
-					                case 8:
-					                    num = 56;
-					                    break;
-					                case 9:
-					                    num = 41;
-					                    break;
-					                case 10:
-					                    num = 57;
-					                    break;
-					                case 11:
-					                    num = 59;
-					                    break;
-					                case 12:
-					                    num = 60;
-					                    break;
-					                case 13:
-					                    num = 61;
-					                    break;
-					            }
-					        }
-					        break;
-					    default:
-					        if (!this.accessory || this.type == 267 || this.type == 562 || this.type == 563 || this.type == 564 || this.type == 565 || this.type == 566 || this.type == 567 || this.type == 568 || this.type == 569 || this.type == 570 || this.type == 571 || this.type == 572 || this.type == 573 || this.type == 574 || this.type == 576)
-					        {
-					            return false;
-					        }
-					        num = Main.rand.Next(62, 81);
-					        break;
-					}
-				}
-				if (pre == -3)
-				{
-					return true;
-				}
-				if (pre == -1 && (num == 7 || num == 8 || num == 9 || num == 10 || num == 11 || num == 22 || num == 23 || num == 24 || num == 29 || num == 30 || num == 31 || num == 39 || num == 40 || num == 56 || num == 41 || num == 47 || num == 48 || num == 49) && Main.rand.Next(3) != 0)
-				{
-					num = 0;
-				}
-				switch (num)
-				{
-				    case 1:
-				        num5 = 1.12f;
-				        break;
-				    case 2:
-				        num5 = 1.18f;
-				        break;
-				    case 3:
-				        num2 = 1.05f;
-				        num8 = 2;
-				        num5 = 1.05f;
-				        break;
-				    case 4:
-				        num2 = 1.1f;
-				        num5 = 1.1f;
-				        num3 = 1.1f;
-				        break;
-				    case 5:
-				        num2 = 1.15f;
-				        break;
-				    case 6:
-				        num2 = 1.1f;
-				        break;
-				    case 81:
-				        num3 = 1.15f;
-				        num2 = 1.15f;
-				        num8 = 5;
-				        num4 = 0.9f;
-				        num5 = 1.1f;
-				        break;
-				    case 7:
-				        num5 = 0.82f;
-				        break;
-				    case 8:
-				        num3 = 0.85f;
-				        num2 = 0.85f;
-				        num5 = 0.87f;
-				        break;
-				    case 9:
-				        num5 = 0.9f;
-				        break;
-				    case 10:
-				        num2 = 0.85f;
-				        break;
-				    case 11:
-				        num4 = 1.1f;
-				        num3 = 0.9f;
-				        num5 = 0.9f;
-				        break;
-				    case 12:
-				        num3 = 1.1f;
-				        num2 = 1.05f;
-				        num5 = 1.1f;
-				        num4 = 1.15f;
-				        break;
-				    case 13:
-				        num3 = 0.8f;
-				        num2 = 0.9f;
-				        num5 = 1.1f;
-				        break;
-				    case 14:
-				        num3 = 1.15f;
-				        num4 = 1.1f;
-				        break;
-				    case 15:
-				        num3 = 0.9f;
-				        num4 = 0.85f;
-				        break;
-				    case 16:
-				        num2 = 1.1f;
-				        num8 = 3;
-				        break;
-				    case 17:
-				        num4 = 0.85f;
-				        num6 = 1.1f;
-				        break;
-				    case 18:
-				        num4 = 0.9f;
-				        num6 = 1.15f;
-				        break;
-				    case 19:
-				        num3 = 1.15f;
-				        num6 = 1.05f;
-				        break;
-				    case 20:
-				        num3 = 1.05f;
-				        num6 = 1.05f;
-				        num2 = 1.1f;
-				        num4 = 0.95f;
-				        num8 = 2;
-				        break;
-				    case 21:
-				        num3 = 1.15f;
-				        num2 = 1.1f;
-				        break;
-				    case 82:
-				        num3 = 1.15f;
-				        num2 = 1.15f;
-				        num8 = 5;
-				        num4 = 0.9f;
-				        num6 = 1.1f;
-				        break;
-				    case 22:
-				        num3 = 0.9f;
-				        num6 = 0.9f;
-				        num2 = 0.85f;
-				        break;
-				    case 23:
-				        num4 = 1.15f;
-				        num6 = 0.9f;
-				        break;
-				    case 24:
-				        num4 = 1.1f;
-				        num3 = 0.8f;
-				        break;
-				    case 25:
-				        num4 = 1.1f;
-				        num2 = 1.15f;
-				        num8 = 1;
-				        break;
-				    case 58:
-				        num4 = 0.85f;
-				        num2 = 0.85f;
-				        break;
-				    case 26:
-				        num7 = 0.85f;
-				        num2 = 1.1f;
-				        break;
-				    case 27:
-				        num7 = 0.85f;
-				        break;
-				    case 28:
-				        num7 = 0.85f;
-				        num2 = 1.15f;
-				        num3 = 1.05f;
-				        break;
-				    case 83:
-				        num3 = 1.15f;
-				        num2 = 1.15f;
-				        num8 = 5;
-				        num4 = 0.9f;
-				        num7 = 0.9f;
-				        break;
-				    case 29:
-				        num7 = 1.1f;
-				        break;
-				    case 30:
-				        num7 = 1.2f;
-				        num2 = 0.9f;
-				        break;
-				    case 31:
-				        num3 = 0.9f;
-				        num2 = 0.9f;
-				        break;
-				    case 32:
-				        num7 = 1.15f;
-				        num2 = 1.1f;
-				        break;
-				    case 33:
-				        num7 = 1.1f;
-				        num3 = 1.1f;
-				        num4 = 0.9f;
-				        break;
-				    case 34:
-				        num7 = 0.9f;
-				        num3 = 1.1f;
-				        num4 = 1.1f;
-				        num2 = 1.1f;
-				        break;
-				    case 35:
-				        num7 = 1.2f;
-				        num2 = 1.15f;
-				        num3 = 1.15f;
-				        break;
-				    case 52:
-				        num7 = 0.9f;
-				        num2 = 0.9f;
-				        num4 = 0.9f;
-				        break;
-				    case 36:
-				        num8 = 3;
-				        break;
-				    case 37:
-				        num2 = 1.1f;
-				        num8 = 3;
-				        num3 = 1.1f;
-				        break;
-				    case 38:
-				        num3 = 1.15f;
-				        break;
-				    case 53:
-				        num2 = 1.1f;
-				        break;
-				    case 54:
-				        num3 = 1.15f;
-				        break;
-				    case 55:
-				        num3 = 1.15f;
-				        num2 = 1.05f;
-				        break;
-				    case 59:
-				        num3 = 1.15f;
-				        num2 = 1.15f;
-				        num8 = 5;
-				        break;
-				    case 60:
-				        num2 = 1.15f;
-				        num8 = 5;
-				        break;
-				    case 61:
-				        num8 = 5;
-				        break;
-				    case 39:
-				        num2 = 0.7f;
-				        num3 = 0.8f;
-				        break;
-				    case 40:
-				        num2 = 0.85f;
-				        break;
-				    case 56:
-				        num3 = 0.8f;
-				        break;
-				    case 41:
-				        num3 = 0.85f;
-				        num2 = 0.9f;
-				        break;
-				    case 57:
-				        num3 = 0.9f;
-				        num2 = 1.18f;
-				        break;
-				    case 42:
-				        num4 = 0.9f;
-				        break;
-				    case 43:
-				        num2 = 1.1f;
-				        num4 = 0.9f;
-				        break;
-				    case 44:
-				        num4 = 0.9f;
-				        num8 = 3;
-				        break;
-				    case 45:
-				        num4 = 0.95f;
-				        break;
-				    case 46:
-				        num8 = 3;
-				        num4 = 0.94f;
-				        num2 = 1.07f;
-				        break;
-				    case 47:
-				        num4 = 1.15f;
-				        break;
-				    case 48:
-				        num4 = 1.2f;
-				        break;
-				    case 49:
-				        num4 = 1.08f;
-				        break;
-				    case 50:
-				        num2 = 0.8f;
-				        num4 = 1.15f;
-				        break;
-				    case 51:
-				        num3 = 0.9f;
-				        num4 = 0.9f;
-				        num2 = 1.05f;
-				        num8 = 2;
-				        break;
-				}
-				if (num2 != 1f && Math.Round((double)((float)this.damage * num2)) == (double)this.damage)
-				{
-					flag = true;
-					num = -1;
-				}
-				if (num4 != 1f && Math.Round((double)((float)this.useAnimation * num4)) == (double)this.useAnimation)
-				{
-					flag = true;
-					num = -1;
-				}
-				if (num7 != 1f && Math.Round((double)((float)this.mana * num7)) == (double)this.mana)
-				{
-					flag = true;
-					num = -1;
-				}
-				if (num3 != 1f && this.knockBack == 0f)
-				{
-					flag = true;
-					num = -1;
-				}
-				if (pre == -2 && num == 0)
-				{
-					num = -1;
-					flag = true;
-				}
-			}
-			this.damage = (int)Math.Round((double)((float)this.damage * num2));
-			this.useAnimation = (int)Math.Round((double)((float)this.useAnimation * num4));
-			this.useTime = (int)Math.Round((double)((float)this.useTime * num4));
-			this.reuseDelay = (int)Math.Round((double)((float)this.reuseDelay * num4));
-			this.mana = (int)Math.Round((double)((float)this.mana * num7));
-			this.knockBack *= num3;
-			this.scale *= num5;
-			this.shootSpeed *= num6;
-			this.crit += num8;
-			float num14 = 1f * num2 * (2f - num4) * (2f - num7) * num5 * num3 * num6 * (1f + (float)this.crit * 0.02f);
-			switch (num)
-			{
-			    case 77:
-			    case 73:
-			    case 69:
-			    case 62:
-			        num14 *= 1.05f;
-			        break;
-			    case 67:
-			    case 78:
-			    case 74:
-			    case 70:
-			    case 63:
-			        num14 *= 1.1f;
-			        break;
-			    case 66:
-			    case 79:
-			    case 75:
-			    case 71:
-			    case 64:
-			        num14 *= 1.15f;
-			        break;
-			    case 68:
-			    case 80:
-			    case 76:
-			    case 72:
-			    case 65:
-			        num14 *= 1.2f;
-			        break;
-			}
-			if ((double)num14 >= 1.2)
-			{
-				this.rare += 2;
-			}
-			else
-			{
-				if ((double)num14 >= 1.05)
-				{
-					this.rare++;
-				}
-				else
-				{
-					if ((double)num14 <= 0.8)
-					{
-						this.rare -= 2;
-					}
-					else
-					{
-						if ((double)num14 <= 0.95)
-						{
-							this.rare--;
-						}
-					}
-				}
-			}
-			if (this.rare < -1)
-			{
-				this.rare = -1;
-			}
-			if (this.rare > 6)
-			{
-				this.rare = 6;
-			}
-			num14 *= num14;
-			this.value = (int)((float)this.value * num14);
-			this.prefix = (byte)num;
-			return true;
-		}
-		public string AffixName()
-		{
-			string text = "";
-			switch (this.prefix)
-			{
-			    case 1:
-			        text = "Large";
-			        break;
-			    case 2:
-			        text = "Massive";
-			        break;
-			    case 3:
-			        text = "Dangerous";
-			        break;
-			    case 4:
-			        text = "Savage";
-			        break;
-			    case 5:
-			        text = "Sharp";
-			        break;
-			    case 6:
-			        text = "Pointy";
-			        break;
-			    case 7:
-			        text = "Tiny";
-			        break;
-			    case 8:
-			        text = "Terrible";
-			        break;
-			    case 9:
-			        text = "Small";
-			        break;
-			    case 10:
-			        text = "Dull";
-			        break;
-			    case 11:
-			        text = "Unhappy";
-			        break;
-			    case 12:
-			        text = "Bulky";
-			        break;
-			    case 13:
-			        text = "Shameful";
-			        break;
-			    case 14:
-			        text = "Heavy";
-			        break;
-			    case 15:
-			        text = "Light";
-			        break;
-			    case 16:
-			        text = "Sighted";
-			        break;
-			    case 17:
-			        text = "Rapid";
-			        break;
-			    case 18:
-			        text = "Hasty";
-			        break;
-			    case 19:
-			        text = "Intimidating";
-			        break;
-			    case 20:
-			        text = "Deadly";
-			        break;
-			    case 21:
-			        text = "Staunch";
-			        break;
-			    case 22:
-			        text = "Awful";
-			        break;
-			    case 23:
-			        text = "Lethargic";
-			        break;
-			    case 24:
-			        text = "Awkward";
-			        break;
-			    case 25:
-			        text = "Powerful";
-			        break;
-			    case 58:
-			        text = "Frenzying";
-			        break;
-			    case 26:
-			        text = "Mystic";
-			        break;
-			    case 27:
-			        text = "Adept";
-			        break;
-			    case 28:
-			        text = "Masterful";
-			        break;
-			    case 29:
-			        text = "Inept";
-			        break;
-			    case 30:
-			        text = "Ignorant";
-			        break;
-			    case 31:
-			        text = "Deranged";
-			        break;
-			    case 32:
-			        text = "Intense";
-			        break;
-			    case 33:
-			        text = "Taboo";
-			        break;
-			    case 34:
-			        text = "Celestial";
-			        break;
-			    case 35:
-			        text = "Furious";
-			        break;
-			    case 52:
-			        text = "Manic";
-			        break;
-			    case 36:
-			        text = "Keen";
-			        break;
-			    case 37:
-			        text = "Superior";
-			        break;
-			    case 38:
-			        text = "Forceful";
-			        break;
-			    case 53:
-			        text = "Hurtful";
-			        break;
-			    case 54:
-			        text = "Strong";
-			        break;
-			    case 55:
-			        text = "Unpleasant";
-			        break;
-			    case 39:
-			        text = "Broken";
-			        break;
-			    case 40:
-			        text = "Damaged";
-			        break;
-			    case 56:
-			        text = "Weak";
-			        break;
-			    case 41:
-			        text = "Shoddy";
-			        break;
-			    case 57:
-			        text = "Ruthless";
-			        break;
-			    case 42:
-			        text = "Quick";
-			        break;
-			    case 43:
-			        text = "Deadly";
-			        break;
-			    case 44:
-			        text = "Agile";
-			        break;
-			    case 45:
-			        text = "Nimble";
-			        break;
-			    case 46:
-			        text = "Murderous";
-			        break;
-			    case 47:
-			        text = "Slow";
-			        break;
-			    case 48:
-			        text = "Sluggish";
-			        break;
-			    case 49:
-			        text = "Lazy";
-			        break;
-			    case 50:
-			        text = "Annoying";
-			        break;
-			    case 51:
-			        text = "Nasty";
-			        break;
-			    case 59:
-			        text = "Godly";
-			        break;
-			    case 60:
-			        text = "Demonic";
-			        break;
-			    case 61:
-			        text = "Zealous";
-			        break;
-			    case 62:
-			        text = "Hard";
-			        break;
-			    case 63:
-			        text = "Guarding";
-			        break;
-			    case 64:
-			        text = "Armored";
-			        break;
-			    case 65:
-			        text = "Warding";
-			        break;
-			    case 66:
-			        text = "Arcane";
-			        break;
-			    case 67:
-			        text = "Precise";
-			        break;
-			    case 68:
-			        text = "Lucky";
-			        break;
-			    case 69:
-			        text = "Jagged";
-			        break;
-			    case 70:
-			        text = "Spiked";
-			        break;
-			    case 71:
-			        text = "Angry";
-			        break;
-			    case 72:
-			        text = "Menacing";
-			        break;
-			    case 73:
-			        text = "Brisk";
-			        break;
-			    case 74:
-			        text = "Fleeting";
-			        break;
-			    case 75:
-			        text = "Hasty";
-			        break;
-			    case 76:
-			        text = "Quick";
-			        break;
-			    case 77:
-			        text = "Wild";
-			        break;
-			    case 78:
-			        text = "Rash";
-			        break;
-			    case 79:
-			        text = "Intrepid";
-			        break;
-			    case 80:
-			        text = "Violent";
-			        break;
-			    case 81:
-			        text = "Legendary";
-			        break;
-			    case 82:
-			        text = "Unreal";
-			        break;
-			    case 83:
-			        text = "Mythical";
-			        break;
-			}
-			string result = this.name;
-			if (text != "")
-			{
-				result = text + " " + this.name;
-			}
-			return result;
-		}
-		public void RealSetDefaults(string ItemName)
-		{
-			this.name = "";
-			bool flag = false;
-			switch (ItemName)
-			{
-			    case "Gold Pickaxe":
-			        this.SetDefaults(1, false);
-			        this.color = new Color(210, 190, 0, 100);
-			        this.useTime = 17;
-			        this.pick = 55;
-			        this.useAnimation = 20;
-			        this.scale = 1.05f;
-			        this.damage = 6;
-			        this.value = 10000;
-			        this.toolTip = "Can mine Meteorite";
-			        this.netID = -1;
-			        break;
-			    case "Gold Broadsword":
-			        this.SetDefaults(4, false);
-			        this.color = new Color(210, 190, 0, 100);
-			        this.useAnimation = 20;
-			        this.damage = 13;
-			        this.scale = 1.05f;
-			        this.value = 9000;
-			        this.netID = -2;
-			        break;
-			    case "Gold Shortsword":
-			        this.SetDefaults(6, false);
-			        this.color = new Color(210, 190, 0, 100);
-			        this.damage = 11;
-			        this.useAnimation = 11;
-			        this.scale = 0.95f;
-			        this.value = 7000;
-			        this.netID = -3;
-			        break;
-			    case "Gold Axe":
-			        this.SetDefaults(10, false);
-			        this.color = new Color(210, 190, 0, 100);
-			        this.useTime = 18;
-			        this.axe = 11;
-			        this.useAnimation = 26;
-			        this.scale = 1.15f;
-			        this.damage = 7;
-			        this.value = 8000;
-			        this.netID = -4;
-			        break;
-			    case "Gold Hammer":
-			        this.SetDefaults(7, false);
-			        this.color = new Color(210, 190, 0, 100);
-			        this.useAnimation = 28;
-			        this.useTime = 23;
-			        this.scale = 1.25f;
-			        this.damage = 9;
-			        this.hammer = 55;
-			        this.value = 8000;
-			        this.netID = -5;
-			        break;
-			    case "Gold Bow":
-			        this.SetDefaults(99, false);
-			        this.useAnimation = 26;
-			        this.useTime = 26;
-			        this.color = new Color(210, 190, 0, 100);
-			        this.damage = 11;
-			        this.value = 7000;
-			        this.netID = -6;
-			        break;
-			    case "Silver Pickaxe":
-			        this.SetDefaults(1, false);
-			        this.color = new Color(180, 180, 180, 100);
-			        this.useTime = 11;
-			        this.pick = 45;
-			        this.useAnimation = 19;
-			        this.scale = 1.05f;
-			        this.damage = 6;
-			        this.value = 5000;
-			        this.netID = -7;
-			        break;
-			    case "Silver Broadsword":
-			        this.SetDefaults(4, false);
-			        this.color = new Color(180, 180, 180, 100);
-			        this.useAnimation = 21;
-			        this.damage = 11;
-			        this.value = 4500;
-			        this.netID = -8;
-			        break;
-			    case "Silver Shortsword":
-			        this.SetDefaults(6, false);
-			        this.color = new Color(180, 180, 180, 100);
-			        this.damage = 9;
-			        this.useAnimation = 12;
-			        this.scale = 0.95f;
-			        this.value = 3500;
-			        this.netID = -9;
-			        break;
-			    case "Silver Axe":
-			        this.SetDefaults(10, false);
-			        this.color = new Color(180, 180, 180, 100);
-			        this.useTime = 18;
-			        this.axe = 10;
-			        this.useAnimation = 26;
-			        this.scale = 1.15f;
-			        this.damage = 6;
-			        this.value = 4000;
-			        this.netID = -10;
-			        break;
-			    case "Silver Hammer":
-			        this.SetDefaults(7, false);
-			        this.color = new Color(180, 180, 180, 100);
-			        this.useAnimation = 29;
-			        this.useTime = 19;
-			        this.scale = 1.25f;
-			        this.damage = 9;
-			        this.hammer = 45;
-			        this.value = 4000;
-			        this.netID = -11;
-			        break;
-			    case "Silver Bow":
-			        this.SetDefaults(99, false);
-			        this.useAnimation = 27;
-			        this.useTime = 27;
-			        this.color = new Color(180, 180, 180, 100);
-			        this.damage = 9;
-			        this.value = 3500;
-			        this.netID = -12;
-			        break;
-			    case "Copper Pickaxe":
-			        this.SetDefaults(1, false);
-			        this.color = new Color(180, 100, 45, 80);
-			        this.useTime = 15;
-			        this.pick = 35;
-			        this.useAnimation = 23;
-			        this.damage = 4;
-			        this.scale = 0.9f;
-			        this.tileBoost = -1;
-			        this.value = 500;
-			        this.netID = -13;
-			        break;
-			    case "Copper Broadsword":
-			        this.SetDefaults(4, false);
-			        this.color = new Color(180, 100, 45, 80);
-			        this.useAnimation = 23;
-			        this.damage = 8;
-			        this.value = 450;
-			        this.netID = -14;
-			        break;
-			    case "Copper Shortsword":
-			        this.SetDefaults(6, false);
-			        this.color = new Color(180, 100, 45, 80);
-			        this.damage = 5;
-			        this.useAnimation = 13;
-			        this.scale = 0.8f;
-			        this.value = 350;
-			        this.netID = -15;
-			        break;
-			    case "Copper Axe":
-			        this.SetDefaults(10, false);
-			        this.color = new Color(180, 100, 45, 80);
-			        this.useTime = 21;
-			        this.axe = 7;
-			        this.useAnimation = 30;
-			        this.scale = 1f;
-			        this.damage = 3;
-			        this.tileBoost = -1;
-			        this.value = 400;
-			        this.netID = -16;
-			        break;
-			    case "Copper Hammer":
-			        this.SetDefaults(7, false);
-			        this.color = new Color(180, 100, 45, 80);
-			        this.useAnimation = 33;
-			        this.useTime = 23;
-			        this.scale = 1.1f;
-			        this.damage = 4;
-			        this.hammer = 35;
-			        this.tileBoost = -1;
-			        this.value = 400;
-			        this.netID = -17;
-			        break;
-			    case "Copper Bow":
-			        this.SetDefaults(99, false);
-			        this.useAnimation = 29;
-			        this.useTime = 29;
-			        this.color = new Color(180, 100, 45, 80);
-			        this.damage = 6;
-			        this.value = 350;
-			        this.netID = -18;
-			        break;
-			    case "Blue Phasesaber":
-			        this.SetDefaults(198, false);
-			        this.damage = 41;
-			        this.scale = 1.15f;
-			        flag = true;
-			        this.autoReuse = true;
-			        this.useTurn = true;
-			        this.rare = 4;
-			        this.netID = -19;
-			        break;
-			    case "Red Phasesaber":
-			        this.SetDefaults(199, false);
-			        this.damage = 41;
-			        this.scale = 1.15f;
-			        flag = true;
-			        this.autoReuse = true;
-			        this.useTurn = true;
-			        this.rare = 4;
-			        this.netID = -20;
-			        break;
-			    case "Green Phasesaber":
-			        this.SetDefaults(200, false);
-			        this.damage = 41;
-			        this.scale = 1.15f;
-			        flag = true;
-			        this.autoReuse = true;
-			        this.useTurn = true;
-			        this.rare = 4;
-			        this.netID = -21;
-			        break;
-			    case "Purple Phasesaber":
-			        this.SetDefaults(201, false);
-			        this.damage = 41;
-			        this.scale = 1.15f;
-			        flag = true;
-			        this.autoReuse = true;
-			        this.useTurn = true;
-			        this.rare = 4;
-			        this.netID = -22;
-			        break;
-			    case "White Phasesaber":
-			        this.SetDefaults(202, false);
-			        this.damage = 41;
-			        this.scale = 1.15f;
-			        flag = true;
-			        this.autoReuse = true;
-			        this.useTurn = true;
-			        this.rare = 4;
-			        this.netID = -23;
-			        break;
-			    case "Yellow Phasesaber":
-			        this.SetDefaults(203, false);
-			        this.damage = 41;
-			        this.scale = 1.15f;
-			        flag = true;
-			        this.autoReuse = true;
-			        this.useTurn = true;
-			        this.rare = 4;
-			        this.netID = -24;
-			        break;
-			    default:
-			        if (ItemName != "")
-			        {
-			            for (int i = 0; i < 603; i++)
-			            {
-			                if (Main.itemName[i] == ItemName)
-			                {
-			                    this.SetDefaults(i, false);
-			                    this.checkMat();
-			                    return;
-			                }
-			            }
-			            this.name = "";
-			            this.stack = 0;
-			            this.type = 0;
-			        }
-			        break;
-			}
-			if (this.type != 0)
-			{
-				if (flag)
-				{
-					this.material = false;
-				}
-				else
-				{
-					this.checkMat();
-				}
-				this.name = ItemName;
-			}
-		}
-		public bool checkMat()
-		{
-			if (this.type >= 71 && this.type <= 74)
-			{
-				this.material = false;
-				return false;
-			}
-			for (int i = 0; i < Recipe.numRecipes; i++)
-			{
-				int num = 0;
-				while (Main.recipe[i].requiredItem[num].type > 0)
-				{
-					if (this.name == Main.recipe[i].requiredItem[num].name)
-					{
-						this.material = true;
-						return true;
-					}
-					num++;
-				}
-			}
-			this.material = false;
-			return false;
-		}
-		public void RealnetDefaults(int type)
-		{
-			if (type < 0)
-			{
-				if (type == -1)
-				{
-					this.SetDefaults("Gold Pickaxe");
-					return;
-				}
-				if (type == -2)
-				{
-					this.SetDefaults("Gold Broadsword");
-					return;
-				}
-				if (type == -3)
-				{
-					this.SetDefaults("Gold Shortsword");
-					return;
-				}
-				if (type == -4)
-				{
-					this.SetDefaults("Gold Axe");
-					return;
-				}
-				if (type == -5)
-				{
-					this.SetDefaults("Gold Hammer");
-					return;
-				}
-				if (type == -6)
-				{
-					this.SetDefaults("Gold Bow");
-					return;
-				}
-				if (type == -7)
-				{
-					this.SetDefaults("Silver Pickaxe");
-					return;
-				}
-				if (type == -8)
-				{
-					this.SetDefaults("Silver Broadsword");
-					return;
-				}
-				if (type == -9)
-				{
-					this.SetDefaults("Silver Shortsword");
-					return;
-				}
-				if (type == -10)
-				{
-					this.SetDefaults("Silver Axe");
-					return;
-				}
-				if (type == -11)
-				{
-					this.SetDefaults("Silver Hammer");
-					return;
-				}
-				if (type == -12)
-				{
-					this.SetDefaults("Silver Bow");
-					return;
-				}
-				if (type == -13)
-				{
-					this.SetDefaults("Copper Pickaxe");
-					return;
-				}
-				if (type == -14)
-				{
-					this.SetDefaults("Copper Broadsword");
-					return;
-				}
-				if (type == -15)
-				{
-					this.SetDefaults("Copper Shortsword");
-					return;
-				}
-				if (type == -16)
-				{
-					this.SetDefaults("Copper Axe");
-					return;
-				}
-				if (type == -17)
-				{
-					this.SetDefaults("Copper Hammer");
-					return;
-				}
-				if (type == -18)
-				{
-					this.SetDefaults("Copper Bow");
-					return;
-				}
-				if (type == -19)
-				{
-					this.SetDefaults("Blue Phasesaber");
-					return;
-				}
-				if (type == -20)
-				{
-					this.SetDefaults("Red Phasesaber");
-					return;
-				}
-				if (type == -21)
-				{
-					this.SetDefaults("Green Phasesaber");
-					return;
-				}
-				if (type == -22)
-				{
-					this.SetDefaults("Purple Phasesaber");
-					return;
-				}
-				if (type == -23)
-				{
-					this.SetDefaults("White Phasesaber");
-					return;
-				}
-				if (type == -24)
-				{
-					this.SetDefaults("Yellow Phasesaber");
-					return;
-				}
-			}
-			else
-			{
-				this.SetDefaults(type, false);
-			}
-		}
-		public void RealSetDefaults(int Type, bool noMatCheck = false)
-		{
-			if (Main.netMode == 1 || Main.netMode == 2)
-			{
-				this.owner = 255;
-			}
-			else
-			{
-				this.owner = Main.myPlayer;
-			}
-			this.netID = 0;
-			this.prefix = 0;
-			this.crit = 0;
-			this.mech = false;
-			this.reuseDelay = 0;
-			this.melee = false;
-			this.magic = false;
-			this.ranged = false;
-			this.placeStyle = 0;
-			this.buffTime = 0;
-			this.buffType = 0;
-			this.material = false;
-			this.noWet = false;
-			this.vanity = false;
-			this.mana = 0;
-			this.wet = false;
-			this.wetCount = 0;
-			this.lavaWet = false;
-			this.channel = false;
-			this.manaIncrease = 0;
-			this.release = 0;
-			this.noMelee = false;
-			this.noUseGraphic = false;
-			this.lifeRegen = 0;
-			this.shootSpeed = 0f;
-			this.active = true;
-			this.alpha = 0;
-			this.ammo = 0;
-			this.useAmmo = 0;
-			this.autoReuse = false;
-			this.accessory = false;
-			this.axe = 0;
-			this.healMana = 0;
-			this.bodySlot = -1;
-			this.legSlot = -1;
-			this.headSlot = -1;
-			this.potion = false;
-			this.color = default(Color);
-			this.consumable = false;
-			this.createTile = -1;
-			this.createWall = -1;
-			this.damage = -1;
-			this.defense = 0;
-			this.hammer = 0;
-			this.healLife = 0;
-			this.holdStyle = 0;
-			this.knockBack = 0f;
-			this.maxStack = 1;
-			this.pick = 0;
-			this.rare = 0;
-			this.scale = 1f;
-			this.shoot = 0;
-			this.stack = 1;
-			this.toolTip = null;
-			this.toolTip2 = null;
-			this.tileBoost = 0;
-			this.type = Type;
-			this.useStyle = 0;
-			this.useSound = 0;
-			this.useTime = 100;
-			this.useAnimation = 100;
-			this.value = 0;
-			this.useTurn = false;
-			this.buy = false;
+    public class Item
+    {
+        public static int potionDelay = 3600;
+        public static int[] headType = new int[45];
+        public static int[] bodyType = new int[26];
+        public static int[] legType = new int[25];
+        public bool mech;
+        public bool wet;
+        public byte wetCount;
+        public bool lavaWet;
+        public Vector2 position;
+        public Vector2 velocity;
+        public int width;
+        public int height;
+        public bool active;
+        public int noGrabDelay;
+        public bool beingGrabbed;
+        public int spawnTime;
+        public bool wornArmor;
+        public int ownIgnore = -1;
+        public int ownTime;
+        public int keepTime;
+        public int type;
+        public string name;
+        public int holdStyle;
+        public int useStyle;
+        public bool channel;
+        public bool accessory;
+        public int useAnimation;
+        public int useTime;
+        public int stack;
+        public int maxStack;
+        public int pick;
+        public int axe;
+        public int hammer;
+        public int tileBoost;
+        public int createTile = -1;
+        public int createWall = -1;
+        public int placeStyle;
+        public int damage;
+        public float knockBack;
+        public int healLife;
+        public int healMana;
+        public bool potion;
+        public bool consumable;
+        public bool autoReuse;
+        public bool useTurn;
+        public Color color;
+        public int alpha;
+        public float scale = 1f;
+        public int useSound;
+        public int defense;
+        public int headSlot = -1;
+        public int bodySlot = -1;
+        public int legSlot = -1;
+        public string toolTip;
+        public string toolTip2;
+        public int owner = 255;
+        public int rare;
+        public int shoot;
+        public float shootSpeed;
+        public int ammo;
+        public int useAmmo;
+        public int lifeRegen;
+        public int manaIncrease;
+        public bool buyOnce;
+        public int mana;
+        public bool noUseGraphic;
+        public bool noMelee;
+        public int release;
+        public int value;
+        public bool buy;
+        public bool social;
+        public bool vanity;
+        public bool material;
+        public bool noWet;
+        public int buffType;
+        public int buffTime;
+        public int netID;
+        public int crit;
+        public byte prefix;
+        public bool melee;
+        public bool magic;
+        public bool ranged;
+        public int reuseDelay;
+        public bool Prefix(int pre)
+        {
+            if (pre == 0 || this.type == 0)
+            {
+                return false;
+            }
+            int num = pre;
+            float num2 = 1f;
+            float num3 = 1f;
+            float num4 = 1f;
+            float num5 = 1f;
+            float num6 = 1f;
+            float num7 = 1f;
+            int num8 = 0;
+            bool flag = true;
+            while (flag)
+            {
+                num2 = 1f;
+                num3 = 1f;
+                num4 = 1f;
+                num5 = 1f;
+                num6 = 1f;
+                num7 = 1f;
+                num8 = 0;
+                flag = false;
+                if (num == -1 && Main.rand.Next(4) == 0)
+                {
+                    num = 0;
+                }
+                if (pre < -1)
+                {
+                    num = -1;
+                }
+                if (num == -1 || num == -2 || num == -3)
+                {
+                    switch (this.type)
+                    {
+                        case 484:
+                        case 483:
+                        case 482:
+                        case 426:
+                        case 368:
+                        case 367:
+                        case 273:
+                        case 217:
+                        case 213:
+                        case 204:
+                        case 203:
+                        case 202:
+                        case 201:
+                        case 200:
+                        case 199:
+                        case 198:
+                        case 196:
+                        case 190:
+                        case 155:
+                        case 122:
+                        case 121:
+                        case 104:
+                        case 103:
+                        case 46:
+                        case 45:
+                        case 24:
+                        case 10:
+                        case 7:
+                        case 6:
+                        case 4:
+                        case 1:
+                            {
+                                int num9 = Main.rand.Next(40);
+                                switch (num9)
+                                {
+                                    case 0:
+                                        num = 1;
+                                        break;
+                                    case 1:
+                                        num = 2;
+                                        break;
+                                    case 2:
+                                        num = 3;
+                                        break;
+                                    case 3:
+                                        num = 4;
+                                        break;
+                                    case 4:
+                                        num = 5;
+                                        break;
+                                    case 5:
+                                        num = 6;
+                                        break;
+                                    case 6:
+                                        num = 7;
+                                        break;
+                                    case 7:
+                                        num = 8;
+                                        break;
+                                    case 8:
+                                        num = 9;
+                                        break;
+                                    case 9:
+                                        num = 10;
+                                        break;
+                                    case 10:
+                                        num = 11;
+                                        break;
+                                    case 11:
+                                        num = 12;
+                                        break;
+                                    case 12:
+                                        num = 13;
+                                        break;
+                                    case 13:
+                                        num = 14;
+                                        break;
+                                    case 14:
+                                        num = 15;
+                                        break;
+                                    case 15:
+                                        num = 36;
+                                        break;
+                                    case 16:
+                                        num = 37;
+                                        break;
+                                    case 17:
+                                        num = 38;
+                                        break;
+                                    case 18:
+                                        num = 53;
+                                        break;
+                                    case 19:
+                                        num = 54;
+                                        break;
+                                    case 20:
+                                        num = 55;
+                                        break;
+                                    case 21:
+                                        num = 39;
+                                        break;
+                                    case 22:
+                                        num = 40;
+                                        break;
+                                    case 23:
+                                        num = 56;
+                                        break;
+                                    case 24:
+                                        num = 41;
+                                        break;
+                                    case 25:
+                                        num = 57;
+                                        break;
+                                    case 26:
+                                        num = 42;
+                                        break;
+                                    case 27:
+                                        num = 43;
+                                        break;
+                                    case 28:
+                                        num = 44;
+                                        break;
+                                    case 29:
+                                        num = 45;
+                                        break;
+                                    case 30:
+                                        num = 46;
+                                        break;
+                                    case 31:
+                                        num = 47;
+                                        break;
+                                    case 32:
+                                        num = 48;
+                                        break;
+                                    case 33:
+                                        num = 49;
+                                        break;
+                                    case 34:
+                                        num = 50;
+                                        break;
+                                    case 35:
+                                        num = 51;
+                                        break;
+                                    case 36:
+                                        num = 59;
+                                        break;
+                                    case 37:
+                                        num = 60;
+                                        break;
+                                    case 38:
+                                        num = 61;
+                                        break;
+                                    case 39:
+                                        num = 81;
+                                        break;
+                                }
+                            }
+                            break;
+                        case 579:
+                        case 550:
+                        case 537:
+                        case 406:
+                        case 390:
+                        case 389:
+                        case 388:
+                        case 387:
+                        case 386:
+                        case 385:
+                        case 384:
+                        case 383:
+                        case 280:
+                        case 277:
+                        case 274:
+                        case 220:
+                        case 163:
+                        case 160:
+                        case 162:
+                            {
+                                int num10 = Main.rand.Next(14);
+                                switch (num10)
+                                {
+                                    case 0:
+                                        num = 36;
+                                        break;
+                                    case 1:
+                                        num = 37;
+                                        break;
+                                    case 2:
+                                        num = 38;
+                                        break;
+                                    case 3:
+                                        num = 53;
+                                        break;
+                                    case 4:
+                                        num = 54;
+                                        break;
+                                    case 5:
+                                        num = 55;
+                                        break;
+                                    case 6:
+                                        num = 39;
+                                        break;
+                                    case 7:
+                                        num = 40;
+                                        break;
+                                    case 8:
+                                        num = 56;
+                                        break;
+                                    case 9:
+                                        num = 41;
+                                        break;
+                                    case 10:
+                                        num = 57;
+                                        break;
+                                    case 11:
+                                        num = 59;
+                                        break;
+                                    case 12:
+                                        num = 60;
+                                        break;
+                                    case 13:
+                                        num = 61;
+                                        break;
+                                }
+                            }
+                            break;
+                        case 578:
+                        case 534:
+                        case 533:
+                        case 506:
+                        case 481:
+                        case 436:
+                        case 435:
+                        case 434:
+                        case 281:
+                        case 266:
+                        case 219:
+                        case 197:
+                        case 164:
+                        case 120:
+                        case 99:
+                        case 98:
+                        case 96:
+                        case 95:
+                        case 44:
+                        case 39:
+                            {
+                                int num11 = Main.rand.Next(36);
+                                switch (num11)
+                                {
+                                    case 0:
+                                        num = 16;
+                                        break;
+                                    case 1:
+                                        num = 17;
+                                        break;
+                                    case 2:
+                                        num = 18;
+                                        break;
+                                    case 3:
+                                        num = 19;
+                                        break;
+                                    case 4:
+                                        num = 20;
+                                        break;
+                                    case 5:
+                                        num = 21;
+                                        break;
+                                    case 6:
+                                        num = 22;
+                                        break;
+                                    case 7:
+                                        num = 23;
+                                        break;
+                                    case 8:
+                                        num = 24;
+                                        break;
+                                    case 9:
+                                        num = 25;
+                                        break;
+                                    case 10:
+                                        num = 58;
+                                        break;
+                                    case 11:
+                                        num = 36;
+                                        break;
+                                    case 12:
+                                        num = 37;
+                                        break;
+                                    case 13:
+                                        num = 38;
+                                        break;
+                                    case 14:
+                                        num = 53;
+                                        break;
+                                    case 15:
+                                        num = 54;
+                                        break;
+                                    case 16:
+                                        num = 55;
+                                        break;
+                                    case 17:
+                                        num = 39;
+                                        break;
+                                    case 18:
+                                        num = 40;
+                                        break;
+                                    case 19:
+                                        num = 56;
+                                        break;
+                                    case 20:
+                                        num = 41;
+                                        break;
+                                    case 21:
+                                        num = 57;
+                                        break;
+                                    case 22:
+                                        num = 42;
+                                        break;
+                                    case 23:
+                                        num = 43;
+                                        break;
+                                    case 24:
+                                        num = 44;
+                                        break;
+                                    case 25:
+                                        num = 45;
+                                        break;
+                                    case 26:
+                                        num = 46;
+                                        break;
+                                    case 27:
+                                        num = 47;
+                                        break;
+                                    case 28:
+                                        num = 48;
+                                        break;
+                                    case 29:
+                                        num = 49;
+                                        break;
+                                    case 30:
+                                        num = 50;
+                                        break;
+                                    case 31:
+                                        num = 51;
+                                        break;
+                                    case 32:
+                                        num = 59;
+                                        break;
+                                    case 33:
+                                        num = 60;
+                                        break;
+                                    case 34:
+                                        num = 61;
+                                        break;
+                                    case 35:
+                                        num = 82;
+                                        break;
+                                }
+                            }
+                            break;
+                        case 519:
+                        case 518:
+                        case 517:
+                        case 514:
+                        case 496:
+                        case 495:
+                        case 494:
+                        case 272:
+                        case 218:
+                        case 165:
+                        case 157:
+                        case 127:
+                        case 113:
+                        case 112:
+                        case 65:
+                        case 64:
+                            {
+                                int num12 = Main.rand.Next(36);
+                                switch (num12)
+                                {
+                                    case 0:
+                                        num = 26;
+                                        break;
+                                    case 1:
+                                        num = 27;
+                                        break;
+                                    case 2:
+                                        num = 28;
+                                        break;
+                                    case 3:
+                                        num = 29;
+                                        break;
+                                    case 4:
+                                        num = 30;
+                                        break;
+                                    case 5:
+                                        num = 31;
+                                        break;
+                                    case 6:
+                                        num = 32;
+                                        break;
+                                    case 7:
+                                        num = 33;
+                                        break;
+                                    case 8:
+                                        num = 34;
+                                        break;
+                                    case 9:
+                                        num = 35;
+                                        break;
+                                    case 10:
+                                        num = 52;
+                                        break;
+                                    case 11:
+                                        num = 36;
+                                        break;
+                                    case 12:
+                                        num = 37;
+                                        break;
+                                    case 13:
+                                        num = 38;
+                                        break;
+                                    case 14:
+                                        num = 53;
+                                        break;
+                                    case 15:
+                                        num = 54;
+                                        break;
+                                    case 16:
+                                        num = 55;
+                                        break;
+                                    case 17:
+                                        num = 39;
+                                        break;
+                                    case 18:
+                                        num = 40;
+                                        break;
+                                    case 19:
+                                        num = 56;
+                                        break;
+                                    case 20:
+                                        num = 41;
+                                        break;
+                                    case 21:
+                                        num = 57;
+                                        break;
+                                    case 22:
+                                        num = 42;
+                                        break;
+                                    case 23:
+                                        num = 43;
+                                        break;
+                                    case 24:
+                                        num = 44;
+                                        break;
+                                    case 25:
+                                        num = 45;
+                                        break;
+                                    case 26:
+                                        num = 46;
+                                        break;
+                                    case 27:
+                                        num = 47;
+                                        break;
+                                    case 28:
+                                        num = 48;
+                                        break;
+                                    case 29:
+                                        num = 49;
+                                        break;
+                                    case 30:
+                                        num = 50;
+                                        break;
+                                    case 31:
+                                        num = 51;
+                                        break;
+                                    case 32:
+                                        num = 59;
+                                        break;
+                                    case 33:
+                                        num = 60;
+                                        break;
+                                    case 34:
+                                        num = 61;
+                                        break;
+                                    case 35:
+                                        num = 83;
+                                        break;
+                                }
+                            }
+                            break;
+                        case 284:
+                        case 191:
+                        case 119:
+                        case 55:
+                            {
+                                int num13 = Main.rand.Next(14);
+                                switch (num13)
+                                {
+                                    case 0:
+                                        num = 36;
+                                        break;
+                                    case 1:
+                                        num = 37;
+                                        break;
+                                    case 2:
+                                        num = 38;
+                                        break;
+                                    case 3:
+                                        num = 53;
+                                        break;
+                                    case 4:
+                                        num = 54;
+                                        break;
+                                    case 5:
+                                        num = 55;
+                                        break;
+                                    case 6:
+                                        num = 39;
+                                        break;
+                                    case 7:
+                                        num = 40;
+                                        break;
+                                    case 8:
+                                        num = 56;
+                                        break;
+                                    case 9:
+                                        num = 41;
+                                        break;
+                                    case 10:
+                                        num = 57;
+                                        break;
+                                    case 11:
+                                        num = 59;
+                                        break;
+                                    case 12:
+                                        num = 60;
+                                        break;
+                                    case 13:
+                                        num = 61;
+                                        break;
+                                }
+                            }
+                            break;
+                        default:
+                            if (!this.accessory || this.type == 267 || this.type == 562 || this.type == 563 || this.type == 564 || this.type == 565 || this.type == 566 || this.type == 567 || this.type == 568 || this.type == 569 || this.type == 570 || this.type == 571 || this.type == 572 || this.type == 573 || this.type == 574 || this.type == 576)
+                            {
+                                return false;
+                            }
+                            num = Main.rand.Next(62, 81);
+                            break;
+                    }
+                }
+                if (pre == -3)
+                {
+                    return true;
+                }
+                if (pre == -1 && (num == 7 || num == 8 || num == 9 || num == 10 || num == 11 || num == 22 || num == 23 || num == 24 || num == 29 || num == 30 || num == 31 || num == 39 || num == 40 || num == 56 || num == 41 || num == 47 || num == 48 || num == 49) && Main.rand.Next(3) != 0)
+                {
+                    num = 0;
+                }
+                switch (num)
+                {
+                    case 1:
+                        num5 = 1.12f;
+                        break;
+                    case 2:
+                        num5 = 1.18f;
+                        break;
+                    case 3:
+                        num2 = 1.05f;
+                        num8 = 2;
+                        num5 = 1.05f;
+                        break;
+                    case 4:
+                        num2 = 1.1f;
+                        num5 = 1.1f;
+                        num3 = 1.1f;
+                        break;
+                    case 5:
+                        num2 = 1.15f;
+                        break;
+                    case 6:
+                        num2 = 1.1f;
+                        break;
+                    case 81:
+                        num3 = 1.15f;
+                        num2 = 1.15f;
+                        num8 = 5;
+                        num4 = 0.9f;
+                        num5 = 1.1f;
+                        break;
+                    case 7:
+                        num5 = 0.82f;
+                        break;
+                    case 8:
+                        num3 = 0.85f;
+                        num2 = 0.85f;
+                        num5 = 0.87f;
+                        break;
+                    case 9:
+                        num5 = 0.9f;
+                        break;
+                    case 10:
+                        num2 = 0.85f;
+                        break;
+                    case 11:
+                        num4 = 1.1f;
+                        num3 = 0.9f;
+                        num5 = 0.9f;
+                        break;
+                    case 12:
+                        num3 = 1.1f;
+                        num2 = 1.05f;
+                        num5 = 1.1f;
+                        num4 = 1.15f;
+                        break;
+                    case 13:
+                        num3 = 0.8f;
+                        num2 = 0.9f;
+                        num5 = 1.1f;
+                        break;
+                    case 14:
+                        num3 = 1.15f;
+                        num4 = 1.1f;
+                        break;
+                    case 15:
+                        num3 = 0.9f;
+                        num4 = 0.85f;
+                        break;
+                    case 16:
+                        num2 = 1.1f;
+                        num8 = 3;
+                        break;
+                    case 17:
+                        num4 = 0.85f;
+                        num6 = 1.1f;
+                        break;
+                    case 18:
+                        num4 = 0.9f;
+                        num6 = 1.15f;
+                        break;
+                    case 19:
+                        num3 = 1.15f;
+                        num6 = 1.05f;
+                        break;
+                    case 20:
+                        num3 = 1.05f;
+                        num6 = 1.05f;
+                        num2 = 1.1f;
+                        num4 = 0.95f;
+                        num8 = 2;
+                        break;
+                    case 21:
+                        num3 = 1.15f;
+                        num2 = 1.1f;
+                        break;
+                    case 82:
+                        num3 = 1.15f;
+                        num2 = 1.15f;
+                        num8 = 5;
+                        num4 = 0.9f;
+                        num6 = 1.1f;
+                        break;
+                    case 22:
+                        num3 = 0.9f;
+                        num6 = 0.9f;
+                        num2 = 0.85f;
+                        break;
+                    case 23:
+                        num4 = 1.15f;
+                        num6 = 0.9f;
+                        break;
+                    case 24:
+                        num4 = 1.1f;
+                        num3 = 0.8f;
+                        break;
+                    case 25:
+                        num4 = 1.1f;
+                        num2 = 1.15f;
+                        num8 = 1;
+                        break;
+                    case 58:
+                        num4 = 0.85f;
+                        num2 = 0.85f;
+                        break;
+                    case 26:
+                        num7 = 0.85f;
+                        num2 = 1.1f;
+                        break;
+                    case 27:
+                        num7 = 0.85f;
+                        break;
+                    case 28:
+                        num7 = 0.85f;
+                        num2 = 1.15f;
+                        num3 = 1.05f;
+                        break;
+                    case 83:
+                        num3 = 1.15f;
+                        num2 = 1.15f;
+                        num8 = 5;
+                        num4 = 0.9f;
+                        num7 = 0.9f;
+                        break;
+                    case 29:
+                        num7 = 1.1f;
+                        break;
+                    case 30:
+                        num7 = 1.2f;
+                        num2 = 0.9f;
+                        break;
+                    case 31:
+                        num3 = 0.9f;
+                        num2 = 0.9f;
+                        break;
+                    case 32:
+                        num7 = 1.15f;
+                        num2 = 1.1f;
+                        break;
+                    case 33:
+                        num7 = 1.1f;
+                        num3 = 1.1f;
+                        num4 = 0.9f;
+                        break;
+                    case 34:
+                        num7 = 0.9f;
+                        num3 = 1.1f;
+                        num4 = 1.1f;
+                        num2 = 1.1f;
+                        break;
+                    case 35:
+                        num7 = 1.2f;
+                        num2 = 1.15f;
+                        num3 = 1.15f;
+                        break;
+                    case 52:
+                        num7 = 0.9f;
+                        num2 = 0.9f;
+                        num4 = 0.9f;
+                        break;
+                    case 36:
+                        num8 = 3;
+                        break;
+                    case 37:
+                        num2 = 1.1f;
+                        num8 = 3;
+                        num3 = 1.1f;
+                        break;
+                    case 38:
+                        num3 = 1.15f;
+                        break;
+                    case 53:
+                        num2 = 1.1f;
+                        break;
+                    case 54:
+                        num3 = 1.15f;
+                        break;
+                    case 55:
+                        num3 = 1.15f;
+                        num2 = 1.05f;
+                        break;
+                    case 59:
+                        num3 = 1.15f;
+                        num2 = 1.15f;
+                        num8 = 5;
+                        break;
+                    case 60:
+                        num2 = 1.15f;
+                        num8 = 5;
+                        break;
+                    case 61:
+                        num8 = 5;
+                        break;
+                    case 39:
+                        num2 = 0.7f;
+                        num3 = 0.8f;
+                        break;
+                    case 40:
+                        num2 = 0.85f;
+                        break;
+                    case 56:
+                        num3 = 0.8f;
+                        break;
+                    case 41:
+                        num3 = 0.85f;
+                        num2 = 0.9f;
+                        break;
+                    case 57:
+                        num3 = 0.9f;
+                        num2 = 1.18f;
+                        break;
+                    case 42:
+                        num4 = 0.9f;
+                        break;
+                    case 43:
+                        num2 = 1.1f;
+                        num4 = 0.9f;
+                        break;
+                    case 44:
+                        num4 = 0.9f;
+                        num8 = 3;
+                        break;
+                    case 45:
+                        num4 = 0.95f;
+                        break;
+                    case 46:
+                        num8 = 3;
+                        num4 = 0.94f;
+                        num2 = 1.07f;
+                        break;
+                    case 47:
+                        num4 = 1.15f;
+                        break;
+                    case 48:
+                        num4 = 1.2f;
+                        break;
+                    case 49:
+                        num4 = 1.08f;
+                        break;
+                    case 50:
+                        num2 = 0.8f;
+                        num4 = 1.15f;
+                        break;
+                    case 51:
+                        num3 = 0.9f;
+                        num4 = 0.9f;
+                        num2 = 1.05f;
+                        num8 = 2;
+                        break;
+                }
+                if (num2 != 1f && Math.Round((double)((float)this.damage * num2)) == (double)this.damage)
+                {
+                    flag = true;
+                    num = -1;
+                }
+                if (num4 != 1f && Math.Round((double)((float)this.useAnimation * num4)) == (double)this.useAnimation)
+                {
+                    flag = true;
+                    num = -1;
+                }
+                if (num7 != 1f && Math.Round((double)((float)this.mana * num7)) == (double)this.mana)
+                {
+                    flag = true;
+                    num = -1;
+                }
+                if (num3 != 1f && this.knockBack == 0f)
+                {
+                    flag = true;
+                    num = -1;
+                }
+                if (pre == -2 && num == 0)
+                {
+                    num = -1;
+                    flag = true;
+                }
+            }
+            this.damage = (int)Math.Round((double)((float)this.damage * num2));
+            this.useAnimation = (int)Math.Round((double)((float)this.useAnimation * num4));
+            this.useTime = (int)Math.Round((double)((float)this.useTime * num4));
+            this.reuseDelay = (int)Math.Round((double)((float)this.reuseDelay * num4));
+            this.mana = (int)Math.Round((double)((float)this.mana * num7));
+            this.knockBack *= num3;
+            this.scale *= num5;
+            this.shootSpeed *= num6;
+            this.crit += num8;
+            float num14 = 1f * num2 * (2f - num4) * (2f - num7) * num5 * num3 * num6 * (1f + (float)this.crit * 0.02f);
+            switch (num)
+            {
+                case 77:
+                case 73:
+                case 69:
+                case 62:
+                    num14 *= 1.05f;
+                    break;
+                case 67:
+                case 78:
+                case 74:
+                case 70:
+                case 63:
+                    num14 *= 1.1f;
+                    break;
+                case 66:
+                case 79:
+                case 75:
+                case 71:
+                case 64:
+                    num14 *= 1.15f;
+                    break;
+                case 68:
+                case 80:
+                case 76:
+                case 72:
+                case 65:
+                    num14 *= 1.2f;
+                    break;
+            }
+            if ((double)num14 >= 1.2)
+            {
+                this.rare += 2;
+            }
+            else
+            {
+                if ((double)num14 >= 1.05)
+                {
+                    this.rare++;
+                }
+                else
+                {
+                    if ((double)num14 <= 0.8)
+                    {
+                        this.rare -= 2;
+                    }
+                    else
+                    {
+                        if ((double)num14 <= 0.95)
+                        {
+                            this.rare--;
+                        }
+                    }
+                }
+            }
+            if (this.rare < -1)
+            {
+                this.rare = -1;
+            }
+            if (this.rare > 6)
+            {
+                this.rare = 6;
+            }
+            num14 *= num14;
+            this.value = (int)((float)this.value * num14);
+            this.prefix = (byte)num;
+            return true;
+        }
+        public string AffixName()
+        {
+            string text = "";
+            switch (this.prefix)
+            {
+                case 1:
+                    text = "Large";
+                    break;
+                case 2:
+                    text = "Massive";
+                    break;
+                case 3:
+                    text = "Dangerous";
+                    break;
+                case 4:
+                    text = "Savage";
+                    break;
+                case 5:
+                    text = "Sharp";
+                    break;
+                case 6:
+                    text = "Pointy";
+                    break;
+                case 7:
+                    text = "Tiny";
+                    break;
+                case 8:
+                    text = "Terrible";
+                    break;
+                case 9:
+                    text = "Small";
+                    break;
+                case 10:
+                    text = "Dull";
+                    break;
+                case 11:
+                    text = "Unhappy";
+                    break;
+                case 12:
+                    text = "Bulky";
+                    break;
+                case 13:
+                    text = "Shameful";
+                    break;
+                case 14:
+                    text = "Heavy";
+                    break;
+                case 15:
+                    text = "Light";
+                    break;
+                case 16:
+                    text = "Sighted";
+                    break;
+                case 17:
+                    text = "Rapid";
+                    break;
+                case 18:
+                    text = "Hasty";
+                    break;
+                case 19:
+                    text = "Intimidating";
+                    break;
+                case 20:
+                    text = "Deadly";
+                    break;
+                case 21:
+                    text = "Staunch";
+                    break;
+                case 22:
+                    text = "Awful";
+                    break;
+                case 23:
+                    text = "Lethargic";
+                    break;
+                case 24:
+                    text = "Awkward";
+                    break;
+                case 25:
+                    text = "Powerful";
+                    break;
+                case 58:
+                    text = "Frenzying";
+                    break;
+                case 26:
+                    text = "Mystic";
+                    break;
+                case 27:
+                    text = "Adept";
+                    break;
+                case 28:
+                    text = "Masterful";
+                    break;
+                case 29:
+                    text = "Inept";
+                    break;
+                case 30:
+                    text = "Ignorant";
+                    break;
+                case 31:
+                    text = "Deranged";
+                    break;
+                case 32:
+                    text = "Intense";
+                    break;
+                case 33:
+                    text = "Taboo";
+                    break;
+                case 34:
+                    text = "Celestial";
+                    break;
+                case 35:
+                    text = "Furious";
+                    break;
+                case 52:
+                    text = "Manic";
+                    break;
+                case 36:
+                    text = "Keen";
+                    break;
+                case 37:
+                    text = "Superior";
+                    break;
+                case 38:
+                    text = "Forceful";
+                    break;
+                case 53:
+                    text = "Hurtful";
+                    break;
+                case 54:
+                    text = "Strong";
+                    break;
+                case 55:
+                    text = "Unpleasant";
+                    break;
+                case 39:
+                    text = "Broken";
+                    break;
+                case 40:
+                    text = "Damaged";
+                    break;
+                case 56:
+                    text = "Weak";
+                    break;
+                case 41:
+                    text = "Shoddy";
+                    break;
+                case 57:
+                    text = "Ruthless";
+                    break;
+                case 42:
+                    text = "Quick";
+                    break;
+                case 43:
+                    text = "Deadly";
+                    break;
+                case 44:
+                    text = "Agile";
+                    break;
+                case 45:
+                    text = "Nimble";
+                    break;
+                case 46:
+                    text = "Murderous";
+                    break;
+                case 47:
+                    text = "Slow";
+                    break;
+                case 48:
+                    text = "Sluggish";
+                    break;
+                case 49:
+                    text = "Lazy";
+                    break;
+                case 50:
+                    text = "Annoying";
+                    break;
+                case 51:
+                    text = "Nasty";
+                    break;
+                case 59:
+                    text = "Godly";
+                    break;
+                case 60:
+                    text = "Demonic";
+                    break;
+                case 61:
+                    text = "Zealous";
+                    break;
+                case 62:
+                    text = "Hard";
+                    break;
+                case 63:
+                    text = "Guarding";
+                    break;
+                case 64:
+                    text = "Armored";
+                    break;
+                case 65:
+                    text = "Warding";
+                    break;
+                case 66:
+                    text = "Arcane";
+                    break;
+                case 67:
+                    text = "Precise";
+                    break;
+                case 68:
+                    text = "Lucky";
+                    break;
+                case 69:
+                    text = "Jagged";
+                    break;
+                case 70:
+                    text = "Spiked";
+                    break;
+                case 71:
+                    text = "Angry";
+                    break;
+                case 72:
+                    text = "Menacing";
+                    break;
+                case 73:
+                    text = "Brisk";
+                    break;
+                case 74:
+                    text = "Fleeting";
+                    break;
+                case 75:
+                    text = "Hasty";
+                    break;
+                case 76:
+                    text = "Quick";
+                    break;
+                case 77:
+                    text = "Wild";
+                    break;
+                case 78:
+                    text = "Rash";
+                    break;
+                case 79:
+                    text = "Intrepid";
+                    break;
+                case 80:
+                    text = "Violent";
+                    break;
+                case 81:
+                    text = "Legendary";
+                    break;
+                case 82:
+                    text = "Unreal";
+                    break;
+                case 83:
+                    text = "Mythical";
+                    break;
+            }
+            string result = this.name;
+            if (text != "")
+            {
+                result = text + " " + this.name;
+            }
+            return result;
+        }
+        public void RealSetDefaults(string ItemName)
+        {
+            this.name = "";
+            bool flag = false;
+            switch (ItemName)
+            {
+                case "Gold Pickaxe":
+                    this.SetDefaults(1, false);
+                    this.color = new Color(210, 190, 0, 100);
+                    this.useTime = 17;
+                    this.pick = 55;
+                    this.useAnimation = 20;
+                    this.scale = 1.05f;
+                    this.damage = 6;
+                    this.value = 10000;
+                    this.toolTip = "Can mine Meteorite";
+                    this.netID = -1;
+                    break;
+                case "Gold Broadsword":
+                    this.SetDefaults(4, false);
+                    this.color = new Color(210, 190, 0, 100);
+                    this.useAnimation = 20;
+                    this.damage = 13;
+                    this.scale = 1.05f;
+                    this.value = 9000;
+                    this.netID = -2;
+                    break;
+                case "Gold Shortsword":
+                    this.SetDefaults(6, false);
+                    this.color = new Color(210, 190, 0, 100);
+                    this.damage = 11;
+                    this.useAnimation = 11;
+                    this.scale = 0.95f;
+                    this.value = 7000;
+                    this.netID = -3;
+                    break;
+                case "Gold Axe":
+                    this.SetDefaults(10, false);
+                    this.color = new Color(210, 190, 0, 100);
+                    this.useTime = 18;
+                    this.axe = 11;
+                    this.useAnimation = 26;
+                    this.scale = 1.15f;
+                    this.damage = 7;
+                    this.value = 8000;
+                    this.netID = -4;
+                    break;
+                case "Gold Hammer":
+                    this.SetDefaults(7, false);
+                    this.color = new Color(210, 190, 0, 100);
+                    this.useAnimation = 28;
+                    this.useTime = 23;
+                    this.scale = 1.25f;
+                    this.damage = 9;
+                    this.hammer = 55;
+                    this.value = 8000;
+                    this.netID = -5;
+                    break;
+                case "Gold Bow":
+                    this.SetDefaults(99, false);
+                    this.useAnimation = 26;
+                    this.useTime = 26;
+                    this.color = new Color(210, 190, 0, 100);
+                    this.damage = 11;
+                    this.value = 7000;
+                    this.netID = -6;
+                    break;
+                case "Silver Pickaxe":
+                    this.SetDefaults(1, false);
+                    this.color = new Color(180, 180, 180, 100);
+                    this.useTime = 11;
+                    this.pick = 45;
+                    this.useAnimation = 19;
+                    this.scale = 1.05f;
+                    this.damage = 6;
+                    this.value = 5000;
+                    this.netID = -7;
+                    break;
+                case "Silver Broadsword":
+                    this.SetDefaults(4, false);
+                    this.color = new Color(180, 180, 180, 100);
+                    this.useAnimation = 21;
+                    this.damage = 11;
+                    this.value = 4500;
+                    this.netID = -8;
+                    break;
+                case "Silver Shortsword":
+                    this.SetDefaults(6, false);
+                    this.color = new Color(180, 180, 180, 100);
+                    this.damage = 9;
+                    this.useAnimation = 12;
+                    this.scale = 0.95f;
+                    this.value = 3500;
+                    this.netID = -9;
+                    break;
+                case "Silver Axe":
+                    this.SetDefaults(10, false);
+                    this.color = new Color(180, 180, 180, 100);
+                    this.useTime = 18;
+                    this.axe = 10;
+                    this.useAnimation = 26;
+                    this.scale = 1.15f;
+                    this.damage = 6;
+                    this.value = 4000;
+                    this.netID = -10;
+                    break;
+                case "Silver Hammer":
+                    this.SetDefaults(7, false);
+                    this.color = new Color(180, 180, 180, 100);
+                    this.useAnimation = 29;
+                    this.useTime = 19;
+                    this.scale = 1.25f;
+                    this.damage = 9;
+                    this.hammer = 45;
+                    this.value = 4000;
+                    this.netID = -11;
+                    break;
+                case "Silver Bow":
+                    this.SetDefaults(99, false);
+                    this.useAnimation = 27;
+                    this.useTime = 27;
+                    this.color = new Color(180, 180, 180, 100);
+                    this.damage = 9;
+                    this.value = 3500;
+                    this.netID = -12;
+                    break;
+                case "Copper Pickaxe":
+                    this.SetDefaults(1, false);
+                    this.color = new Color(180, 100, 45, 80);
+                    this.useTime = 15;
+                    this.pick = 35;
+                    this.useAnimation = 23;
+                    this.damage = 4;
+                    this.scale = 0.9f;
+                    this.tileBoost = -1;
+                    this.value = 500;
+                    this.netID = -13;
+                    break;
+                case "Copper Broadsword":
+                    this.SetDefaults(4, false);
+                    this.color = new Color(180, 100, 45, 80);
+                    this.useAnimation = 23;
+                    this.damage = 8;
+                    this.value = 450;
+                    this.netID = -14;
+                    break;
+                case "Copper Shortsword":
+                    this.SetDefaults(6, false);
+                    this.color = new Color(180, 100, 45, 80);
+                    this.damage = 5;
+                    this.useAnimation = 13;
+                    this.scale = 0.8f;
+                    this.value = 350;
+                    this.netID = -15;
+                    break;
+                case "Copper Axe":
+                    this.SetDefaults(10, false);
+                    this.color = new Color(180, 100, 45, 80);
+                    this.useTime = 21;
+                    this.axe = 7;
+                    this.useAnimation = 30;
+                    this.scale = 1f;
+                    this.damage = 3;
+                    this.tileBoost = -1;
+                    this.value = 400;
+                    this.netID = -16;
+                    break;
+                case "Copper Hammer":
+                    this.SetDefaults(7, false);
+                    this.color = new Color(180, 100, 45, 80);
+                    this.useAnimation = 33;
+                    this.useTime = 23;
+                    this.scale = 1.1f;
+                    this.damage = 4;
+                    this.hammer = 35;
+                    this.tileBoost = -1;
+                    this.value = 400;
+                    this.netID = -17;
+                    break;
+                case "Copper Bow":
+                    this.SetDefaults(99, false);
+                    this.useAnimation = 29;
+                    this.useTime = 29;
+                    this.color = new Color(180, 100, 45, 80);
+                    this.damage = 6;
+                    this.value = 350;
+                    this.netID = -18;
+                    break;
+                case "Blue Phasesaber":
+                    this.SetDefaults(198, false);
+                    this.damage = 41;
+                    this.scale = 1.15f;
+                    flag = true;
+                    this.autoReuse = true;
+                    this.useTurn = true;
+                    this.rare = 4;
+                    this.netID = -19;
+                    break;
+                case "Red Phasesaber":
+                    this.SetDefaults(199, false);
+                    this.damage = 41;
+                    this.scale = 1.15f;
+                    flag = true;
+                    this.autoReuse = true;
+                    this.useTurn = true;
+                    this.rare = 4;
+                    this.netID = -20;
+                    break;
+                case "Green Phasesaber":
+                    this.SetDefaults(200, false);
+                    this.damage = 41;
+                    this.scale = 1.15f;
+                    flag = true;
+                    this.autoReuse = true;
+                    this.useTurn = true;
+                    this.rare = 4;
+                    this.netID = -21;
+                    break;
+                case "Purple Phasesaber":
+                    this.SetDefaults(201, false);
+                    this.damage = 41;
+                    this.scale = 1.15f;
+                    flag = true;
+                    this.autoReuse = true;
+                    this.useTurn = true;
+                    this.rare = 4;
+                    this.netID = -22;
+                    break;
+                case "White Phasesaber":
+                    this.SetDefaults(202, false);
+                    this.damage = 41;
+                    this.scale = 1.15f;
+                    flag = true;
+                    this.autoReuse = true;
+                    this.useTurn = true;
+                    this.rare = 4;
+                    this.netID = -23;
+                    break;
+                case "Yellow Phasesaber":
+                    this.SetDefaults(203, false);
+                    this.damage = 41;
+                    this.scale = 1.15f;
+                    flag = true;
+                    this.autoReuse = true;
+                    this.useTurn = true;
+                    this.rare = 4;
+                    this.netID = -24;
+                    break;
+                default:
+                    if (ItemName != "")
+                    {
+                        for (int i = 0; i < 603; i++)
+                        {
+                            if (Main.itemName[i] == ItemName)
+                            {
+                                this.SetDefaults(i, false);
+                                this.checkMat();
+                                return;
+                            }
+                        }
+                        this.name = "";
+                        this.stack = 0;
+                        this.type = 0;
+                    }
+                    break;
+            }
+            if (this.type != 0)
+            {
+                if (flag)
+                {
+                    this.material = false;
+                }
+                else
+                {
+                    this.checkMat();
+                }
+                this.name = ItemName;
+            }
+        }
+        public bool checkMat()
+        {
+            if (this.type >= 71 && this.type <= 74)
+            {
+                this.material = false;
+                return false;
+            }
+            for (int i = 0; i < Recipe.numRecipes; i++)
+            {
+                int num = 0;
+                while (Main.recipe[i].requiredItem[num].type > 0)
+                {
+                    if (this.name == Main.recipe[i].requiredItem[num].name)
+                    {
+                        this.material = true;
+                        return true;
+                    }
+                    num++;
+                }
+            }
+            this.material = false;
+            return false;
+        }
+        public void RealnetDefaults(int type)
+        {
+            if (type < 0)
+            {
+                if (type == -1)
+                {
+                    this.SetDefaults("Gold Pickaxe");
+                    return;
+                }
+                if (type == -2)
+                {
+                    this.SetDefaults("Gold Broadsword");
+                    return;
+                }
+                if (type == -3)
+                {
+                    this.SetDefaults("Gold Shortsword");
+                    return;
+                }
+                if (type == -4)
+                {
+                    this.SetDefaults("Gold Axe");
+                    return;
+                }
+                if (type == -5)
+                {
+                    this.SetDefaults("Gold Hammer");
+                    return;
+                }
+                if (type == -6)
+                {
+                    this.SetDefaults("Gold Bow");
+                    return;
+                }
+                if (type == -7)
+                {
+                    this.SetDefaults("Silver Pickaxe");
+                    return;
+                }
+                if (type == -8)
+                {
+                    this.SetDefaults("Silver Broadsword");
+                    return;
+                }
+                if (type == -9)
+                {
+                    this.SetDefaults("Silver Shortsword");
+                    return;
+                }
+                if (type == -10)
+                {
+                    this.SetDefaults("Silver Axe");
+                    return;
+                }
+                if (type == -11)
+                {
+                    this.SetDefaults("Silver Hammer");
+                    return;
+                }
+                if (type == -12)
+                {
+                    this.SetDefaults("Silver Bow");
+                    return;
+                }
+                if (type == -13)
+                {
+                    this.SetDefaults("Copper Pickaxe");
+                    return;
+                }
+                if (type == -14)
+                {
+                    this.SetDefaults("Copper Broadsword");
+                    return;
+                }
+                if (type == -15)
+                {
+                    this.SetDefaults("Copper Shortsword");
+                    return;
+                }
+                if (type == -16)
+                {
+                    this.SetDefaults("Copper Axe");
+                    return;
+                }
+                if (type == -17)
+                {
+                    this.SetDefaults("Copper Hammer");
+                    return;
+                }
+                if (type == -18)
+                {
+                    this.SetDefaults("Copper Bow");
+                    return;
+                }
+                if (type == -19)
+                {
+                    this.SetDefaults("Blue Phasesaber");
+                    return;
+                }
+                if (type == -20)
+                {
+                    this.SetDefaults("Red Phasesaber");
+                    return;
+                }
+                if (type == -21)
+                {
+                    this.SetDefaults("Green Phasesaber");
+                    return;
+                }
+                if (type == -22)
+                {
+                    this.SetDefaults("Purple Phasesaber");
+                    return;
+                }
+                if (type == -23)
+                {
+                    this.SetDefaults("White Phasesaber");
+                    return;
+                }
+                if (type == -24)
+                {
+                    this.SetDefaults("Yellow Phasesaber");
+                    return;
+                }
+            }
+            else
+            {
+                this.SetDefaults(type, false);
+            }
+        }
+        public void RealSetDefaults(int Type, bool noMatCheck = false)
+        {
+            if (Main.netMode == 2)
+            {
+                this.owner = 255;
+            }
+            else
+            {
+                this.owner = Main.myPlayer;
+            }
+            this.netID = 0;
+            this.prefix = 0;
+            this.crit = 0;
+            this.mech = false;
+            this.reuseDelay = 0;
+            this.melee = false;
+            this.magic = false;
+            this.ranged = false;
+            this.placeStyle = 0;
+            this.buffTime = 0;
+            this.buffType = 0;
+            this.material = false;
+            this.noWet = false;
+            this.vanity = false;
+            this.mana = 0;
+            this.wet = false;
+            this.wetCount = 0;
+            this.lavaWet = false;
+            this.channel = false;
+            this.manaIncrease = 0;
+            this.release = 0;
+            this.noMelee = false;
+            this.noUseGraphic = false;
+            this.lifeRegen = 0;
+            this.shootSpeed = 0f;
+            this.active = true;
+            this.alpha = 0;
+            this.ammo = 0;
+            this.useAmmo = 0;
+            this.autoReuse = false;
+            this.accessory = false;
+            this.axe = 0;
+            this.healMana = 0;
+            this.bodySlot = -1;
+            this.legSlot = -1;
+            this.headSlot = -1;
+            this.potion = false;
+            this.color = default(Color);
+            this.consumable = false;
+            this.createTile = -1;
+            this.createWall = -1;
+            this.damage = -1;
+            this.defense = 0;
+            this.hammer = 0;
+            this.healLife = 0;
+            this.holdStyle = 0;
+            this.knockBack = 0f;
+            this.maxStack = 1;
+            this.pick = 0;
+            this.rare = 0;
+            this.scale = 1f;
+            this.shoot = 0;
+            this.stack = 1;
+            this.toolTip = null;
+            this.toolTip2 = null;
+            this.tileBoost = 0;
+            this.type = Type;
+            this.useStyle = 0;
+            this.useSound = 0;
+            this.useTime = 100;
+            this.useAnimation = 100;
+            this.value = 0;
+            this.useTurn = false;
+            this.buy = false;
             switch (this.type)
             {
                 case 0:
@@ -9805,12 +9805,12 @@ namespace Toaria
                     this.rare = 2;
                     break;
             }
-		    if (!noMatCheck)
-			{
-				this.checkMat();
-			}
-			this.netID = this.type;
-		}
+            if (!noMatCheck)
+            {
+                this.checkMat();
+            }
+            this.netID = this.type;
+        }
         public void netDefaults(int Type)
         {
             RealnetDefaults(Type);
@@ -9826,705 +9826,694 @@ namespace Toaria
             RealSetDefaults(ItemName);
             ItemHooks.OnSetDefaultsString(ref ItemName, this);
         }
-		public static string VersionName(string oldName, int release)
-		{
-			string result = oldName;
-			if (release <= 4)
-			{
-				switch (oldName)
-				{
-				    case "Cobalt Helmet":
-				        result = "Jungle Hat";
-				        break;
-				    case "Cobalt Breastplate":
-				        result = "Jungle Shirt";
-				        break;
-				    case "Cobalt Greaves":
-				        result = "Jungle Pants";
-				        break;
-				}
-			}
-			if (release <= 13 && oldName == "Jungle Rose")
-			{
-				result = "Jungle Spores";
-			}
-			if (release <= 20)
-			{
-				switch (oldName)
-				{
-				    case "Gills potion":
-				        result = "Gills Potion";
-				        break;
-				    case "Thorn Chakrum":
-				        result = "Thorn Chakram";
-				        break;
-				    case "Ball 'O Hurt":
-				        result = "Ball O' Hurt";
-				        break;
-				}
-			}
-			return result;
-		}
-		public Color GetAlpha(Color newColor)
-		{
-			if (this.type == 75)
-			{
-				return new Color(255, 255, 255, (int)newColor.A - this.alpha);
-			}
-			if (this.type == 121 || this.type == 122 || this.type == 217 || this.type == 218 || this.type == 219 || this.type == 220 || this.type == 120 || this.type == 119)
-			{
-				return new Color(255, 255, 255, 255);
-			}
-			if (this.type == 501)
-			{
-				return new Color(200, 200, 200, 50);
-			}
-			if (this.type == 520 || this.type == 521 || this.type == 522 || this.type == 547 || this.type == 548 || this.type == 549 || this.type == 575)
-			{
-				return new Color(255, 255, 255, 50);
-			}
-			if (this.type == 58 || this.type == 184)
-			{
-				return new Color(200, 200, 200, 2000);
-			}
-			float num = (float)(255 - this.alpha) / 255f;
-			int r = (int)((float)newColor.R * num);
-			int g = (int)((float)newColor.G * num);
-			int b = (int)((float)newColor.B * num);
-			int num2 = (int)newColor.A - this.alpha;
-			if (num2 < 0)
-			{
-				num2 = 0;
-			}
-			if (num2 > 255)
-			{
-				num2 = 255;
-			}
-			if (this.type >= 198 && this.type <= 203)
-			{
-				return Color.White;
-			}
-			return new Color(r, g, b, num2);
-		}
-		public Color GetColor(Color newColor)
-		{
-			int num = (int)(this.color.R - (255 - newColor.R));
-			int num2 = (int)(this.color.G - (255 - newColor.G));
-			int num3 = (int)(this.color.B - (255 - newColor.B));
-			int num4 = (int)(this.color.A - (255 - newColor.A));
-			if (num < 0)
-			{
-				num = 0;
-			}
-			if (num > 255)
-			{
-				num = 255;
-			}
-			if (num2 < 0)
-			{
-				num2 = 0;
-			}
-			if (num2 > 255)
-			{
-				num2 = 255;
-			}
-			if (num3 < 0)
-			{
-				num3 = 0;
-			}
-			if (num3 > 255)
-			{
-				num3 = 255;
-			}
-			if (num4 < 0)
-			{
-				num4 = 0;
-			}
-			if (num4 > 255)
-			{
-				num4 = 255;
-			}
-			return new Color(num, num2, num3, num4);
-		}
-		public static bool MechSpawn(float x, float y, int type)
-		{
-			int num = 0;
-			int num2 = 0;
-			int num3 = 0;
-			for (int i = 0; i < 200; i++)
-			{
-				if (Main.item[i].active && Main.item[i].type == type)
-				{
-					num++;
-					Vector2 vector = new Vector2(x, y);
-					float num4 = Main.item[i].position.X - vector.X;
-					float num5 = Main.item[i].position.Y - vector.Y;
-					float num6 = (float)Math.Sqrt((double)(num4 * num4 + num5 * num5));
-					if (num6 < 300f)
-					{
-						num2++;
-					}
-					if (num6 < 800f)
-					{
-						num3++;
-					}
-				}
-			}
-			return num2 < 3 && num3 < 6 && num < 10;
-		}
-		public void UpdateItem(int i)
-		{
-			if (this.active)
-			{
-				if (Main.netMode == 0)
-				{
-					this.owner = Main.myPlayer;
-				}
-				float num = 0.1f;
-				float num2 = 7f;
-				int num3 = (int)(this.position.X + (float)(this.width / 2)) / 16;
-				int num4 = (int)(this.position.Y + (float)(this.height / 2)) / 16;
-				if (Main.tile[num3, num4] == null)
-				{
-					num = 0f;
-					this.velocity.X = 0f;
-					this.velocity.Y = 0f;
-				}
-				if (this.wet)
-				{
-					num2 = 5f;
-					num = 0.08f;
-				}
-				Vector2 value = this.velocity * 0.5f;
-				if (this.ownTime > 0)
-				{
-					this.ownTime--;
-				}
-				else
-				{
-					this.ownIgnore = -1;
-				}
-				if (this.keepTime > 0)
-				{
-					this.keepTime--;
-				}
-				if (!this.beingGrabbed)
-				{
-					if (this.type == 520 || this.type == 521 || this.type == 547 || this.type == 548 || this.type == 549 || this.type == 575)
-					{
-						this.velocity.X = this.velocity.X * 0.95f;
-						if ((double)this.velocity.X < 0.1 && (double)this.velocity.X > -0.1)
-						{
-							this.velocity.X = 0f;
-						}
-						this.velocity.Y = this.velocity.Y * 0.95f;
-						if ((double)this.velocity.Y < 0.1 && (double)this.velocity.Y > -0.1)
-						{
-							this.velocity.Y = 0f;
-						}
-					}
-					else
-					{
-						this.velocity.Y = this.velocity.Y + num;
-						if (this.velocity.Y > num2)
-						{
-							this.velocity.Y = num2;
-						}
-						this.velocity.X = this.velocity.X * 0.95f;
-						if ((double)this.velocity.X < 0.1 && (double)this.velocity.X > -0.1)
-						{
-							this.velocity.X = 0f;
-						}
-					}
-					bool flag = Collision.LavaCollision(this.position, this.width, this.height);
-					if (flag)
-					{
-						this.lavaWet = true;
-					}
-					bool flag2 = Collision.WetCollision(this.position, this.width, this.height);
-					if (flag2)
-					{
-						if (!this.wet)
-						{
-							if (this.wetCount == 0)
-							{
-								this.wetCount = 20;
-								if (!flag)
-								{
-									for (int j = 0; j < 10; j++)
-									{
-										int num5 = Dust.NewDust(new Vector2(this.position.X - 6f, this.position.Y + (float)(this.height / 2) - 8f), this.width + 12, 24, 33, 0f, 0f, 0, default(Color), 1f);
-										Dust expr_35E_cp_0 = Main.dust[num5];
-										expr_35E_cp_0.velocity.Y = expr_35E_cp_0.velocity.Y - 4f;
-										Dust expr_37C_cp_0 = Main.dust[num5];
-										expr_37C_cp_0.velocity.X = expr_37C_cp_0.velocity.X * 2.5f;
-										Main.dust[num5].scale = 1.3f;
-										Main.dust[num5].alpha = 100;
-										Main.dust[num5].noGravity = true;
-									}
-									Main.PlaySound(19, (int)this.position.X, (int)this.position.Y, 1);
-								}
-								else
-								{
-									for (int k = 0; k < 5; k++)
-									{
-										int num6 = Dust.NewDust(new Vector2(this.position.X - 6f, this.position.Y + (float)(this.height / 2) - 8f), this.width + 12, 24, 35, 0f, 0f, 0, default(Color), 1f);
-										Dust expr_464_cp_0 = Main.dust[num6];
-										expr_464_cp_0.velocity.Y = expr_464_cp_0.velocity.Y - 1.5f;
-										Dust expr_482_cp_0 = Main.dust[num6];
-										expr_482_cp_0.velocity.X = expr_482_cp_0.velocity.X * 2.5f;
-										Main.dust[num6].scale = 1.3f;
-										Main.dust[num6].alpha = 100;
-										Main.dust[num6].noGravity = true;
-									}
-									Main.PlaySound(19, (int)this.position.X, (int)this.position.Y, 1);
-								}
-							}
-							this.wet = true;
-						}
-					}
-					else
-					{
-						if (this.wet)
-						{
-							this.wet = false;
-						}
-					}
-					if (!this.wet)
-					{
-						this.lavaWet = false;
-					}
-					if (this.wetCount > 0)
-					{
-						this.wetCount -= 1;
-					}
-					if (this.wet)
-					{
-						if (this.wet)
-						{
-							Vector2 vector = this.velocity;
-							this.velocity = Collision.TileCollision(this.position, this.velocity, this.width, this.height, false, false);
-							if (this.velocity.X != vector.X)
-							{
-								value.X = this.velocity.X;
-							}
-							if (this.velocity.Y != vector.Y)
-							{
-								value.Y = this.velocity.Y;
-							}
-						}
-					}
-					else
-					{
-						this.velocity = Collision.TileCollision(this.position, this.velocity, this.width, this.height, false, false);
-					}
-					if (this.lavaWet)
-					{
-						if (this.type == 267)
-						{
-							if (Main.netMode != 1)
-							{
-								this.active = false;
-								this.type = 0;
-								this.name = "";
-								this.stack = 0;
-								for (int l = 0; l < 200; l++)
-								{
-									if (Main.npc[l].active && Main.npc[l].type == 22)
-									{
-										if (Main.netMode == 2)
-										{
-											NetMessage.SendData(28, -1, -1, "", l, 9999f, 10f, (float)(-(float)Main.npc[l].direction), 0);
-										}
-										Main.npc[l].StrikeNPC(9999, 10f, -Main.npc[l].direction, false, false);
-										NPC.SpawnWOF(this.position);
-									}
-								}
-								NetMessage.SendData(21, -1, -1, "", i, 0f, 0f, 0f, 0);
-							}
-						}
-						else
-						{
-							if (this.owner == Main.myPlayer && this.type != 312 && this.type != 318 && this.type != 173 && this.type != 174 && this.type != 175 && this.rare == 0)
-							{
-								this.active = false;
-								this.type = 0;
-								this.name = "";
-								this.stack = 0;
-								if (Main.netMode != 0)
-								{
-									NetMessage.SendData(21, -1, -1, "", i, 0f, 0f, 0f, 0);
-								}
-							}
-						}
-					}
-					if (this.type == 520)
-					{
-						float num7 = (float)Main.rand.Next(90, 111) * 0.01f;
-						num7 *= Main.essScale;
-						Lighting.addLight((int)((this.position.X + (float)(this.width / 2)) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.5f * num7, 0.1f * num7, 0.25f * num7);
-					}
-					else
-					{
-						if (this.type == 521)
-						{
-							float num8 = (float)Main.rand.Next(90, 111) * 0.01f;
-							num8 *= Main.essScale;
-							Lighting.addLight((int)((this.position.X + (float)(this.width / 2)) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.25f * num8, 0.1f * num8, 0.5f * num8);
-						}
-						else
-						{
-							if (this.type == 547)
-							{
-								float num9 = (float)Main.rand.Next(90, 111) * 0.01f;
-								num9 *= Main.essScale;
-								Lighting.addLight((int)((this.position.X + (float)(this.width / 2)) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.5f * num9, 0.3f * num9, 0.05f * num9);
-							}
-							else
-							{
-								if (this.type == 548)
-								{
-									float num10 = (float)Main.rand.Next(90, 111) * 0.01f;
-									num10 *= Main.essScale;
-									Lighting.addLight((int)((this.position.X + (float)(this.width / 2)) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.1f * num10, 0.1f * num10, 0.6f * num10);
-								}
-								else
-								{
-									if (this.type == 575)
-									{
-										float num11 = (float)Main.rand.Next(90, 111) * 0.01f;
-										num11 *= Main.essScale;
-										Lighting.addLight((int)((this.position.X + (float)(this.width / 2)) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.1f * num11, 0.3f * num11, 0.5f * num11);
-									}
-									else
-									{
-										if (this.type == 549)
-										{
-											float num12 = (float)Main.rand.Next(90, 111) * 0.01f;
-											num12 *= Main.essScale;
-											Lighting.addLight((int)((this.position.X + (float)(this.width / 2)) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.1f * num12, 0.5f * num12, 0.2f * num12);
-										}
-										else
-										{
-											if (this.type == 58)
-											{
-												float num13 = (float)Main.rand.Next(90, 111) * 0.01f;
-												num13 *= Main.essScale * 0.5f;
-												Lighting.addLight((int)((this.position.X + (float)(this.width / 2)) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.5f * num13, 0.1f * num13, 0.1f * num13);
-											}
-											else
-											{
-												if (this.type == 184)
-												{
-													float num14 = (float)Main.rand.Next(90, 111) * 0.01f;
-													num14 *= Main.essScale * 0.5f;
-													Lighting.addLight((int)((this.position.X + (float)(this.width / 2)) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.1f * num14, 0.1f * num14, 0.5f * num14);
-												}
-												else
-												{
-													if (this.type == 522)
-													{
-														float num15 = (float)Main.rand.Next(90, 111) * 0.01f;
-														num15 *= Main.essScale * 0.2f;
-														Lighting.addLight((int)((this.position.X + (float)(this.width / 2)) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.5f * num15, 1f * num15, 0.1f * num15);
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-					if (this.type == 75 && Main.dayTime)
-					{
-						for (int m = 0; m < 10; m++)
-						{
-							Dust.NewDust(this.position, this.width, this.height, 15, this.velocity.X, this.velocity.Y, 150, default(Color), 1.2f);
-						}
-						for (int n = 0; n < 3; n++)
-						{
-							Gore.NewGore(this.position, new Vector2(this.velocity.X, this.velocity.Y), Main.rand.Next(16, 18), 1f);
-						}
-						this.active = false;
-						this.type = 0;
-						this.stack = 0;
-						if (Main.netMode == 2)
-						{
-							NetMessage.SendData(21, -1, -1, "", i, 0f, 0f, 0f, 0);
-						}
-					}
-				}
-				else
-				{
-					this.beingGrabbed = false;
-				}
-				if (this.type == 501)
-				{
-					if (Main.rand.Next(6) == 0)
-					{
-						int num16 = Dust.NewDust(this.position, this.width, this.height, 55, 0f, 0f, 200, this.color, 1f);
-						Dust expr_DC0 = Main.dust[num16];
-						expr_DC0.velocity *= 0.3f;
-						Main.dust[num16].scale *= 0.5f;
-					}
-				}
-				else
-				{
-					if (this.type == 8 || this.type == 105)
-					{
-						if (!this.wet)
-						{
-							Lighting.addLight((int)((this.position.X + (float)(this.width / 2)) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 1f, 0.95f, 0.8f);
-						}
-					}
-					else
-					{
-						if (this.type == 523)
-						{
-							Lighting.addLight((int)((this.position.X + (float)(this.width / 2)) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.85f, 1f, 0.7f);
-						}
-						else
-						{
-							if (this.type >= 427 && this.type <= 432)
-							{
-								if (!this.wet)
-								{
-									float r = 0f;
-									float g = 0f;
-									float b = 0f;
-									int num17 = this.type - 426;
-									if (num17 == 1)
-									{
-										r = 0.1f;
-										g = 0.2f;
-										b = 1.1f;
-									}
-									if (num17 == 2)
-									{
-										r = 1f;
-										g = 0.1f;
-										b = 0.1f;
-									}
-									if (num17 == 3)
-									{
-										r = 0f;
-										g = 1f;
-										b = 0.1f;
-									}
-									if (num17 == 4)
-									{
-										r = 0.9f;
-										g = 0f;
-										b = 0.9f;
-									}
-									if (num17 == 5)
-									{
-										r = 1.3f;
-										g = 1.3f;
-										b = 1.3f;
-									}
-									if (num17 == 6)
-									{
-										r = 0.9f;
-										g = 0.9f;
-										b = 0f;
-									}
-									Lighting.addLight((int)((this.position.X + (float)(this.width / 2)) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), r, g, b);
-								}
-							}
-							else
-							{
-								if (this.type == 41)
-								{
-									if (!this.wet)
-									{
-										Lighting.addLight((int)((this.position.X + (float)this.width) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 1f, 0.75f, 0.55f);
-									}
-								}
-								else
-								{
-									if (this.type == 282)
-									{
-										Lighting.addLight((int)((this.position.X + (float)this.width) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.7f, 1f, 0.8f);
-									}
-									else
-									{
-										if (this.type == 286)
-										{
-											Lighting.addLight((int)((this.position.X + (float)this.width) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.7f, 0.8f, 1f);
-										}
-										else
-										{
-											if (this.type == 331)
-											{
-												Lighting.addLight((int)((this.position.X + (float)this.width) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.55f, 0.75f, 0.6f);
-											}
-											else
-											{
-												if (this.type == 183)
-												{
-													Lighting.addLight((int)((this.position.X + (float)this.width) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.15f, 0.45f, 0.9f);
-												}
-												else
-												{
-													if (this.type == 75)
-													{
-														Lighting.addLight((int)((this.position.X + (float)this.width) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.8f, 0.7f, 0.1f);
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-				if (this.type == 75)
-				{
-					if (Main.rand.Next(25) == 0)
-					{
-						Dust.NewDust(this.position, this.width, this.height, 58, this.velocity.X * 0.5f, this.velocity.Y * 0.5f, 150, default(Color), 1.2f);
-					}
-					if (Main.rand.Next(50) == 0)
-					{
-						Gore.NewGore(this.position, new Vector2(this.velocity.X * 0.2f, this.velocity.Y * 0.2f), Main.rand.Next(16, 18), 1f);
-					}
-				}
-				if (this.spawnTime < 2147483646)
-				{
-					this.spawnTime++;
-				}
-				if (Main.netMode == 2 && this.owner != Main.myPlayer)
-				{
-					this.release++;
-					if (this.release >= 300)
-					{
-						this.release = 0;
-						NetMessage.SendData(39, this.owner, -1, "", i, 0f, 0f, 0f, 0);
-					}
-				}
-				if (this.wet)
-				{
-					this.position += value;
-				}
-				else
-				{
-					this.position += this.velocity;
-				}
-				if (this.noGrabDelay > 0)
-				{
-					this.noGrabDelay--;
-				}
-			}
-		}
-		public static int NewItem(int X, int Y, int Width, int Height, int Type, int Stack = 1, bool noBroadcast = false, int pfix = 0)
-		{
-			if (Main.rand == null)
-			{
-				Main.rand = new Random();
-			}
-			if (WorldGen.gen)
-			{
-				return 0;
-			}
-			int num = 200;
-			Main.item[200] = new Item();
-			if (Main.netMode != 1)
-			{
-				for (int i = 0; i < 200; i++)
-				{
-					if (!Main.item[i].active)
-					{
-						num = i;
-						break;
-					}
-				}
-			}
-			if (num == 200 && Main.netMode != 1)
-			{
-				int num2 = 0;
-				for (int j = 0; j < 200; j++)
-				{
-					if (Main.item[j].spawnTime > num2)
-					{
-						num2 = Main.item[j].spawnTime;
-						num = j;
-					}
-				}
-			}
-			Main.item[num] = new Item();
-			Main.item[num].SetDefaults(Type, false);
-			Main.item[num].Prefix(pfix);
-			Main.item[num].position.X = (float)(X + Width / 2 - Main.item[num].width / 2);
-			Main.item[num].position.Y = (float)(Y + Height / 2 - Main.item[num].height / 2);
-			Main.item[num].wet = Collision.WetCollision(Main.item[num].position, Main.item[num].width, Main.item[num].height);
-			Main.item[num].velocity.X = (float)Main.rand.Next(-30, 31) * 0.1f;
-			Main.item[num].velocity.Y = (float)Main.rand.Next(-40, -15) * 0.1f;
-			if (Type == 520 || Type == 521)
-			{
-				Main.item[num].velocity.X = (float)Main.rand.Next(-30, 31) * 0.1f;
-				Main.item[num].velocity.Y = (float)Main.rand.Next(-30, 31) * 0.1f;
-			}
-			Main.item[num].active = true;
-			Main.item[num].spawnTime = 0;
-			Main.item[num].stack = Stack;
-			if (Main.netMode == 2 && !noBroadcast)
-			{
-				NetMessage.SendData(21, -1, -1, "", num, 0f, 0f, 0f, 0);
-				Main.item[num].FindOwner(num);
-			}
-			else
-			{
-				if (Main.netMode == 0)
-				{
-					Main.item[num].owner = Main.myPlayer;
-				}
-			}
-			return num;
-		}
-		public void FindOwner(int whoAmI)
-		{
-			if (this.keepTime > 0)
-			{
-				return;
-			}
-			int num = this.owner;
-			this.owner = 255;
-			float num2 = -1f;
-			for (int i = 0; i < 255; i++)
-			{
-				if (this.ownIgnore != i && Main.player[i].active && Main.player[i].ItemSpace(Main.item[whoAmI]))
-				{
-					float num3 = Math.Abs(Main.player[i].position.X + (float)(Main.player[i].width / 2) - this.position.X - (float)(this.width / 2)) + Math.Abs(Main.player[i].position.Y + (float)(Main.player[i].height / 2) - this.position.Y - (float)this.height);
-					if (num3 < (float)NPC.sWidth && (num2 == -1f || num3 < num2))
-					{
-						num2 = num3;
-						this.owner = i;
-					}
-				}
-			}
-			if (this.owner != num && ((num == Main.myPlayer && Main.netMode == 1) || (num == 255 && Main.netMode == 2) || !Main.player[num].active))
-			{
-				NetMessage.SendData(21, -1, -1, "", whoAmI, 0f, 0f, 0f, 0);
-				if (this.active)
-				{
-					NetMessage.SendData(22, -1, -1, "", whoAmI, 0f, 0f, 0f, 0);
-				}
-			}
-		}
-		public object Clone()
-		{
-			return base.MemberwiseClone();
-		}
-		public bool IsTheSameAs(Item compareItem)
-		{
-			return this.name == compareItem.name;
-		}
-		public bool IsNotTheSameAs(Item compareItem)
-		{
-			return this.name != compareItem.name || this.stack != compareItem.stack || this.prefix != compareItem.prefix;
-		}
-	}
+        public static string VersionName(string oldName, int release)
+        {
+            string result = oldName;
+            if (release <= 4)
+            {
+                switch (oldName)
+                {
+                    case "Cobalt Helmet":
+                        result = "Jungle Hat";
+                        break;
+                    case "Cobalt Breastplate":
+                        result = "Jungle Shirt";
+                        break;
+                    case "Cobalt Greaves":
+                        result = "Jungle Pants";
+                        break;
+                }
+            }
+            if (release <= 13 && oldName == "Jungle Rose")
+            {
+                result = "Jungle Spores";
+            }
+            if (release <= 20)
+            {
+                switch (oldName)
+                {
+                    case "Gills potion":
+                        result = "Gills Potion";
+                        break;
+                    case "Thorn Chakrum":
+                        result = "Thorn Chakram";
+                        break;
+                    case "Ball 'O Hurt":
+                        result = "Ball O' Hurt";
+                        break;
+                }
+            }
+            return result;
+        }
+        public Color GetAlpha(Color newColor)
+        {
+            if (this.type == 75)
+            {
+                return new Color(255, 255, 255, (int)newColor.A - this.alpha);
+            }
+            if (this.type == 121 || this.type == 122 || this.type == 217 || this.type == 218 || this.type == 219 || this.type == 220 || this.type == 120 || this.type == 119)
+            {
+                return new Color(255, 255, 255, 255);
+            }
+            if (this.type == 501)
+            {
+                return new Color(200, 200, 200, 50);
+            }
+            if (this.type == 520 || this.type == 521 || this.type == 522 || this.type == 547 || this.type == 548 || this.type == 549 || this.type == 575)
+            {
+                return new Color(255, 255, 255, 50);
+            }
+            if (this.type == 58 || this.type == 184)
+            {
+                return new Color(200, 200, 200, 2000);
+            }
+            float num = (float)(255 - this.alpha) / 255f;
+            int r = (int)((float)newColor.R * num);
+            int g = (int)((float)newColor.G * num);
+            int b = (int)((float)newColor.B * num);
+            int num2 = (int)newColor.A - this.alpha;
+            if (num2 < 0)
+            {
+                num2 = 0;
+            }
+            if (num2 > 255)
+            {
+                num2 = 255;
+            }
+            if (this.type >= 198 && this.type <= 203)
+            {
+                return Color.White;
+            }
+            return new Color(r, g, b, num2);
+        }
+        public Color GetColor(Color newColor)
+        {
+            int num = (int)(this.color.R - (255 - newColor.R));
+            int num2 = (int)(this.color.G - (255 - newColor.G));
+            int num3 = (int)(this.color.B - (255 - newColor.B));
+            int num4 = (int)(this.color.A - (255 - newColor.A));
+            if (num < 0)
+            {
+                num = 0;
+            }
+            if (num > 255)
+            {
+                num = 255;
+            }
+            if (num2 < 0)
+            {
+                num2 = 0;
+            }
+            if (num2 > 255)
+            {
+                num2 = 255;
+            }
+            if (num3 < 0)
+            {
+                num3 = 0;
+            }
+            if (num3 > 255)
+            {
+                num3 = 255;
+            }
+            if (num4 < 0)
+            {
+                num4 = 0;
+            }
+            if (num4 > 255)
+            {
+                num4 = 255;
+            }
+            return new Color(num, num2, num3, num4);
+        }
+        public static bool MechSpawn(float x, float y, int type)
+        {
+            int num = 0;
+            int num2 = 0;
+            int num3 = 0;
+            for (int i = 0; i < 200; i++)
+            {
+                if (Main.item[i].active && Main.item[i].type == type)
+                {
+                    num++;
+                    Vector2 vector = new Vector2(x, y);
+                    float num4 = Main.item[i].position.X - vector.X;
+                    float num5 = Main.item[i].position.Y - vector.Y;
+                    float num6 = (float)Math.Sqrt((double)(num4 * num4 + num5 * num5));
+                    if (num6 < 300f)
+                    {
+                        num2++;
+                    }
+                    if (num6 < 800f)
+                    {
+                        num3++;
+                    }
+                }
+            }
+            return num2 < 3 && num3 < 6 && num < 10;
+        }
+        public void UpdateItem(int i)
+        {
+            if (this.active)
+            {
+                float num = 0.1f;
+                float num2 = 7f;
+                int num3 = (int)(this.position.X + (float)(this.width / 2)) / 16;
+                int num4 = (int)(this.position.Y + (float)(this.height / 2)) / 16;
+                if (Main.tile[num3, num4] == null)
+                {
+                    num = 0f;
+                    this.velocity.X = 0f;
+                    this.velocity.Y = 0f;
+                }
+                if (this.wet)
+                {
+                    num2 = 5f;
+                    num = 0.08f;
+                }
+                Vector2 value = this.velocity * 0.5f;
+                if (this.ownTime > 0)
+                {
+                    this.ownTime--;
+                }
+                else
+                {
+                    this.ownIgnore = -1;
+                }
+                if (this.keepTime > 0)
+                {
+                    this.keepTime--;
+                }
+                if (!this.beingGrabbed)
+                {
+                    if (this.type == 520 || this.type == 521 || this.type == 547 || this.type == 548 || this.type == 549 || this.type == 575)
+                    {
+                        this.velocity.X = this.velocity.X * 0.95f;
+                        if ((double)this.velocity.X < 0.1 && (double)this.velocity.X > -0.1)
+                        {
+                            this.velocity.X = 0f;
+                        }
+                        this.velocity.Y = this.velocity.Y * 0.95f;
+                        if ((double)this.velocity.Y < 0.1 && (double)this.velocity.Y > -0.1)
+                        {
+                            this.velocity.Y = 0f;
+                        }
+                    }
+                    else
+                    {
+                        this.velocity.Y = this.velocity.Y + num;
+                        if (this.velocity.Y > num2)
+                        {
+                            this.velocity.Y = num2;
+                        }
+                        this.velocity.X = this.velocity.X * 0.95f;
+                        if ((double)this.velocity.X < 0.1 && (double)this.velocity.X > -0.1)
+                        {
+                            this.velocity.X = 0f;
+                        }
+                    }
+                    bool flag = Collision.LavaCollision(this.position, this.width, this.height);
+                    if (flag)
+                    {
+                        this.lavaWet = true;
+                    }
+                    bool flag2 = Collision.WetCollision(this.position, this.width, this.height);
+                    if (flag2)
+                    {
+                        if (!this.wet)
+                        {
+                            if (this.wetCount == 0)
+                            {
+                                this.wetCount = 20;
+                                if (!flag)
+                                {
+                                    for (int j = 0; j < 10; j++)
+                                    {
+                                        int num5 = Dust.NewDust(new Vector2(this.position.X - 6f, this.position.Y + (float)(this.height / 2) - 8f), this.width + 12, 24, 33, 0f, 0f, 0, default(Color), 1f);
+                                        Dust expr_35E_cp_0 = Main.dust[num5];
+                                        expr_35E_cp_0.velocity.Y = expr_35E_cp_0.velocity.Y - 4f;
+                                        Dust expr_37C_cp_0 = Main.dust[num5];
+                                        expr_37C_cp_0.velocity.X = expr_37C_cp_0.velocity.X * 2.5f;
+                                        Main.dust[num5].scale = 1.3f;
+                                        Main.dust[num5].alpha = 100;
+                                        Main.dust[num5].noGravity = true;
+                                    }
+                                    Main.PlaySound(19, (int)this.position.X, (int)this.position.Y, 1);
+                                }
+                                else
+                                {
+                                    for (int k = 0; k < 5; k++)
+                                    {
+                                        int num6 = Dust.NewDust(new Vector2(this.position.X - 6f, this.position.Y + (float)(this.height / 2) - 8f), this.width + 12, 24, 35, 0f, 0f, 0, default(Color), 1f);
+                                        Dust expr_464_cp_0 = Main.dust[num6];
+                                        expr_464_cp_0.velocity.Y = expr_464_cp_0.velocity.Y - 1.5f;
+                                        Dust expr_482_cp_0 = Main.dust[num6];
+                                        expr_482_cp_0.velocity.X = expr_482_cp_0.velocity.X * 2.5f;
+                                        Main.dust[num6].scale = 1.3f;
+                                        Main.dust[num6].alpha = 100;
+                                        Main.dust[num6].noGravity = true;
+                                    }
+                                    Main.PlaySound(19, (int)this.position.X, (int)this.position.Y, 1);
+                                }
+                            }
+                            this.wet = true;
+                        }
+                    }
+                    else
+                    {
+                        if (this.wet)
+                        {
+                            this.wet = false;
+                        }
+                    }
+                    if (!this.wet)
+                    {
+                        this.lavaWet = false;
+                    }
+                    if (this.wetCount > 0)
+                    {
+                        this.wetCount -= 1;
+                    }
+                    if (this.wet)
+                    {
+                        if (this.wet)
+                        {
+                            Vector2 vector = this.velocity;
+                            this.velocity = Collision.TileCollision(this.position, this.velocity, this.width, this.height, false, false);
+                            if (this.velocity.X != vector.X)
+                            {
+                                value.X = this.velocity.X;
+                            }
+                            if (this.velocity.Y != vector.Y)
+                            {
+                                value.Y = this.velocity.Y;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        this.velocity = Collision.TileCollision(this.position, this.velocity, this.width, this.height, false, false);
+                    }
+                    if (this.lavaWet)
+                    {
+                        if (this.type == 267)
+                        {
+                            if (Main.netMode != 1)
+                            {
+                                this.active = false;
+                                this.type = 0;
+                                this.name = "";
+                                this.stack = 0;
+                                for (int l = 0; l < 200; l++)
+                                {
+                                    if (Main.npc[l].active && Main.npc[l].type == 22)
+                                    {
+                                        if (Main.netMode == 2)
+                                        {
+                                            NetMessage.SendData(28, -1, -1, "", l, 9999f, 10f, (float)(-(float)Main.npc[l].direction), 0);
+                                        }
+                                        Main.npc[l].StrikeNPC(9999, 10f, -Main.npc[l].direction, false, false);
+                                        NPC.SpawnWOF(this.position);
+                                    }
+                                }
+                                NetMessage.SendData(21, -1, -1, "", i, 0f, 0f, 0f, 0);
+                            }
+                        }
+                        else
+                        {
+                            if (this.owner == Main.myPlayer && this.type != 312 && this.type != 318 && this.type != 173 && this.type != 174 && this.type != 175 && this.rare == 0)
+                            {
+                                this.active = false;
+                                this.type = 0;
+                                this.name = "";
+                                this.stack = 0;
+                                if (Main.netMode != 0)
+                                {
+                                    NetMessage.SendData(21, -1, -1, "", i, 0f, 0f, 0f, 0);
+                                }
+                            }
+                        }
+                    }
+                    if (this.type == 520)
+                    {
+                        float num7 = (float)Main.rand.Next(90, 111) * 0.01f;
+                        num7 *= Main.essScale;
+                        Lighting.addLight((int)((this.position.X + (float)(this.width / 2)) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.5f * num7, 0.1f * num7, 0.25f * num7);
+                    }
+                    else
+                    {
+                        if (this.type == 521)
+                        {
+                            float num8 = (float)Main.rand.Next(90, 111) * 0.01f;
+                            num8 *= Main.essScale;
+                            Lighting.addLight((int)((this.position.X + (float)(this.width / 2)) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.25f * num8, 0.1f * num8, 0.5f * num8);
+                        }
+                        else
+                        {
+                            if (this.type == 547)
+                            {
+                                float num9 = (float)Main.rand.Next(90, 111) * 0.01f;
+                                num9 *= Main.essScale;
+                                Lighting.addLight((int)((this.position.X + (float)(this.width / 2)) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.5f * num9, 0.3f * num9, 0.05f * num9);
+                            }
+                            else
+                            {
+                                if (this.type == 548)
+                                {
+                                    float num10 = (float)Main.rand.Next(90, 111) * 0.01f;
+                                    num10 *= Main.essScale;
+                                    Lighting.addLight((int)((this.position.X + (float)(this.width / 2)) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.1f * num10, 0.1f * num10, 0.6f * num10);
+                                }
+                                else
+                                {
+                                    if (this.type == 575)
+                                    {
+                                        float num11 = (float)Main.rand.Next(90, 111) * 0.01f;
+                                        num11 *= Main.essScale;
+                                        Lighting.addLight((int)((this.position.X + (float)(this.width / 2)) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.1f * num11, 0.3f * num11, 0.5f * num11);
+                                    }
+                                    else
+                                    {
+                                        if (this.type == 549)
+                                        {
+                                            float num12 = (float)Main.rand.Next(90, 111) * 0.01f;
+                                            num12 *= Main.essScale;
+                                            Lighting.addLight((int)((this.position.X + (float)(this.width / 2)) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.1f * num12, 0.5f * num12, 0.2f * num12);
+                                        }
+                                        else
+                                        {
+                                            if (this.type == 58)
+                                            {
+                                                float num13 = (float)Main.rand.Next(90, 111) * 0.01f;
+                                                num13 *= Main.essScale * 0.5f;
+                                                Lighting.addLight((int)((this.position.X + (float)(this.width / 2)) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.5f * num13, 0.1f * num13, 0.1f * num13);
+                                            }
+                                            else
+                                            {
+                                                if (this.type == 184)
+                                                {
+                                                    float num14 = (float)Main.rand.Next(90, 111) * 0.01f;
+                                                    num14 *= Main.essScale * 0.5f;
+                                                    Lighting.addLight((int)((this.position.X + (float)(this.width / 2)) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.1f * num14, 0.1f * num14, 0.5f * num14);
+                                                }
+                                                else
+                                                {
+                                                    if (this.type == 522)
+                                                    {
+                                                        float num15 = (float)Main.rand.Next(90, 111) * 0.01f;
+                                                        num15 *= Main.essScale * 0.2f;
+                                                        Lighting.addLight((int)((this.position.X + (float)(this.width / 2)) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.5f * num15, 1f * num15, 0.1f * num15);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (this.type == 75 && Main.dayTime)
+                    {
+                        for (int m = 0; m < 10; m++)
+                        {
+                            Dust.NewDust(this.position, this.width, this.height, 15, this.velocity.X, this.velocity.Y, 150, default(Color), 1.2f);
+                        }
+                        for (int n = 0; n < 3; n++)
+                        {
+                            Gore.NewGore(this.position, new Vector2(this.velocity.X, this.velocity.Y), Main.rand.Next(16, 18), 1f);
+                        }
+                        this.active = false;
+                        this.type = 0;
+                        this.stack = 0;
+                        if (Main.netMode == 2)
+                        {
+                            NetMessage.SendData(21, -1, -1, "", i, 0f, 0f, 0f, 0);
+                        }
+                    }
+                }
+                else
+                {
+                    this.beingGrabbed = false;
+                }
+                if (this.type == 501)
+                {
+                    if (Main.rand.Next(6) == 0)
+                    {
+                        int num16 = Dust.NewDust(this.position, this.width, this.height, 55, 0f, 0f, 200, this.color, 1f);
+                        Dust expr_DC0 = Main.dust[num16];
+                        expr_DC0.velocity *= 0.3f;
+                        Main.dust[num16].scale *= 0.5f;
+                    }
+                }
+                else
+                {
+                    if (this.type == 8 || this.type == 105)
+                    {
+                        if (!this.wet)
+                        {
+                            Lighting.addLight((int)((this.position.X + (float)(this.width / 2)) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 1f, 0.95f, 0.8f);
+                        }
+                    }
+                    else
+                    {
+                        if (this.type == 523)
+                        {
+                            Lighting.addLight((int)((this.position.X + (float)(this.width / 2)) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.85f, 1f, 0.7f);
+                        }
+                        else
+                        {
+                            if (this.type >= 427 && this.type <= 432)
+                            {
+                                if (!this.wet)
+                                {
+                                    float r = 0f;
+                                    float g = 0f;
+                                    float b = 0f;
+                                    int num17 = this.type - 426;
+                                    if (num17 == 1)
+                                    {
+                                        r = 0.1f;
+                                        g = 0.2f;
+                                        b = 1.1f;
+                                    }
+                                    if (num17 == 2)
+                                    {
+                                        r = 1f;
+                                        g = 0.1f;
+                                        b = 0.1f;
+                                    }
+                                    if (num17 == 3)
+                                    {
+                                        r = 0f;
+                                        g = 1f;
+                                        b = 0.1f;
+                                    }
+                                    if (num17 == 4)
+                                    {
+                                        r = 0.9f;
+                                        g = 0f;
+                                        b = 0.9f;
+                                    }
+                                    if (num17 == 5)
+                                    {
+                                        r = 1.3f;
+                                        g = 1.3f;
+                                        b = 1.3f;
+                                    }
+                                    if (num17 == 6)
+                                    {
+                                        r = 0.9f;
+                                        g = 0.9f;
+                                        b = 0f;
+                                    }
+                                    Lighting.addLight((int)((this.position.X + (float)(this.width / 2)) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), r, g, b);
+                                }
+                            }
+                            else
+                            {
+                                if (this.type == 41)
+                                {
+                                    if (!this.wet)
+                                    {
+                                        Lighting.addLight((int)((this.position.X + (float)this.width) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 1f, 0.75f, 0.55f);
+                                    }
+                                }
+                                else
+                                {
+                                    if (this.type == 282)
+                                    {
+                                        Lighting.addLight((int)((this.position.X + (float)this.width) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.7f, 1f, 0.8f);
+                                    }
+                                    else
+                                    {
+                                        if (this.type == 286)
+                                        {
+                                            Lighting.addLight((int)((this.position.X + (float)this.width) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.7f, 0.8f, 1f);
+                                        }
+                                        else
+                                        {
+                                            if (this.type == 331)
+                                            {
+                                                Lighting.addLight((int)((this.position.X + (float)this.width) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.55f, 0.75f, 0.6f);
+                                            }
+                                            else
+                                            {
+                                                if (this.type == 183)
+                                                {
+                                                    Lighting.addLight((int)((this.position.X + (float)this.width) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.15f, 0.45f, 0.9f);
+                                                }
+                                                else
+                                                {
+                                                    if (this.type == 75)
+                                                    {
+                                                        Lighting.addLight((int)((this.position.X + (float)this.width) / 16f), (int)((this.position.Y + (float)(this.height / 2)) / 16f), 0.8f, 0.7f, 0.1f);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (this.type == 75)
+                {
+                    if (Main.rand.Next(25) == 0)
+                    {
+                        Dust.NewDust(this.position, this.width, this.height, 58, this.velocity.X * 0.5f, this.velocity.Y * 0.5f, 150, default(Color), 1.2f);
+                    }
+                    if (Main.rand.Next(50) == 0)
+                    {
+                        Gore.NewGore(this.position, new Vector2(this.velocity.X * 0.2f, this.velocity.Y * 0.2f), Main.rand.Next(16, 18), 1f);
+                    }
+                }
+                if (this.spawnTime < 2147483646)
+                {
+                    this.spawnTime++;
+                }
+                if (Main.netMode == 2 && this.owner != Main.myPlayer)
+                {
+                    this.release++;
+                    if (this.release >= 300)
+                    {
+                        this.release = 0;
+                        NetMessage.SendData(39, this.owner, -1, "", i, 0f, 0f, 0f, 0);
+                    }
+                }
+                if (this.wet)
+                {
+                    this.position += value;
+                }
+                else
+                {
+                    this.position += this.velocity;
+                }
+                if (this.noGrabDelay > 0)
+                {
+                    this.noGrabDelay--;
+                }
+            }
+        }
+        public static int NewItem(int X, int Y, int Width, int Height, int Type, int Stack = 1, bool noBroadcast = false, int pfix = 0)
+        {
+            if (Main.rand == null)
+            {
+                Main.rand = new Random();
+            }
+            if (WorldGen.gen)
+            {
+                return 0;
+            }
+            int num = 200;
+            Main.item[200] = new Item();
+            if (Main.netMode != 1)
+            {
+                for (int i = 0; i < 200; i++)
+                {
+                    if (!Main.item[i].active)
+                    {
+                        num = i;
+                        break;
+                    }
+                }
+            }
+            if (num == 200 && Main.netMode != 1)
+            {
+                int num2 = 0;
+                for (int j = 0; j < 200; j++)
+                {
+                    if (Main.item[j].spawnTime > num2)
+                    {
+                        num2 = Main.item[j].spawnTime;
+                        num = j;
+                    }
+                }
+            }
+            Main.item[num] = new Item();
+            Main.item[num].SetDefaults(Type, false);
+            Main.item[num].Prefix(pfix);
+            Main.item[num].position.X = (float)(X + Width / 2 - Main.item[num].width / 2);
+            Main.item[num].position.Y = (float)(Y + Height / 2 - Main.item[num].height / 2);
+            Main.item[num].wet = Collision.WetCollision(Main.item[num].position, Main.item[num].width, Main.item[num].height);
+            Main.item[num].velocity.X = (float)Main.rand.Next(-30, 31) * 0.1f;
+            Main.item[num].velocity.Y = (float)Main.rand.Next(-40, -15) * 0.1f;
+            if (Type == 520 || Type == 521)
+            {
+                Main.item[num].velocity.X = (float)Main.rand.Next(-30, 31) * 0.1f;
+                Main.item[num].velocity.Y = (float)Main.rand.Next(-30, 31) * 0.1f;
+            }
+            Main.item[num].active = true;
+            Main.item[num].spawnTime = 0;
+            Main.item[num].stack = Stack;
+            if (Main.netMode == 2 && !noBroadcast)
+            {
+                NetMessage.SendData(21, -1, -1, "", num, 0f, 0f, 0f, 0);
+                Main.item[num].FindOwner(num);
+            }
+            return num;
+        }
+        public void FindOwner(int whoAmI)
+        {
+            if (this.keepTime > 0)
+            {
+                return;
+            }
+            int num = this.owner;
+            this.owner = 255;
+            float num2 = -1f;
+            for (int i = 0; i < 255; i++)
+            {
+                if (this.ownIgnore != i && Main.player[i].active && Main.player[i].ItemSpace(Main.item[whoAmI]))
+                {
+                    float num3 = Math.Abs(Main.player[i].position.X + (float)(Main.player[i].width / 2) - this.position.X - (float)(this.width / 2)) + Math.Abs(Main.player[i].position.Y + (float)(Main.player[i].height / 2) - this.position.Y - (float)this.height);
+                    if (num3 < (float)NPC.sWidth && (num2 == -1f || num3 < num2))
+                    {
+                        num2 = num3;
+                        this.owner = i;
+                    }
+                }
+            }
+            if (this.owner != num && ((num == Main.myPlayer && Main.netMode == 1) || (num == 255 && Main.netMode == 2) || !Main.player[num].active))
+            {
+                NetMessage.SendData(21, -1, -1, "", whoAmI, 0f, 0f, 0f, 0);
+                if (this.active)
+                {
+                    NetMessage.SendData(22, -1, -1, "", whoAmI, 0f, 0f, 0f, 0);
+                }
+            }
+        }
+        public object Clone()
+        {
+            return base.MemberwiseClone();
+        }
+        public bool IsTheSameAs(Item compareItem)
+        {
+            return this.name == compareItem.name;
+        }
+        public bool IsNotTheSameAs(Item compareItem)
+        {
+            return this.name != compareItem.name || this.stack != compareItem.stack || this.prefix != compareItem.prefix;
+        }
+    }
 }

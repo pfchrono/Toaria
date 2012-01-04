@@ -266,18 +266,10 @@ namespace Toaria
 		public void HealEffect(int healAmount)
 		{
 			CombatText.NewText(new Rectangle((int)this.position.X, (int)this.position.Y, this.width, this.height), new Color(100, 255, 100, 255), string.Concat(healAmount), false);
-			if (Main.netMode == 1 && this.whoAmi == Main.myPlayer)
-			{
-				NetMessage.SendData(35, -1, -1, "", this.whoAmi, (float)healAmount, 0f, 0f, 0);
-			}
 		}
 		public void ManaEffect(int manaAmount)
 		{
 			CombatText.NewText(new Rectangle((int)this.position.X, (int)this.position.Y, this.width, this.height), new Color(100, 100, 255, 255), string.Concat(manaAmount), false);
-			if (Main.netMode == 1 && this.whoAmi == Main.myPlayer)
-			{
-				NetMessage.SendData(43, -1, -1, "", this.whoAmi, (float)manaAmount, 0f, 0f, 0);
-			}
 		}
 		public static byte FindClosest(Vector2 Position, int Width, int Height)
 		{
@@ -347,16 +339,8 @@ namespace Toaria
 				Main.guideItem.position = Main.item[num].position;
 				Main.item[num] = Main.guideItem;
 				Main.guideItem = new Item();
-				if (Main.netMode == 0)
-				{
-					Main.item[num].noGrabDelay = 100;
-				}
 				Main.item[num].velocity.Y = -2f;
 				Main.item[num].velocity.X = (float)(4 * this.direction) + this.velocity.X;
-				if (Main.netMode == 1)
-				{
-					NetMessage.SendData(21, -1, -1, "", num, 0f, 0f, 0f, 0);
-				}
 			}
 			if (!Main.reforge && Main.reforgeItem.type > 0)
 			{
@@ -364,16 +348,8 @@ namespace Toaria
 				Main.reforgeItem.position = Main.item[num2].position;
 				Main.item[num2] = Main.reforgeItem;
 				Main.reforgeItem = new Item();
-				if (Main.netMode == 0)
-				{
-					Main.item[num2].noGrabDelay = 100;
-				}
 				Main.item[num2].velocity.Y = -2f;
 				Main.item[num2].velocity.X = (float)(4 * this.direction) + this.velocity.X;
-				if (Main.netMode == 1)
-				{
-					NetMessage.SendData(21, -1, -1, "", num2, 0f, 0f, 0f, 0);
-				}
 			}
 			if (Main.myPlayer == this.whoAmi)
 			{
@@ -418,10 +394,6 @@ namespace Toaria
 					Main.item[num3] = this.inventory[this.selectedItem];
 					this.inventory[this.selectedItem] = new Item();
 				}
-				if (Main.netMode == 0)
-				{
-					Main.item[num3].noGrabDelay = 100;
-				}
 				Main.item[num3].velocity.Y = -2f;
 				Main.item[num3].velocity.X = (float)(4 * this.direction) + this.velocity.X;
 				if (((Main.mouseRight && !this.mouseInterface) || !Main.playerInventory) && Main.mouseItem.type > 0)
@@ -435,18 +407,10 @@ namespace Toaria
 					this.itemAnimationMax = 10;
 				}
 				Recipe.FindRecipes();
-				if (Main.netMode == 1)
-				{
-					NetMessage.SendData(21, -1, -1, "", num3, 0f, 0f, 0f, 0);
-				}
 			}
 		}
 		public void AddBuff(int type, int time, bool quiet = true)
 		{
-			if (!quiet && Main.netMode == 1)
-			{
-				NetMessage.SendData(55, -1, -1, "", this.whoAmi, (float)type, (float)time, 0f, 0);
-			}
 			int num = -1;
 			for (int i = 0; i < 10; i++)
 			{
@@ -1212,52 +1176,6 @@ namespace Toaria
 						else
 						{
 							this.releaseThrow = false;
-						}
-						if (Main.netMode == 1)
-						{
-							bool flag5 = false;
-							if (this.statLife != Main.clientPlayer.statLife || this.statLifeMax != Main.clientPlayer.statLifeMax)
-							{
-								NetMessage.SendData(16, -1, -1, "", Main.myPlayer, 0f, 0f, 0f, 0);
-								flag5 = true;
-							}
-							if (this.statMana != Main.clientPlayer.statMana || this.statManaMax != Main.clientPlayer.statManaMax)
-							{
-								NetMessage.SendData(42, -1, -1, "", Main.myPlayer, 0f, 0f, 0f, 0);
-								flag5 = true;
-							}
-							if (this.controlUp != Main.clientPlayer.controlUp)
-							{
-								flag5 = true;
-							}
-							if (this.controlDown != Main.clientPlayer.controlDown)
-							{
-								flag5 = true;
-							}
-							if (this.controlLeft != Main.clientPlayer.controlLeft)
-							{
-								flag5 = true;
-							}
-							if (this.controlRight != Main.clientPlayer.controlRight)
-							{
-								flag5 = true;
-							}
-							if (this.controlJump != Main.clientPlayer.controlJump)
-							{
-								flag5 = true;
-							}
-							if (this.controlUseItem != Main.clientPlayer.controlUseItem)
-							{
-								flag5 = true;
-							}
-							if (this.selectedItem != Main.clientPlayer.selectedItem)
-							{
-								flag5 = true;
-							}
-							if (flag5)
-							{
-								NetMessage.SendData(13, -1, -1, "", Main.myPlayer, 0f, 0f, 0f, 0);
-							}
 						}
 						if (Main.playerInventory)
 						{
@@ -3271,10 +3189,6 @@ namespace Toaria
 											this.statLife = this.statLifeMax;
 										}
 										Main.item[num49] = new Item();
-										if (Main.netMode == 1)
-										{
-											NetMessage.SendData(21, -1, -1, "", num49, 0f, 0f, 0f, 0);
-										}
 									}
 									else
 									{
@@ -3291,18 +3205,10 @@ namespace Toaria
 												this.statMana = this.statManaMax2;
 											}
 											Main.item[num49] = new Item();
-											if (Main.netMode == 1)
-											{
-												NetMessage.SendData(21, -1, -1, "", num49, 0f, 0f, 0f, 0);
-											}
 										}
 										else
 										{
 											Main.item[num49] = this.GetItem(i, Main.item[num49]);
-											if (Main.netMode == 1)
-											{
-												NetMessage.SendData(21, -1, -1, "", num49, 0f, 0f, 0f, 0);
-											}
 										}
 									}
 								}
@@ -3659,10 +3565,6 @@ namespace Toaria
 												if (frameX >= 100)
 												{
 													WorldGen.KillTile(num65, num66, true, false, false);
-													if (Main.netMode == 1)
-													{
-														NetMessage.SendData(17, -1, -1, "", 0, (float)num65, (float)num66, 1f, 0);
-													}
 												}
 											}
 											else
@@ -3670,10 +3572,6 @@ namespace Toaria
 												if (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 4 || Main.tile[Player.tileTargetX, Player.tileTargetY].type == 13 || Main.tile[Player.tileTargetX, Player.tileTargetY].type == 33 || Main.tile[Player.tileTargetX, Player.tileTargetY].type == 49 || (Main.tile[Player.tileTargetX, Player.tileTargetY].type == 50 && Main.tile[Player.tileTargetX, Player.tileTargetY].frameX == 90))
 												{
 													WorldGen.KillTile(Player.tileTargetX, Player.tileTargetY, false, false, false);
-													if (Main.netMode == 1)
-													{
-														NetMessage.SendData(17, -1, -1, "", 0, (float)Player.tileTargetX, (float)Player.tileTargetY, 0f, 0);
-													}
 												}
 												else
 												{
@@ -3723,34 +3621,21 @@ namespace Toaria
 																		flag11 = false;
 																	}
 																}
-																if (flag11)
-																{
-																	if (Main.netMode == 0)
-																	{
-																		this.talkNPC = -1;
-																		Main.playerInventory = false;
-																		Main.editSign = false;
-																		Main.PlaySound(10, -1, -1, 1);
-																		int num71 = Sign.ReadSign(Player.tileTargetX, Player.tileTargetY);
-																		this.sign = num71;
-																		Main.npcChatText = Main.sign[num71].text;
-																	}
-																	else
-																	{
-																		int num72 = (int)(Main.tile[Player.tileTargetX, Player.tileTargetY].frameX / 18);
-																		int num73 = (int)(Main.tile[Player.tileTargetX, Player.tileTargetY].frameY / 18);
-																		while (num72 > 1)
-																		{
-																			num72 -= 2;
-																		}
-																		int num74 = Player.tileTargetX - num72;
-																		int num75 = Player.tileTargetY - num73;
-																		if (Main.tile[num74, num75].type == 55 || Main.tile[num74, num75].type == 85)
-																		{
-																			NetMessage.SendData(46, -1, -1, "", num74, (float)num75, 0f, 0f, 0);
-																		}
-																	}
-																}
+                                                                if (flag11)
+                                                                {
+                                                                    int num72 = (int)(Main.tile[Player.tileTargetX, Player.tileTargetY].frameX / 18);
+                                                                    int num73 = (int)(Main.tile[Player.tileTargetX, Player.tileTargetY].frameY / 18);
+                                                                    while (num72 > 1)
+                                                                    {
+                                                                        num72 -= 2;
+                                                                    }
+                                                                    int num74 = Player.tileTargetX - num72;
+                                                                    int num75 = Player.tileTargetY - num73;
+                                                                    if (Main.tile[num74, num75].type == 55 || Main.tile[num74, num75].type == 85)
+                                                                    {
+                                                                        NetMessage.SendData(46, -1, -1, "", num74, (float)num75, 0f, 0f, 0);
+                                                                    }
+                                                                }
 															}
 															else
 															{
@@ -3856,19 +3741,6 @@ namespace Toaria
 																						}
 																					}
 																				}
-																				if (Main.netMode == 1 && num80 == 0 && (Main.tile[num81, num82].frameX < 72 || Main.tile[num81, num82].frameX > 106) && (Main.tile[num81, num82].frameX < 144 || Main.tile[num81, num82].frameX > 178))
-																				{
-																					if (num81 == this.chestX && num82 == this.chestY && this.chest != -1)
-																					{
-																						this.chest = -1;
-																						Main.PlaySound(11, -1, -1, 1);
-																					}
-																					else
-																					{
-																						NetMessage.SendData(31, -1, -1, "", num81, (float)num82, 0f, 0f, 0);
-																					}
-																				}
-																				else
 																				{
 																					int num83 = -1;
 																					if (num80 == 1)
@@ -3905,10 +3777,6 @@ namespace Toaria
 																											}
 																										}
 																										Chest.Unlock(num81, num82);
-																										if (Main.netMode == 1)
-																										{
-																											NetMessage.SendData(52, -1, -1, "", this.whoAmi, 1f, (float)num81, (float)num82, 0);
-																										}
 																									}
 																								}
 																							}
@@ -4326,10 +4194,6 @@ namespace Toaria
 								int num115 = (int)vector5.X;
 								int num116 = (int)vector5.Y;
 								WorldGen.KillTile(num115, num116, false, false, false);
-								if (Main.netMode == 1 && !Main.tile[num115, num116].active && Main.netMode == 1)
-								{
-									NetMessage.SendData(17, -1, -1, "", 0, (float)num115, (float)num116, 0f, 0);
-								}
 							}
 						}
 						this.fallStart = (int)(this.position.Y / 16f);
@@ -5662,11 +5526,6 @@ namespace Toaria
 				}
 				Main.maxQ = true;
 			}
-			if (Main.netMode == 1 && this.whoAmi == Main.myPlayer)
-			{
-				NetMessage.SendData(12, -1, -1, "", Main.myPlayer, 0f, 0f, 0f, 0);
-				Main.gameMenu = false;
-			}
 			this.headPosition = default(Vector2);
 			this.bodyPosition = default(Vector2);
 			this.legPosition = default(Vector2);
@@ -5733,10 +5592,6 @@ namespace Toaria
 			if (this.whoAmi == Main.myPlayer)
 			{
 				Main.renderNow = true;
-				if (Main.netMode == 1)
-				{
-					Netplay.newRecent();
-				}
 				Main.screenPosition.X = this.position.X + (float)(this.width / 2) - (float)(Main.screenWidth / 2);
 				Main.screenPosition.Y = this.position.Y + (float)(this.height / 2) - (float)(Main.screenHeight / 2);
 			}
@@ -6084,17 +5939,6 @@ namespace Toaria
 				}
 				if (num2 >= 1.0)
 				{
-					if (Main.netMode == 1 && this.whoAmi == Main.myPlayer && !quiet)
-					{
-						int num3 = 0;
-						if (pvp)
-						{
-							num3 = 1;
-						}
-						NetMessage.SendData(13, -1, -1, "", this.whoAmi, 0f, 0f, 0f, 0);
-						NetMessage.SendData(16, -1, -1, "", this.whoAmi, 0f, 0f, 0f, 0);
-						NetMessage.SendData(26, -1, -1, "", this.whoAmi, (float)hitDirection, (float)Damage, (float)num3, 0);
-					}
 					CombatText.NewText(new Rectangle((int)this.position.X, (int)this.position.Y, this.width, this.height), new Color(255, 80, 90, 255), string.Concat((int)num2), Crit);
 					this.statLife -= (int)num2;
 					this.immune = true;
@@ -6281,22 +6125,6 @@ namespace Toaria
 			if (Main.netMode == 2)
 			{
 				NetMessage.SendData(25, -1, -1, this.name + deathText, 255, 225f, 25f, 25f, 0);
-			}
-			else
-			{
-				if (Main.netMode == 0)
-				{
-					Main.NewText(this.name + deathText, 225, 25, 25);
-				}
-			}
-			if (Main.netMode == 1 && this.whoAmi == Main.myPlayer)
-			{
-				int num6 = 0;
-				if (pvp)
-				{
-					num6 = 1;
-				}
-				NetMessage.SendData(44, -1, -1, deathText, this.whoAmi, (float)hitDirection, (float)((int)dmg), (float)num6, 0);
 			}
 			if (!pvp && this.whoAmi == Main.myPlayer && this.difficulty == 0)
 			{
@@ -6665,10 +6493,6 @@ namespace Toaria
 						if (Main.tile[Player.tileTargetX, Player.tileTargetY + 1].type != 78)
 						{
 							WorldGen.KillTile(Player.tileTargetX, Player.tileTargetY, false, false, false);
-							if (!Main.tile[Player.tileTargetX, Player.tileTargetY].active && Main.netMode == 1)
-							{
-								NetMessage.SendData(17, -1, -1, "", 4, (float)Player.tileTargetX, (float)Player.tileTargetY, 0f, 0);
-							}
 						}
 						else
 						{
@@ -6696,27 +6520,12 @@ namespace Toaria
 						if (WorldGen.PlaceTile(Player.tileTargetX, Player.tileTargetY, this.inventory[this.selectedItem].createTile, false, false, this.whoAmi, num8))
 						{
 							this.itemTime = this.inventory[this.selectedItem].useTime;
-							if (Main.netMode == 1)
-							{
-								NetMessage.SendData(17, -1, -1, "", 1, (float)Player.tileTargetX, (float)Player.tileTargetY, (float)this.inventory[this.selectedItem].createTile, num8);
-							}
 							if (this.inventory[this.selectedItem].createTile == 15)
 							{
 								if (this.direction == 1)
 								{
                                     Main.tile[Player.tileTargetX, Player.tileTargetY].frameX += 18;
                                     Main.tile[Player.tileTargetX, Player.tileTargetY - 1].frameX += 18;
-								}
-								if (Main.netMode == 1)
-								{
-									NetMessage.SendTileSquare(-1, Player.tileTargetX - 1, Player.tileTargetY - 1, 3);
-								}
-							}
-							else
-							{
-								if ((this.inventory[this.selectedItem].createTile == 79 || this.inventory[this.selectedItem].createTile == 90) && Main.netMode == 1)
-								{
-									NetMessage.SendTileSquare(-1, Player.tileTargetX, Player.tileTargetY, 5);
 								}
 							}
 						}
@@ -6732,10 +6541,6 @@ namespace Toaria
 					if ((int)Main.tile[Player.tileTargetX, Player.tileTargetY].wall == this.inventory[this.selectedItem].createWall)
 					{
 						this.itemTime = this.inventory[this.selectedItem].useTime;
-						if (Main.netMode == 1)
-						{
-							NetMessage.SendData(17, -1, -1, "", 3, (float)Player.tileTargetX, (float)Player.tileTargetY, (float)this.inventory[this.selectedItem].createWall, 0);
-						}
 						if (this.inventory[this.selectedItem].stack > 1)
 						{
 							int createWall = this.inventory[this.selectedItem].createWall;
@@ -6796,10 +6601,6 @@ namespace Toaria
 											if (this.inventory[this.selectedItem].stack == 0)
 											{
 												this.inventory[this.selectedItem].SetDefaults(0, false);
-											}
-											if (Main.netMode == 1)
-											{
-												NetMessage.SendData(17, -1, -1, "", 3, (float)num9, (float)num10, (float)createWall, 0);
 											}
 										}
 									}
@@ -6901,10 +6702,6 @@ namespace Toaria
 						num2 -= k / 18;
 						int l = (int)Main.tile[num2, num3].frameX;
 						WorldGen.KillTile(num2, num3, true, false, false);
-						if (Main.netMode == 1)
-						{
-							NetMessage.SendData(17, -1, -1, "", 0, (float)num2, (float)num3, 1f, 0);
-						}
 						while (l >= 100)
 						{
 							l -= 100;
@@ -6912,10 +6709,6 @@ namespace Toaria
 						if (num4 == 0 && this.inventory[this.selectedItem].headSlot >= 0)
 						{
 							Main.tile[num2, num3].frameX = (short)(l + this.inventory[this.selectedItem].headSlot * 100);
-							if (Main.netMode == 1)
-							{
-								NetMessage.SendTileSquare(-1, num2, num3, 1);
-							}
 							this.inventory[this.selectedItem].SetDefaults(0, false);
 							Main.mouseItem.SetDefaults(0, false);
 							this.releaseUseItem = false;
@@ -6926,10 +6719,6 @@ namespace Toaria
 							if (num4 == 1 && this.inventory[this.selectedItem].bodySlot >= 0)
 							{
 								Main.tile[num2, num3].frameX = (short)(l + this.inventory[this.selectedItem].bodySlot * 100);
-								if (Main.netMode == 1)
-								{
-									NetMessage.SendTileSquare(-1, num2, num3, 1);
-								}
 								this.inventory[this.selectedItem].SetDefaults(0, false);
 								Main.mouseItem.SetDefaults(0, false);
 								this.releaseUseItem = false;
@@ -6940,10 +6729,6 @@ namespace Toaria
 								if (num4 == 2 && this.inventory[this.selectedItem].legSlot >= 0)
 								{
 									Main.tile[num2, num3].frameX = (short)(l + this.inventory[this.selectedItem].legSlot * 100);
-									if (Main.netMode == 1)
-									{
-										NetMessage.SendTileSquare(-1, num2, num3, 1);
-									}
 									this.inventory[this.selectedItem].SetDefaults(0, false);
 									Main.mouseItem.SetDefaults(0, false);
 									this.releaseUseItem = false;
@@ -7090,14 +6875,6 @@ namespace Toaria
 					if (Main.tile[num8, num9].active && (Main.tile[num8, num9].type == 0 || Main.tile[num8, num9].type == 2 || Main.tile[num8, num9].type == 23))
 					{
 						WorldGen.KillTile(num8, num9, false, false, true);
-						if (!Main.tile[num8, num9].active)
-						{
-							if (Main.netMode == 1)
-							{
-								NetMessage.SendData(17, -1, -1, "", 4, (float)num8, (float)num9, 0f, 0);
-							}
-						}
-						else
 						{
 							flag = false;
 						}
@@ -7945,11 +7722,6 @@ namespace Toaria
 								Main.tile[Player.tileTargetX, Player.tileTargetY].liquid = 0;
 								Main.tile[Player.tileTargetX, Player.tileTargetY].lava = false;
 								WorldGen.SquareTileFrame(Player.tileTargetX, Player.tileTargetY, false);
-								if (Main.netMode == 1)
-								{
-									NetMessage.sendWater(Player.tileTargetX, Player.tileTargetY);
-								}
-								else
 								{
 									Liquid.AddWater(Player.tileTargetX, Player.tileTargetY);
 								}
@@ -7972,11 +7744,6 @@ namespace Toaria
 												Main.tile[num51, num52].lava = false;
 											}
 											WorldGen.SquareTileFrame(num51, num52, false);
-											if (Main.netMode == 1)
-											{
-												NetMessage.sendWater(num51, num52);
-											}
-											else
 											{
 												Liquid.AddWater(num51, num52);
 											}
@@ -7999,10 +7766,6 @@ namespace Toaria
 										WorldGen.SquareTileFrame(Player.tileTargetX, Player.tileTargetY, true);
 										this.inventory[this.selectedItem].SetDefaults(205, false);
 										this.itemTime = this.inventory[this.selectedItem].useTime;
-										if (Main.netMode == 1)
-										{
-											NetMessage.sendWater(Player.tileTargetX, Player.tileTargetY);
-										}
 									}
 								}
 								else
@@ -8015,10 +7778,6 @@ namespace Toaria
 										WorldGen.SquareTileFrame(Player.tileTargetX, Player.tileTargetY, true);
 										this.inventory[this.selectedItem].SetDefaults(205, false);
 										this.itemTime = this.inventory[this.selectedItem].useTime;
-										if (Main.netMode == 1)
-										{
-											NetMessage.sendWater(Player.tileTargetX, Player.tileTargetY);
-										}
 									}
 								}
 							}
@@ -8097,36 +7856,17 @@ namespace Toaria
 											this.hitTile = 0;
 											this.Hurt(this.statLife / 2, -this.direction, false, false, Player.getDeathMessage(-1, -1, -1, 4), false);
 											WorldGen.KillTile(Player.tileTargetX, Player.tileTargetY, true, false, false);
-											if (Main.netMode == 1)
-											{
-												NetMessage.SendData(17, -1, -1, "", 0, (float)Player.tileTargetX, (float)Player.tileTargetY, 1f, 0);
-											}
 										}
 										if (this.hitTile >= 100)
 										{
-											if (Main.netMode == 1 && Main.tile[Player.tileTargetX, Player.tileTargetY].type == 21)
-											{
-												WorldGen.KillTile(Player.tileTargetX, Player.tileTargetY, true, false, false);
-												NetMessage.SendData(17, -1, -1, "", 0, (float)Player.tileTargetX, (float)Player.tileTargetY, 1f, 0);
-												NetMessage.SendData(34, -1, -1, "", Player.tileTargetX, (float)Player.tileTargetY, 0f, 0f, 0);
-											}
-											else
 											{
 												this.hitTile = 0;
 												WorldGen.KillTile(Player.tileTargetX, Player.tileTargetY, false, false, false);
-												if (Main.netMode == 1)
-												{
-													NetMessage.SendData(17, -1, -1, "", 0, (float)Player.tileTargetX, (float)Player.tileTargetY, 0f, 0);
-												}
 											}
 										}
 										else
 										{
 											WorldGen.KillTile(Player.tileTargetX, Player.tileTargetY, true, false, false);
-											if (Main.netMode == 1)
-											{
-												NetMessage.SendData(17, -1, -1, "", 0, (float)Player.tileTargetX, (float)Player.tileTargetY, 1f, 0);
-											}
 										}
 										this.itemTime = this.inventory[this.selectedItem].useTime;
 									}
@@ -8156,18 +7896,10 @@ namespace Toaria
 											{
 												this.hitTile = 0;
 												WorldGen.KillTile(Player.tileTargetX, Player.tileTargetY, false, false, false);
-												if (Main.netMode == 1)
-												{
-													NetMessage.SendData(17, -1, -1, "", 0, (float)Player.tileTargetX, (float)Player.tileTargetY, 0f, 0);
-												}
 											}
 											else
 											{
 												WorldGen.KillTile(Player.tileTargetX, Player.tileTargetY, true, false, false);
-												if (Main.netMode == 1)
-												{
-													NetMessage.SendData(17, -1, -1, "", 0, (float)Player.tileTargetX, (float)Player.tileTargetY, 1f, 0);
-												}
 											}
 											this.itemTime = this.inventory[this.selectedItem].useTime;
 										}
@@ -8287,18 +8019,10 @@ namespace Toaria
 											{
 												this.hitTile = 0;
 												WorldGen.KillTile(Player.tileTargetX, Player.tileTargetY, false, false, false);
-												if (Main.netMode == 1)
-												{
-													NetMessage.SendData(17, -1, -1, "", 0, (float)Player.tileTargetX, (float)Player.tileTargetY, 0f, 0);
-												}
 											}
 											else
 											{
 												WorldGen.KillTile(Player.tileTargetX, Player.tileTargetY, true, false, false);
-												if (Main.netMode == 1)
-												{
-													NetMessage.SendData(17, -1, -1, "", 0, (float)Player.tileTargetX, (float)Player.tileTargetY, 1f, 0);
-												}
 											}
 											this.itemTime = (int)((float)this.inventory[this.selectedItem].useTime * this.pickSpeed);
 										}
@@ -8407,18 +8131,10 @@ namespace Toaria
 							{
 								this.hitTile = 0;
 								WorldGen.KillWall(num54, num55, false);
-								if (Main.netMode == 1)
-								{
-									NetMessage.SendData(17, -1, -1, "", 2, (float)num54, (float)num55, 0f, 0);
-								}
 							}
 							else
 							{
 								WorldGen.KillWall(num54, num55, true);
-								if (Main.netMode == 1)
-								{
-									NetMessage.SendData(17, -1, -1, "", 2, (float)num54, (float)num55, 1f, 0);
-								}
 							}
 							this.itemTime = this.inventory[this.selectedItem].useTime / 2;
 						}
@@ -8746,10 +8462,6 @@ namespace Toaria
 								if (Main.tile[num82, num83] != null && Main.tileCut[(int)Main.tile[num82, num83].type] && Main.tile[num82, num83 + 1] != null && Main.tile[num82, num83 + 1].type != 78)
 								{
 									WorldGen.KillTile(num82, num83, false, false, false);
-									if (Main.netMode == 1)
-									{
-										NetMessage.SendData(17, -1, -1, "", 0, (float)num82, (float)num83, 0f, 0);
-									}
 								}
 							}
 						}
@@ -9155,10 +8867,6 @@ namespace Toaria
 					Main.item[num].velocity.Y = (float)Main.rand.Next(-20, 1) * 0.2f;
 					Main.item[num].velocity.X = (float)Main.rand.Next(-20, 21) * 0.2f;
 					Main.item[num].noGrabDelay = 100;
-					if (Main.netMode == 1)
-					{
-						NetMessage.SendData(21, -1, -1, "", num, 0f, 0f, 0f, 0);
-					}
 					if (i == 48)
 					{
 						Main.mouseItem = (Item)this.inventory[i].Clone();
@@ -9179,10 +8887,6 @@ namespace Toaria
 					Main.item[num].velocity.Y = (float)Main.rand.Next(-20, 1) * 0.2f;
 					Main.item[num].velocity.X = (float)Main.rand.Next(-20, 21) * 0.2f;
 					Main.item[num].noGrabDelay = 100;
-					if (Main.netMode == 1)
-					{
-						NetMessage.SendData(21, -1, -1, "", num, 0f, 0f, 0f, 0);
-					}
 				}
 				this.inventory[i] = new Item();
 				if (i < 11)
@@ -9196,10 +8900,6 @@ namespace Toaria
 						Main.item[num2].velocity.Y = (float)Main.rand.Next(-20, 1) * 0.2f;
 						Main.item[num2].velocity.X = (float)Main.rand.Next(-20, 21) * 0.2f;
 						Main.item[num2].noGrabDelay = 100;
-						if (Main.netMode == 1)
-						{
-							NetMessage.SendData(21, -1, -1, "", num2, 0f, 0f, 0f, 0);
-						}
 					}
 					this.armor[i] = new Item();
 				}
@@ -9776,10 +9476,6 @@ namespace Toaria
 			if (num >= 0)
 			{
 				Main.PlaySound(2, (int)this.position.X, (int)this.position.Y, this.inventory[num].useSound);
-				if (Main.netMode == 1 && this.whoAmi == Main.myPlayer)
-				{
-					NetMessage.SendData(51, -1, -1, "", this.whoAmi, 2f, 0f, 0f, 0);
-				}
 				int num3 = this.inventory[num].shoot;
 				float shootSpeed = this.inventory[num].shootSpeed;
 				int damage = this.inventory[num].damage;
