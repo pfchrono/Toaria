@@ -17,10 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Xml;
 using System.Data;
-using Microsoft.Xna.Framework;
+
 using MySql.Data.MySqlClient;
 using Toaria;
 

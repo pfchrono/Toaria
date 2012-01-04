@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TerrariaAPI;
-using XNAHelpers;
+using System.IO.Streams;
 
 namespace TShockAPI.Net
 {

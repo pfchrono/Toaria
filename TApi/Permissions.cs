@@ -23,15 +23,6 @@ namespace TShockAPI
         [Description("Allows you to use banned items")]
         public static readonly string usebanneditem;
 
-        [Description("Required to be able to place spikes")]
-        public static readonly string canspike;
-
-        [Description("Required to be able to place/pickup water")]
-        public static readonly string canwater;
-
-        [Description("Required to be able to place/pickup lava")]
-        public static readonly string canlava;
-
         [Description("Allows you to edit the spawn")]
         public static readonly string editspawn;
 
@@ -41,23 +32,31 @@ namespace TShockAPI
         [Description("Prevents you from being banned")]
         public static readonly string immunetoban;
 
-        [Description("Prevents you from being kicked/banned by TShocks grief detections")]
-        public static readonly string ignoregriefdetection;
+        [Description("Prevents you from being reverted by kill tile abuse detection")]
+        public static readonly string ignorekilltiledetection;
 
-        [Description("Prevents you from being kicked/banned by TShocks cheat detections")]
-        public static readonly string ignorecheatdetection;
+        [Description("Prevents you from being reverted by place tile abuse detection")]
+        public static readonly string ignoreplacetiledetection;
 
-        [Description("Allows you to use explosives even when they are disabled")]
-        public static readonly string useexplosives;
+        [Description("Prevents you from being disabled by liquid set abuse detection")]
+        public static readonly string ignoreliquidsetdetection;
+
+        [Description("Prevents you from being disabled by liquid set abuse detection")]
+        public static readonly string ignoreprojectiledetection;
+
+        [Description("Prevents you from being reverted by no clip detection")]
+        public static readonly string ignorenoclipdetection;
+
+        [Description("Prevents you from being disabled by stack hack detection")]
+        public static readonly string ignorestackhackdetection;
+
+        [Description("Prevents you from being kicked by hacked health detection")]
+        public static readonly string ignorestathackdetection;
 
         [Description("Specific log messages are sent to users with this permission")]
         public static readonly string logs;
 
-        [Description("User gets the admin prefix/color in chat")]
-        public static readonly string adminchat;
-
-        [Todo]
-        [Description("Not currently working")]
+        [Description("Allows you to bypass the max slots for up to 5 slots above your max")]
         public static readonly string reservedslot;
 
         [Description("User is notified when an update is available")]
@@ -114,6 +113,8 @@ namespace TShockAPI
         [Description("User can whisper to others")]
         public static readonly string whisper;
 
+        [Description("User rolls random number")]
+        public static readonly string rollnumber;
         [Description("")]
         public static readonly string annoy;
 
@@ -122,6 +123,9 @@ namespace TShockAPI
 
         [Description("User can spawn items")]
         public static readonly string item;
+
+        [Description("User can clear item drops.")]
+        public static readonly string clearitems;
 
         [Description("")]
         public static readonly string heal;
@@ -134,6 +138,46 @@ namespace TShockAPI
 
         [Description("")]
         public static readonly string grow;
+
+        [Description("User can change hardmode state.")]
+        public static readonly string hardmode;
+
+        [Description("User can change the homes of NPCs.")]
+        public static readonly string movenpc;
+
+        [Description("Users can stop people from TPing to them")]
+        public static readonly string tpallow;
+
+        [Description("Users can tp to anyone")]
+        public static readonly string tpall;
+
+        [Description("Users can tp to people without showing a notice")]
+        public static readonly string tphide;
+
+        [Description("User can convert hallow into corruption and vice-versa")]
+        public static readonly string converthardmode;
+
+        [Description("User can mute and unmute users")]
+        public static readonly string mute;
+		
+        [Description("User can register account in game")]
+        public static readonly string canregister;
+		
+        [Description("User can login in game")]
+        public static readonly string canlogin;
+		
+        [Description("User can change password in game")]
+        public static readonly string canchangepassword;
+		
+        [Description("User can use party chat in game")]
+        public static readonly string canpartychat;
+		
+        [Description("User can talk in third person")]
+        public static readonly string cantalkinthird;
+
+        [Description("Bypass Server Side Inventory checks")]
+        public static readonly string bypassinventorychecks;
+		
 
         static Permissions()
         {
