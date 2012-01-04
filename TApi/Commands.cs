@@ -2507,10 +2507,9 @@ namespace TShockAPI
             int playerTeam = args.Player.Team;
             int randomNumber = random.Next(0, 100);
 
-            TShock.Utils.Broadcast(string.Format("{0} Rolls ({1})", args.Player.Name, String.Join(" ", randomNumber)), 255, 0, 0);
-            /*if (playerTeam != 0)
+            if (playerTeam != 0)
             {
-                string msg = string.Format("<{0}> {1}", args.Player.Name, String.Join(" Rolls ", randomNumber));
+                string msg = string.Format("<{0}> Party Rolls ({1})", args.Player.Name, String.Join(" ", randomNumber));
                 foreach (TSPlayer player in TShock.Players)
                 {
                     if (player != null && player.Active && player.Team == playerTeam)
@@ -2518,8 +2517,7 @@ namespace TShockAPI
                 }
             }
             else
-                args.Player.SendMessage("You are not in a party!", 255, 240, 20);
-            */
+                TShock.Utils.Broadcast(string.Format("<{0}> Rolls ({1})", args.Player.Name, String.Join(" ", randomNumber)), 255, 0, 0);
         }
         private static void PartyChat(CommandArgs args)
         {
