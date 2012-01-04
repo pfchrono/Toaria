@@ -1,281 +1,392 @@
-﻿namespace Toaria
+
+using System;
+namespace Toaria
 {
-    using Microsoft.Xna.Framework;
-    using System;
-
-    public class Chest
-    {
-        public Item[] item = new Item[maxItems];
-        public static int maxItems = 20;
-        public int x;
-        public int y;
-
-        public void AddShop(Item newItem)
-        {
-            for (int i = 0; i < 0x13; i++)
-            {
-                if ((this.item[i] == null) || (this.item[i].type == 0))
-                {
-                    this.item[i] = (Item) newItem.Clone();
-                    this.item[i].buyOnce = true;
-                    this.item[i].value /= 5;
-                    if (this.item[i].value < 1)
-                    {
-                        this.item[i].value = 1;
-                        return;
-                    }
-                    break;
-                }
-            }
-        }
-
-        public object Clone()
-        {
-            return base.MemberwiseClone();
-        }
-
-        public static int CreateChest(int X, int Y)
-        {
-            for (int i = 0; i < 0x3e8; i++)
-            {
-                if (((Main.chest[i] != null) && (Main.chest[i].x == X)) && (Main.chest[i].y == Y))
-                {
-                    return -1;
-                }
-            }
-            for (int j = 0; j < 0x3e8; j++)
-            {
-                if (Main.chest[j] == null)
-                {
-                    Main.chest[j] = new Chest();
-                    Main.chest[j].x = X;
-                    Main.chest[j].y = Y;
-                    for (int k = 0; k < maxItems; k++)
-                    {
-                        Main.chest[j].item[k] = new Item();
-                    }
-                    return j;
-                }
-            }
-            return -1;
-        }
-
-        public static bool DestroyChest(int X, int Y)
-        {
-            for (int i = 0; i < 0x3e8; i++)
-            {
-                if (((Main.chest[i] != null) && (Main.chest[i].x == X)) && (Main.chest[i].y == Y))
-                {
-                    for (int j = 0; j < maxItems; j++)
-                    {
-                        if ((Main.chest[i].item[j].type > 0) && (Main.chest[i].item[j].stack > 0))
-                        {
-                            return false;
-                        }
-                    }
-                    Main.chest[i] = null;
-                    return true;
-                }
-            }
-            return true;
-        }
-
-        public static int FindChest(int X, int Y)
-        {
-            for (int i = 0; i < 0x3e8; i++)
-            {
-                if (((Main.chest[i] != null) && (Main.chest[i].x == X)) && (Main.chest[i].y == Y))
-                {
-                    return i;
-                }
-            }
-            return -1;
-        }
-
-        public void SetupShop(int type)
-        {
-            for (int i = 0; i < maxItems; i++)
-            {
-                this.item[i] = new Item();
-            }
-            if (type == 1)
-            {
-                int index = 0;
-                this.item[index].SetDefaults("Mining Helmet");
-                index++;
-                this.item[index].SetDefaults("Piggy Bank");
-                index++;
-                this.item[index].SetDefaults("Iron Anvil");
-                index++;
-                this.item[index].SetDefaults("Copper Pickaxe");
-                index++;
-                this.item[index].SetDefaults("Copper Axe");
-                index++;
-                this.item[index].SetDefaults("Torch");
-                index++;
-                this.item[index].SetDefaults("Lesser Healing Potion");
-                index++;
-                if (Main.player[Main.myPlayer].statManaMax == 200)
-                {
-                    this.item[index].SetDefaults("Lesser Mana Potion");
-                    index++;
-                }
-                this.item[index].SetDefaults("Wooden Arrow");
-                index++;
-                this.item[index].SetDefaults("Shuriken");
-                index++;
-                if (Main.bloodMoon)
-                {
-                    this.item[index].SetDefaults("Throwing Knife");
-                    index++;
-                }
-                if (!Main.dayTime)
-                {
-                    this.item[index].SetDefaults("Glowstick");
-                    index++;
-                }
-                if (NPC.downedBoss3)
-                {
-                    this.item[index].SetDefaults("Safe");
-                    index++;
-                }
-            }
-            else if (type == 2)
-            {
-                int num3 = 0;
-                this.item[num3].SetDefaults("Musket Ball");
-                num3++;
-                if (Main.bloodMoon)
-                {
-                    this.item[num3].SetDefaults("Silver Bullet");
-                    num3++;
-                }
-                if (NPC.downedBoss2 && !Main.dayTime)
-                {
-                    this.item[num3].SetDefaults(0x2f, false);
-                    num3++;
-                }
-                this.item[num3].SetDefaults("Flintlock Pistol");
-                num3++;
-                this.item[num3].SetDefaults("Minishark");
-                num3++;
-                if (Main.moonPhase == 4)
-                {
-                    this.item[num3].SetDefaults(0x144, false);
-                    num3++;
-                }
-            }
-            else if (type == 3)
-            {
-                int num4 = 0;
-                if (Main.bloodMoon)
-                {
-                    this.item[num4].SetDefaults(0x43, false);
-                    num4++;
-                    this.item[num4].SetDefaults(0x3b, false);
-                    num4++;
-                }
-                else
-                {
-                    this.item[num4].SetDefaults("Purification Powder");
-                    num4++;
-                    this.item[num4].SetDefaults("Grass Seeds");
-                    num4++;
-                    this.item[num4].SetDefaults("Sunflower");
-                    num4++;
-                }
-                this.item[num4].SetDefaults("Acorn");
-                num4++;
-                this.item[num4].SetDefaults(0x72, false);
-                num4++;
-            }
-            else if (type == 4)
-            {
-                int num5 = 0;
-                this.item[num5].SetDefaults("Grenade");
-                num5++;
-                this.item[num5].SetDefaults("Bomb");
-                num5++;
-                this.item[num5].SetDefaults("Dynamite");
-                num5++;
-            }
-            else if (type == 5)
-            {
-                int num6 = 0;
-                this.item[num6].SetDefaults(0xfe, false);
-                num6++;
-                if (Main.dayTime)
-                {
-                    this.item[num6].SetDefaults(0xf2, false);
-                    num6++;
-                }
-                if (Main.moonPhase == 0)
-                {
-                    this.item[num6].SetDefaults(0xf5, false);
-                    num6++;
-                    this.item[num6].SetDefaults(0xf6, false);
-                    num6++;
-                }
-                else if (Main.moonPhase == 1)
-                {
-                    this.item[num6].SetDefaults(0x145, false);
-                    num6++;
-                    this.item[num6].SetDefaults(0x146, false);
-                    num6++;
-                }
-                this.item[num6].SetDefaults(0x10d, false);
-                num6++;
-                this.item[num6].SetDefaults(270, false);
-                num6++;
-                this.item[num6].SetDefaults(0x10f, false);
-                num6++;
-                if (Main.bloodMoon)
-                {
-                    this.item[num6].SetDefaults(0x142, false);
-                    num6++;
-                }
-            }
-        }
-
-        public static void Unlock(int X, int Y)
-        {
-            Main.PlaySound(0x16, X * 0x10, Y * 0x10, 1);
-            for (int i = X; i <= (X + 1); i++)
-            {
-                for (int j = Y; j <= (Y + 1); j++)
-                {
-                    if (Main.tile[i, j] == null)
-                    {
-                        Main.tile[i, j] = new Tile();
-                    }
-                    if (((Main.tile[i, j].frameX >= 0x48) && (Main.tile[i, j].frameX <= 0x6a)) || ((Main.tile[i, j].frameX >= 0x90) && (Main.tile[i, j].frameX <= 0xb2)))
-                    {
-                        Tile tile1 = Main.tile[i, j];
-                        tile1.frameX = (short) (tile1.frameX - 0x24);
-                        for (int k = 0; k < 4; k++)
-                        {
-                            Color newColor = new Color();
-                            Dust.NewDust(new Vector2((float) (i * 0x10), (float) (j * 0x10)), 0x10, 0x10, 11, 0f, 0f, 0, newColor, 1f);
-                        }
-                    }
-                }
-            }
-        }
-
-        public static int UsingChest(int i)
-        {
-            if (Main.chest[i] != null)
-            {
-                for (int j = 0; j < 0xff; j++)
-                {
-                    if (Main.player[j].active && (Main.player[j].chest == i))
-                    {
-                        return j;
-                    }
-                }
-            }
-            return -1;
-        }
-    }
+	public class Chest
+	{
+		public static int maxItems = 20;
+		public Item[] item = new Item[Chest.maxItems];
+		public int x;
+		public int y;
+		public object Clone()
+		{
+			return base.MemberwiseClone();
+		}
+		public static void Unlock(int X, int Y)
+		{
+			Main.PlaySound(22, X * 16, Y * 16, 1);
+			for (int i = X; i <= X + 1; i++)
+			{
+				for (int j = Y; j <= Y + 1; j++)
+				{
+					if ((Main.tile[i, j].frameX >= 72 && Main.tile[i, j].frameX <= 106) || (Main.tile[i, j].frameX >= 144 && Main.tile[i, j].frameX <= 178))
+					{
+                        Main.tile[i, j].frameX -= 36;
+						for (int k = 0; k < 4; k++)
+						{
+							Dust.NewDust(new Vector2((float)(i * 16), (float)(j * 16)), 16, 16, 11, 0f, 0f, 0, default(Color), 1f);
+						}
+					}
+				}
+			}
+		}
+		public static int UsingChest(int i)
+		{
+			if (Main.chest[i] != null)
+			{
+				for (int j = 0; j < 255; j++)
+				{
+					if (Main.player[j].active && Main.player[j].chest == i)
+					{
+						return j;
+					}
+				}
+			}
+			return -1;
+		}
+		public static int FindChest(int X, int Y)
+		{
+			for (int i = 0; i < 1000; i++)
+			{
+				if (Main.chest[i] != null && Main.chest[i].x == X && Main.chest[i].y == Y)
+				{
+					return i;
+				}
+			}
+			return -1;
+		}
+		public static int CreateChest(int X, int Y)
+		{
+			for (int i = 0; i < 1000; i++)
+			{
+				if (Main.chest[i] != null && Main.chest[i].x == X && Main.chest[i].y == Y)
+				{
+					return -1;
+				}
+			}
+			for (int j = 0; j < 1000; j++)
+			{
+				if (Main.chest[j] == null)
+				{
+					Main.chest[j] = new Chest();
+					Main.chest[j].x = X;
+					Main.chest[j].y = Y;
+					for (int k = 0; k < Chest.maxItems; k++)
+					{
+						Main.chest[j].item[k] = new Item();
+					}
+					return j;
+				}
+			}
+			return -1;
+		}
+		public static bool DestroyChest(int X, int Y)
+		{
+			for (int i = 0; i < 1000; i++)
+			{
+				if (Main.chest[i] != null && Main.chest[i].x == X && Main.chest[i].y == Y)
+				{
+					for (int j = 0; j < Chest.maxItems; j++)
+					{
+						if (Main.chest[i].item[j].type > 0 && Main.chest[i].item[j].stack > 0)
+						{
+							return false;
+						}
+					}
+					Main.chest[i] = null;
+					return true;
+				}
+			}
+			return true;
+		}
+		public void AddShop(Item newItem)
+		{
+			int i = 0;
+			while (i < 19)
+			{
+				if (this.item[i] == null || this.item[i].type == 0)
+				{
+					this.item[i] = (Item)newItem.Clone();
+					this.item[i].buyOnce = true;
+					if (this.item[i].value <= 0)
+					{
+						break;
+					}
+					this.item[i].value = this.item[i].value / 5;
+					if (this.item[i].value < 1)
+					{
+						this.item[i].value = 1;
+						return;
+					}
+					break;
+				}
+				else
+				{
+					i++;
+				}
+			}
+		}
+		public void SetupShop(int type)
+		{
+			for (int i = 0; i < Chest.maxItems; i++)
+			{
+				this.item[i] = new Item();
+			}
+			if (type == 1)
+			{
+				int num = 0;
+				this.item[num].SetDefaults("Mining Helmet");
+				num++;
+				this.item[num].SetDefaults("Piggy Bank");
+				num++;
+				this.item[num].SetDefaults("Iron Anvil");
+				num++;
+				this.item[num].SetDefaults("Copper Pickaxe");
+				num++;
+				this.item[num].SetDefaults("Copper Axe");
+				num++;
+				this.item[num].SetDefaults("Torch");
+				num++;
+				this.item[num].SetDefaults("Lesser Healing Potion");
+				num++;
+				if (Main.player[Main.myPlayer].statManaMax == 200)
+				{
+					this.item[num].SetDefaults("Lesser Mana Potion");
+					num++;
+				}
+				this.item[num].SetDefaults("Wooden Arrow");
+				num++;
+				this.item[num].SetDefaults("Shuriken");
+				num++;
+				if (Main.bloodMoon)
+				{
+					this.item[num].SetDefaults("Throwing Knife");
+					num++;
+				}
+				if (!Main.dayTime)
+				{
+					this.item[num].SetDefaults("Glowstick");
+					num++;
+				}
+				if (NPC.downedBoss3)
+				{
+					this.item[num].SetDefaults("Safe");
+					num++;
+				}
+				if (Main.hardMode)
+				{
+					this.item[num].SetDefaults(488, false);
+					num++;
+					return;
+				}
+			}
+			else
+			{
+				if (type == 2)
+				{
+					int num2 = 0;
+					this.item[num2].SetDefaults("Musket Ball");
+					num2++;
+					if (Main.bloodMoon || Main.hardMode)
+					{
+						this.item[num2].SetDefaults("Silver Bullet");
+						num2++;
+					}
+					if ((NPC.downedBoss2 && !Main.dayTime) || Main.hardMode)
+					{
+						this.item[num2].SetDefaults(47, false);
+						num2++;
+					}
+					this.item[num2].SetDefaults("Flintlock Pistol");
+					num2++;
+					this.item[num2].SetDefaults("Minishark");
+					num2++;
+					if (!Main.dayTime)
+					{
+						this.item[num2].SetDefaults(324, false);
+						num2++;
+					}
+					if (Main.hardMode)
+					{
+						this.item[num2].SetDefaults(534, false);
+					}
+					num2++;
+					return;
+				}
+				if (type == 3)
+				{
+					int num3 = 0;
+					if (Main.bloodMoon)
+					{
+						this.item[num3].SetDefaults(67, false);
+						num3++;
+						this.item[num3].SetDefaults(59, false);
+						num3++;
+					}
+					else
+					{
+						this.item[num3].SetDefaults("Purification Powder");
+						num3++;
+						this.item[num3].SetDefaults("Grass Seeds");
+						num3++;
+						this.item[num3].SetDefaults("Sunflower");
+						num3++;
+					}
+					this.item[num3].SetDefaults("Acorn");
+					num3++;
+					this.item[num3].SetDefaults(114, false);
+					num3++;
+					if (Main.hardMode)
+					{
+						this.item[num3].SetDefaults(369, false);
+					}
+					num3++;
+					return;
+				}
+				if (type == 4)
+				{
+					int num4 = 0;
+					this.item[num4].SetDefaults("Grenade");
+					num4++;
+					this.item[num4].SetDefaults("Bomb");
+					num4++;
+					this.item[num4].SetDefaults("Dynamite");
+					num4++;
+					if (Main.hardMode)
+					{
+						this.item[num4].SetDefaults("Hellfire Arrow");
+					}
+					num4++;
+					return;
+				}
+				if (type == 5)
+				{
+					int num5 = 0;
+					this.item[num5].SetDefaults(254, false);
+					num5++;
+					if (Main.dayTime)
+					{
+						this.item[num5].SetDefaults(242, false);
+						num5++;
+					}
+					if (Main.moonPhase == 0)
+					{
+						this.item[num5].SetDefaults(245, false);
+						num5++;
+						this.item[num5].SetDefaults(246, false);
+						num5++;
+					}
+					else
+					{
+						if (Main.moonPhase == 1)
+						{
+							this.item[num5].SetDefaults(325, false);
+							num5++;
+							this.item[num5].SetDefaults(326, false);
+							num5++;
+						}
+					}
+					this.item[num5].SetDefaults(269, false);
+					num5++;
+					this.item[num5].SetDefaults(270, false);
+					num5++;
+					this.item[num5].SetDefaults(271, false);
+					num5++;
+					if (NPC.downedClown)
+					{
+						this.item[num5].SetDefaults(503, false);
+						num5++;
+						this.item[num5].SetDefaults(504, false);
+						num5++;
+						this.item[num5].SetDefaults(505, false);
+						num5++;
+					}
+					if (Main.bloodMoon)
+					{
+						this.item[num5].SetDefaults(322, false);
+						num5++;
+						return;
+					}
+				}
+				else
+				{
+					if (type == 6)
+					{
+						int num6 = 0;
+						this.item[num6].SetDefaults(128, false);
+						num6++;
+						this.item[num6].SetDefaults(486, false);
+						num6++;
+						this.item[num6].SetDefaults(398, false);
+						num6++;
+						this.item[num6].SetDefaults(84, false);
+						num6++;
+						this.item[num6].SetDefaults(407, false);
+						num6++;
+						this.item[num6].SetDefaults(161, false);
+						num6++;
+						return;
+					}
+					if (type == 7)
+					{
+						int num7 = 0;
+						this.item[num7].SetDefaults(487, false);
+						num7++;
+						this.item[num7].SetDefaults(496, false);
+						num7++;
+						this.item[num7].SetDefaults(500, false);
+						num7++;
+						this.item[num7].SetDefaults(507, false);
+						num7++;
+						this.item[num7].SetDefaults(508, false);
+						num7++;
+						this.item[num7].SetDefaults(531, false);
+						num7++;
+						this.item[num7].SetDefaults(576, false);
+						num7++;
+						return;
+					}
+					if (type == 8)
+					{
+						int num8 = 0;
+						this.item[num8].SetDefaults(509, false);
+						num8++;
+						this.item[num8].SetDefaults(510, false);
+						num8++;
+						this.item[num8].SetDefaults(530, false);
+						num8++;
+						this.item[num8].SetDefaults(513, false);
+						num8++;
+						this.item[num8].SetDefaults(538, false);
+						num8++;
+						this.item[num8].SetDefaults(529, false);
+						num8++;
+						this.item[num8].SetDefaults(541, false);
+						num8++;
+						this.item[num8].SetDefaults(542, false);
+						num8++;
+						this.item[num8].SetDefaults(543, false);
+						num8++;
+						return;
+					}
+					if (type == 9)
+					{
+						int num9 = 0;
+						this.item[num9].SetDefaults(588, false);
+						num9++;
+						this.item[num9].SetDefaults(589, false);
+						num9++;
+						this.item[num9].SetDefaults(590, false);
+						num9++;
+						this.item[num9].SetDefaults(597, false);
+						num9++;
+						this.item[num9].SetDefaults(598, false);
+						num9++;
+						this.item[num9].SetDefaults(596, false);
+						num9++;
+					}
+				}
+			}
+		}
+	}
 }
-

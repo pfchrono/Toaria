@@ -1,0 +1,8 @@
+Terraria version 1.1.1:
+	Merged TShock and TerrariaServer back into Toaria form!
+	Added /roll command (Roll a random number) Might add this to party or solo displaying.
+	Remove partial useless junk code the server doesnt need.
+
+TODO:
+	Maybe merge the dll TShockApi.dll functions into Toaria.
+	Remove more of the useless client code from Toaria

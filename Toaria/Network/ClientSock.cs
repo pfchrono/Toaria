@@ -1,56 +1,53 @@
-﻿namespace Toaria
+using System;
+using System.Net.Sockets;
+namespace Toaria
 {
-    using System;
-    using System.Net.Sockets;
-
-    public class ClientSock
-    {
-        public bool active;
-        public bool locked;
-        public NetworkStream networkStream;
-        public byte[] readBuffer;
-        public int state;
-        public int statusCount;
-        public int statusMax;
-        public string statusText;
-        public TcpClient tcpClient = new TcpClient();
-        public int timeOut;
-        public byte[] writeBuffer;
-
-        public void ClientReadCallBack(IAsyncResult ar)
-        {
-            int streamLength = 0;
-            if (!Netplay.disconnect)
-            {
-                streamLength = this.networkStream.EndRead(ar);
-                if (streamLength == 0)
-                {
-                    Netplay.disconnect = true;
-                    Main.statusText = "Lost connection";
-                }
-                else if (Main.ignoreErrors)
-                {
-                    try
-                    {
-                        NetMessage.RecieveBytes(this.readBuffer, streamLength, 0x100);
-                    }
-                    catch
-                    {
-                    }
-                }
-                else
-                {
-                    NetMessage.RecieveBytes(this.readBuffer, streamLength, 0x100);
-                }
-            }
-            this.locked = false;
-        }
-
-        public void ClientWriteCallBack(IAsyncResult ar)
-        {
-            messageBuffer buffer1 = NetMessage.buffer[0x100];
-            buffer1.spamCount--;
-        }
-    }
+	public class ClientSock
+	{
+		public TcpClient tcpClient = new TcpClient();
+		public NetworkStream networkStream;
+		public string statusText;
+		public int statusCount;
+		public int statusMax;
+		public int timeOut;
+		public byte[] readBuffer;
+		public byte[] writeBuffer;
+		public bool active;
+		public bool locked;
+		public int state;
+		public void ClientWriteCallBack(IAsyncResult ar)
+		{
+			NetMessage.buffer[256].spamCount--;
+		}
+		public void ClientReadCallBack(IAsyncResult ar)
+		{
+			if (!Netplay.disconnect)
+			{
+				int num = this.networkStream.EndRead(ar);
+				if (num == 0)
+				{
+					Netplay.disconnect = true;
+					Main.statusText = "Lost connection";
+				}
+				else
+				{
+					if (Main.ignoreErrors)
+					{
+						try
+						{
+							NetMessage.RecieveBytes(this.readBuffer, num, 256);
+							goto IL_59;
+						}
+						catch
+						{
+							goto IL_59;
+						}
+					}
+					NetMessage.RecieveBytes(this.readBuffer, num, 256);
+				}
+			}
+			IL_59:
+			this.locked = false;
+		}
+	}
 }
-

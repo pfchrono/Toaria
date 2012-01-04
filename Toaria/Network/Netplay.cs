@@ -1,68 +1,95 @@
-﻿namespace Toaria
-{
-    using System;
-    using System.IO;
-    using System.Net;
-    using System.Net.Sockets;
-    using System.Threading;
-    using TerrariaAPI.Hooks;
+using System;
+using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using System.Threading;
+using Hooks;
 
+namespace Toaria
+{
     public class Netplay
     {
-        public static bool anyClients = false;
-        public static string banFile = "banlist.txt";
-        public const int bufferSize = 0x400;
-        public static ClientSock clientSock = new ClientSock();
-        public static bool disconnect = false;
-        public const int maxConnections = 0x100;
-        public static string password = "";
-        public static IPAddress serverIP;
-        public static IPAddress serverListenIP = IPAddress.Any;
-        public static int serverPort = 0x1e61;
-        public static ServerSock[] serverSock = new ServerSock[0x100];
-        public static bool ServerUp = false;
-        public static bool spamCheck = false;
+        public const int bufferSize = 1024;
+        public const int maxConnections = 256;
         public static bool stopListen = false;
+        public static ServerSock[] serverSock = new ServerSock[256];
+        public static ClientSock clientSock = new ClientSock();
         public static TcpListener tcpListener;
-
-        public static void AddBan(int plr)
+        public static IPAddress serverListenIP = IPAddress.Any;
+        public static IPAddress serverIP = IPAddress.Any;
+        public static int serverPort = 7777;
+        public static bool disconnect = false;
+        public static string password = "";
+        public static string banFile = "banlist.txt";
+        public static bool spamCheck = false;
+        public static bool anyClients = false;
+        public static bool ServerUp = false;
+        public static int connectionLimit = 0;
+        public static bool killInactive = false;
+        public static void ResetNetDiag()
         {
-            string str = serverSock[plr].tcpClient.Client.RemoteEndPoint.ToString();
-            string str2 = str;
-            for (int i = 0; i < str.Length; i++)
+            Main.rxMsg = 0;
+            Main.rxData = 0;
+            Main.txMsg = 0;
+            Main.txData = 0;
+            for (int i = 0; i < Main.maxMsg; i++)
             {
-                if (str.Substring(i, 1) == ":")
-                {
-                    str2 = str.Substring(0, i);
-                }
-            }
-            using (StreamWriter writer = new StreamWriter(banFile, true))
-            {
-                writer.WriteLine("//" + Main.player[plr].name);
-                writer.WriteLine(str2);
+                Main.rxMsgType[i] = 0;
+                Main.rxDataType[i] = 0;
+                Main.txMsgType[i] = 0;
+                Main.txDataType[i] = 0;
             }
         }
-
+        public static void ResetSections()
+        {
+            for (int i = 0; i < 256; i++)
+            {
+                for (int j = 0; j < Main.maxSectionsX; j++)
+                {
+                    for (int k = 0; k < Main.maxSectionsY; k++)
+                    {
+                        Netplay.serverSock[i].tileSection[j, k] = false;
+                    }
+                }
+            }
+        }
+        public static void AddBan(int plr)
+        {
+            string text = Netplay.serverSock[plr].tcpClient.Client.RemoteEndPoint.ToString();
+            string value = text;
+            for (int i = 0; i < text.Length; i++)
+            {
+                if (text.Substring(i, 1) == ":")
+                {
+                    value = text.Substring(0, i);
+                }
+            }
+            using (StreamWriter streamWriter = new StreamWriter(Netplay.banFile, true))
+            {
+                streamWriter.WriteLine("//" + Main.player[plr].name);
+                streamWriter.WriteLine(value);
+            }
+        }
         public static bool CheckBan(string ip)
         {
             try
             {
-                string str = ip;
+                string b = ip;
                 for (int i = 0; i < ip.Length; i++)
                 {
                     if (ip.Substring(i, 1) == ":")
                     {
-                        str = ip.Substring(0, i);
+                        b = ip.Substring(0, i);
                     }
                 }
-                if (System.IO.File.Exists(banFile))
+                if (File.Exists(Netplay.banFile))
                 {
-                    using (StreamReader reader = new StreamReader(banFile))
+                    using (StreamReader streamReader = new StreamReader(Netplay.banFile))
                     {
-                        string str2;
-                        while ((str2 = reader.ReadLine()) != null)
+                        string a;
+                        while ((a = streamReader.ReadLine()) != null)
                         {
-                            if (str2 == str)
+                            if (a == b)
                             {
                                 return true;
                             }
@@ -75,291 +102,203 @@
             }
             return false;
         }
-
-        public static int GetSectionX(int x)
-        {
-            return (x / 200);
-        }
-
-        public static int GetSectionY(int y)
-        {
-            return (y / 150);
-        }
-
-        public static void Init()
-        {
-            for (int i = 0; i < 0x101; i++)
-            {
-                if (i < 0x100)
-                {
-                    serverSock[i] = new ServerSock();
-                    serverSock[i].tcpClient.NoDelay = true;
-                }
-                NetMessage.buffer[i] = new messageBuffer();
-                NetMessage.buffer[i].whoAmI = i;
-            }
-            clientSock.tcpClient.NoDelay = true;
-        }
-
-        public static void ListenForClients(object threadContext)
-        {
-            while (!disconnect && !stopListen)
-            {
-                int index = -1;
-                for (int i = 0; i < Main.maxNetPlayers; i++)
-                {
-                    if ((serverSock[i].tcpClient.Client == null) || !serverSock[i].tcpClient.Connected)
-                    {
-                        index = i;
-                        break;
-                    }
-                }
-                if (index >= 0)
-                {
-                    try
-                    {
-                        serverSock[index].tcpClient = tcpListener.AcceptTcpClient();
-                        serverSock[index].tcpClient.NoDelay = true;
-                        Console.WriteLine(serverSock[index].tcpClient.Client.RemoteEndPoint + " is connecting...");
-                    }
-                    catch (Exception exception)
-                    {
-                        if (!disconnect)
-                        {
-                            Main.menuMode = 15;
-                            Main.statusText = exception.ToString();
-                            disconnect = true;
-                        }
-                    }
-                }
-                else
-                {
-                    stopListen = true;
-                    tcpListener.Stop();
-                }
-            }
-        }
-
         public static void newRecent()
         {
             for (int i = 0; i < Main.maxMP; i++)
             {
-                if ((Main.recentIP[i] == serverIP.ToString()) && (Main.recentPort[i] == serverPort))
+                if (Main.recentIP[i] == Netplay.serverIP.ToString() && Main.recentPort[i] == Netplay.serverPort)
                 {
-                    for (int k = i; k < (Main.maxMP - 1); k++)
+                    for (int j = i; j < Main.maxMP - 1; j++)
                     {
-                        Main.recentIP[k] = Main.recentIP[k + 1];
-                        Main.recentPort[k] = Main.recentPort[k + 1];
-                        Main.recentWorld[k] = Main.recentWorld[k + 1];
+                        Main.recentIP[j] = Main.recentIP[j + 1];
+                        Main.recentPort[j] = Main.recentPort[j + 1];
+                        Main.recentWorld[j] = Main.recentWorld[j + 1];
                     }
                 }
             }
-            for (int j = Main.maxMP - 1; j > 0; j--)
+            for (int k = Main.maxMP - 1; k > 0; k--)
             {
-                Main.recentIP[j] = Main.recentIP[j - 1];
-                Main.recentPort[j] = Main.recentPort[j - 1];
-                Main.recentWorld[j] = Main.recentWorld[j - 1];
+                Main.recentIP[k] = Main.recentIP[k - 1];
+                Main.recentPort[k] = Main.recentPort[k - 1];
+                Main.recentWorld[k] = Main.recentWorld[k - 1];
             }
-            Main.recentIP[0] = serverIP.ToString();
-            Main.recentPort[0] = serverPort;
+            Main.recentIP[0] = Netplay.serverIP.ToString();
+            Main.recentPort[0] = Netplay.serverPort;
             Main.recentWorld[0] = Main.worldName;
-            Main.SaveRecent();
         }
-
         public static void ServerLoop(object threadContext)
         {
+            Netplay.ResetNetDiag();
             if (Main.rand == null)
             {
-                Main.rand = new Random((int) DateTime.Now.Ticks);
+                Main.rand = new Random((int)DateTime.Now.Ticks);
             }
             if (WorldGen.genRand == null)
             {
-                WorldGen.genRand = new Random((int) DateTime.Now.Ticks);
+                WorldGen.genRand = new Random((int)DateTime.Now.Ticks);
             }
-            Main.myPlayer = 0xff;
-            serverIP = IPAddress.Any;
+            Main.myPlayer = 255;
+            Netplay.serverIP = IPAddress.Any;
+            //Netplay.serverListenIP = Netplay.serverIP;
             Main.menuMode = 14;
             Main.statusText = "Starting server...";
             Main.netMode = 2;
-            disconnect = false;
-            for (int i = 0; i < 0x100; i++)
+            Netplay.disconnect = false;
+            for (int i = 0; i < 256; i++)
             {
-                serverSock[i] = new ServerSock();
-                serverSock[i].Reset();
-                serverSock[i].whoAmI = i;
-                serverSock[i].tcpClient = new TcpClient();
-                serverSock[i].tcpClient.NoDelay = true;
-                serverSock[i].readBuffer = new byte[0x400];
-                serverSock[i].writeBuffer = new byte[0x400];
+                Netplay.serverSock[i] = new ServerSock();
+                Netplay.serverSock[i].Reset();
+                Netplay.serverSock[i].whoAmI = i;
+                Netplay.serverSock[i].tcpClient = new TcpClient();
+                Netplay.serverSock[i].tcpClient.NoDelay = true;
+                Netplay.serverSock[i].readBuffer = new byte[1024];
+                Netplay.serverSock[i].writeBuffer = new byte[1024];
             }
-            tcpListener = new TcpListener(serverListenIP, serverPort);
+            Netplay.tcpListener = new TcpListener(Netplay.serverListenIP, Netplay.serverPort);
             try
             {
-                tcpListener.Start();
+                Netplay.tcpListener.Start();
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
                 Main.menuMode = 15;
-                Main.statusText = exception.ToString();
-                disconnect = true;
+                Main.statusText = ex.ToString();
+                Netplay.disconnect = true;
             }
-            if (!disconnect)
+            if (!Netplay.disconnect)
             {
                 ThreadPool.QueueUserWorkItem(new WaitCallback(Netplay.ListenForClients), 1);
                 Main.statusText = "Server started";
             }
-            int num2 = 0;
-            while (!disconnect)
+            int num = 0;
+            while (!Netplay.disconnect)
             {
-                if (stopListen)
+                if (Netplay.stopListen)
                 {
-                    int num3 = -1;
-                    for (int m = 0; m < Main.maxNetPlayers; m++)
+                    int num2 = -1;
+                    for (int j = 0; j < Main.maxNetPlayers; j++)
                     {
-                        if ((serverSock[m].tcpClient.Client == null) || !serverSock[m].tcpClient.Connected)
+                        if (serverSock[j].tcpClient == null || !Netplay.serverSock[j].tcpClient.Connected)
                         {
-                            num3 = m;
+                            num2 = j;
                             break;
                         }
                     }
-                    if (num3 >= 0)
+                    if (num2 >= 0)
                     {
                         if (Main.ignoreErrors)
                         {
                             try
                             {
-                                tcpListener.Start();
-                                stopListen = false;
+                                Netplay.tcpListener.Start();
+                                Netplay.stopListen = false;
                                 ThreadPool.QueueUserWorkItem(new WaitCallback(Netplay.ListenForClients), 1);
+                                goto IL_208;
                             }
                             catch
                             {
+                                goto IL_208;
                             }
                         }
-                        else
-                        {
-                            tcpListener.Start();
-                            stopListen = false;
-                            ThreadPool.QueueUserWorkItem(new WaitCallback(Netplay.ListenForClients), 1);
-                        }
+                        Netplay.tcpListener.Start();
+                        Netplay.stopListen = false;
+                        ThreadPool.QueueUserWorkItem(new WaitCallback(Netplay.ListenForClients), 1);
                     }
                 }
-                int num5 = 0;
-                for (int k = 0; k < 0x100; k++)
+            IL_208:
+                int num3 = 0;
+                for (int k = 0; k < 256; k++)
                 {
                     if (NetMessage.buffer[k].checkBytes)
                     {
                         NetMessage.CheckBytes(k);
                     }
-                    if (serverSock[k].kill)
+                    if (killInactive && serverSock[k].active && serverSock[k].state == 0 && (DateTime.UtcNow - serverSock[k].connectTime).TotalSeconds > 5)
+                        Netplay.serverSock[k].kill = true;
+
+                    if (Netplay.serverSock[k].kill)
                     {
-                        ServerHooks.OnLeave(serverSock[k].whoAmI);
-                        serverSock[k].Reset();
+                        ServerHooks.OnLeave(Netplay.serverSock[k].whoAmI);
+                        Netplay.serverSock[k].Reset();
                         NetMessage.syncPlayers();
                     }
-                    else if ((serverSock[k].tcpClient.Client != null) && serverSock[k].tcpClient.Connected)
+                    else if (serverSock[k].tcpClient != null && Netplay.serverSock[k].tcpClient.Connected)
                     {
-                        if (!serverSock[k].active)
+                        if (!Netplay.serverSock[k].active)
                         {
-                            serverSock[k].state = 0;
+                            Netplay.serverSock[k].state = 0;
                         }
-                        serverSock[k].active = true;
-                        num5++;
-                        if (!serverSock[k].locked)
+                        Netplay.serverSock[k].active = true;
+                        num3++;
+                        if (!Netplay.serverSock[k].locked)
                         {
                             try
                             {
-                                serverSock[k].networkStream = serverSock[k].tcpClient.GetStream();
-                                if (serverSock[k].networkStream.DataAvailable)
+                                Netplay.serverSock[k].networkStream = Netplay.serverSock[k].tcpClient.GetStream();
+                                if (Netplay.serverSock[k].networkStream.DataAvailable)
                                 {
-                                    serverSock[k].locked = true;
-                                    serverSock[k].networkStream.BeginRead(serverSock[k].readBuffer, 0, serverSock[k].readBuffer.Length, new AsyncCallback(serverSock[k].ServerReadCallBack), serverSock[k].networkStream);
+                                    Netplay.serverSock[k].locked = true;
+                                    Netplay.serverSock[k].networkStream.BeginRead(Netplay.serverSock[k].readBuffer, 0, Netplay.serverSock[k].readBuffer.Length, new AsyncCallback(Netplay.serverSock[k].ServerReadCallBack), Netplay.serverSock[k].networkStream);
                                 }
                             }
                             catch
                             {
-                                serverSock[k].kill = true;
+                                Netplay.serverSock[k].kill = true;
                             }
                         }
-                        if ((serverSock[k].statusMax > 0) && (serverSock[k].statusText2 != ""))
+                        if (Netplay.serverSock[k].statusMax > 0 && Netplay.serverSock[k].statusText2 != "")
                         {
-                            if (serverSock[k].statusCount >= serverSock[k].statusMax)
+                            if (Netplay.serverSock[k].statusCount >= Netplay.serverSock[k].statusMax)
                             {
-                                serverSock[k].statusText = string.Concat(new object[] { "(", serverSock[k].tcpClient.Client.RemoteEndPoint, ") ", serverSock[k].name, " ", serverSock[k].statusText2, ": Complete!" });
-                                serverSock[k].statusText2 = "";
-                                serverSock[k].statusMax = 0;
-                                serverSock[k].statusCount = 0;
+                                Netplay.serverSock[k].statusText2 = "";
+                                Netplay.serverSock[k].statusMax = 0;
+                                Netplay.serverSock[k].statusCount = 0;
                             }
                             else
                             {
-                                serverSock[k].statusText = string.Concat(new object[] { "(", serverSock[k].tcpClient.Client.RemoteEndPoint, ") ", serverSock[k].name, " ", serverSock[k].statusText2, ": ", (int) ((((float) serverSock[k].statusCount) / ((float) serverSock[k].statusMax)) * 100f), "%" });
                             }
                         }
-                        else if (serverSock[k].state == 0)
+                        else
                         {
-                            serverSock[k].statusText = string.Concat(new object[] { "(", serverSock[k].tcpClient.Client.RemoteEndPoint, ") ", serverSock[k].name, " is connecting..." });
-                        }
-                        else if (serverSock[k].state == 1)
-                        {
-                            serverSock[k].statusText = string.Concat(new object[] { "(", serverSock[k].tcpClient.Client.RemoteEndPoint, ") ", serverSock[k].name, " is sending player data..." });
-                        }
-                        else if (serverSock[k].state == 2)
-                        {
-                            serverSock[k].statusText = string.Concat(new object[] { "(", serverSock[k].tcpClient.Client.RemoteEndPoint, ") ", serverSock[k].name, " requested world information" });
-                        }
-                        else if ((serverSock[k].state != 3) && (serverSock[k].state == 10))
-                        {
-                            serverSock[k].statusText = string.Concat(new object[] { "(", serverSock[k].tcpClient.Client.RemoteEndPoint, ") ", serverSock[k].name, " is playing" });
                         }
                     }
-                    else if (serverSock[k].active)
+                    else if (Netplay.serverSock[k].active)
                     {
-                        serverSock[k].kill = true;
+                        Netplay.serverSock[k].kill = true;
                     }
                     else
                     {
-                        serverSock[k].statusText2 = "";
-                        if (k < 0xff)
+                        Netplay.serverSock[k].statusText2 = "";
+                        if (k < 255)
                         {
                             Main.player[k].active = false;
                         }
                     }
                 }
-                num2++;
-                if (num2 > 10)
+                num++;
+                if (num > 10)
                 {
                     Thread.Sleep(1);
-                    num2 = 0;
+                    num = 0;
                 }
                 else
                 {
                     Thread.Sleep(0);
                 }
-                if (!WorldGen.saveLock && !Main.dedServ)
+                if (num3 == 0)
                 {
-                    if (num5 == 0)
-                    {
-                        Main.statusText = "Waiting for clients...";
-                    }
-                    else
-                    {
-                        Main.statusText = num5 + " clients connected";
-                    }
-                }
-                if (num5 == 0)
-                {
-                    anyClients = false;
+                    Netplay.anyClients = false;
                 }
                 else
                 {
-                    anyClients = true;
+                    Netplay.anyClients = true;
                 }
-                ServerUp = true;
+                Netplay.ServerUp = true;
             }
-            tcpListener.Stop();
-            for (int j = 0; j < 0x100; j++)
+            Netplay.tcpListener.Stop();
+            for (int l = 0; l < 256; l++)
             {
-                serverSock[j].Reset();
+                Netplay.serverSock[l].Reset();
             }
             if (Main.menuMode != 15)
             {
@@ -377,12 +316,65 @@
             }
             Main.myPlayer = 0;
         }
-
+        public static void ListenForClients(object threadContext)
+        {
+            while (!Netplay.disconnect && !Netplay.stopListen)
+            {
+                int num = -1;
+                for (int i = 0; i < Main.maxNetPlayers; i++)
+                {
+                    if (serverSock[i].tcpClient == null || !Netplay.serverSock[i].tcpClient.Connected)
+                    {
+                        num = i;
+                        break;
+                    }
+                }
+                if (num >= 0)
+                {
+                    try
+                    {
+                        Netplay.serverSock[num].tcpClient = Netplay.tcpListener.AcceptTcpClient();
+                        Netplay.serverSock[num].tcpClient.NoDelay = true;
+                        Netplay.serverSock[num].connectTime = DateTime.UtcNow;
+                        Console.WriteLine(Netplay.serverSock[num].tcpClient.Client.RemoteEndPoint + " is connecting...");
+                        if (connectionLimit > 0 &&
+                            CheckExistingIP(Netplay.serverSock[num].tcpClient.Client.RemoteEndPoint.ToString().Split(':')[0]) > connectionLimit)
+                            serverSock[num].kill = true;
+                        continue;
+                    }
+                    catch (Exception ex)
+                    {
+                        if (!Netplay.disconnect)
+                        {
+                            Main.menuMode = 15;
+                            Main.statusText = ex.ToString();
+                            Netplay.disconnect = true;
+                        }
+                        continue;
+                    }
+                }
+                Netplay.stopListen = true;
+                Netplay.tcpListener.Stop();
+            }
+        }
+        public static int CheckExistingIP(string IP)
+        {
+            int hit = 0;
+            for (int i = 0; i < Main.maxNetPlayers; i++)
+                if (serverSock[i] != null && serverSock[i].tcpClient.Connected &&
+                    serverSock[i].tcpClient.Client.RemoteEndPoint.ToString().Split(':')[0] == IP)
+                    hit++;
+            return hit;
+        }
+        public static void StartServer()
+        {
+            ThreadPool.QueueUserWorkItem(new WaitCallback(Netplay.ServerLoop), 1);
+        }
         public static bool SetIP(string newIP)
         {
             try
             {
-                serverIP = IPAddress.Parse(newIP);
+                Netplay.serverIP = IPAddress.Parse(newIP);
             }
             catch
             {
@@ -390,32 +382,51 @@
             }
             return true;
         }
-
         public static bool SetIP2(string newIP)
         {
+            bool result;
             try
             {
-                IPAddress[] addressList = Dns.GetHostEntry(newIP).AddressList;
+                IPHostEntry hostEntry = Dns.GetHostEntry(newIP);
+                IPAddress[] addressList = hostEntry.AddressList;
                 for (int i = 0; i < addressList.Length; i++)
                 {
                     if (addressList[i].AddressFamily == AddressFamily.InterNetwork)
                     {
-                        serverIP = addressList[i];
-                        return true;
+                        Netplay.serverIP = addressList[i];
+                        result = true;
+                        return result;
                     }
                 }
-                return false;
+                result = false;
             }
             catch
             {
-                return false;
+                result = false;
             }
+            return result;
         }
-
-        public static void StartServer()
+        public static void Init()
         {
-            ThreadPool.QueueUserWorkItem(new WaitCallback(Netplay.ServerLoop), 1);
+            for (int i = 0; i < 257; i++)
+            {
+                if (i < 256)
+                {
+                    Netplay.serverSock[i] = new ServerSock();
+                    Netplay.serverSock[i].tcpClient.NoDelay = true;
+                }
+                NetMessage.buffer[i] = new messageBuffer();
+                NetMessage.buffer[i].whoAmI = i;
+            }
+            Netplay.clientSock.tcpClient.NoDelay = true;
+        }
+        public static int GetSectionX(int x)
+        {
+            return x / 200;
+        }
+        public static int GetSectionY(int y)
+        {
+            return y / 150;
         }
     }
 }
-
