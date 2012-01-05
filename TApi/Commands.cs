@@ -184,7 +184,7 @@ namespace TShockAPI
             add(Permissions.cfg, Broadcast, "broadcast", "bc");
             add(Permissions.whisper, Whisper, "whisper", "w", "tell");
             add(Permissions.cantalkinthird, RollNumber, "roll");
-            add(Permissions.whisper, Reply, "reply", "r");
+            add(null, Reply, "reply", "r");
             add(Permissions.annoy, Annoy, "annoy");
             add(Permissions.cfg, ConvertWaR, "convert");
             add(Permissions.kill, Kill, "kill");
@@ -201,6 +201,7 @@ namespace TShockAPI
         	add(Permissions.cfg, ServerInfo, "stats");
             add(Permissions.converthardmode, ConvertCorruption, "convertcorruption");
             add(Permissions.converthardmode, ConvertHallow, "converthallow");
+            add(Permissions.converthardmode, ConvertCleanse, "convertcleanse", "cleanseworld");
         }
 
         public static bool HandleCommand(TSPlayer player, string text)
@@ -642,8 +643,8 @@ namespace TShockAPI
 		#region Stupid commands
 		public static void ServerInfo(CommandArgs args)
 		{
-			args.Player.SendMessage("Memory usage: " + System.Diagnostics.Process.GetCurrentProcess().WorkingSet64);
-			args.Player.SendMessage("Allocated memory: " + System.Diagnostics.Process.GetCurrentProcess().VirtualMemorySize64);
+			args.Player.SendMessage("Memory usage: " + System.Diagnostics.Process.GetCurrentProcess().WorkingSet64 / 1024 / 1024 + "Mbs");
+            args.Player.SendMessage("Allocated memory: " + System.Diagnostics.Process.GetCurrentProcess().VirtualMemorySize64 / 1024 / 1024 + "Mbs");
 			args.Player.SendMessage("Total processor time: " + System.Diagnostics.Process.GetCurrentProcess().TotalProcessorTime);
 			args.Player.SendMessage("Ver: " + System.Environment.OSVersion);
 			args.Player.SendMessage("Proc count: " + System.Environment.ProcessorCount);
@@ -1328,6 +1329,56 @@ namespace TShockAPI
             TSPlayer.All.SendData(PacketTypes.UpdateGoodEvil);
             Netplay.ResetSections();
             TShock.Utils.Broadcast("Hallow conversion done.");
+        }
+
+        private static void ConvertCleanse(CommandArgs args)
+        {
+            TShock.Utils.Broadcast("Server is cleansing, things might lag for a moment.", Color.Red);
+            for (int x = 0; x < Main.maxTilesX; x++)
+            {
+                for (int y = 0; y < Main.maxTilesY; y++)
+                {
+                    switch (Main.tile[x, y].type)
+                    {
+                            // Bit hacky but may work - Chrono
+                            //Hallow
+                        case 22:
+                        case 25:
+                            Main.tile[x, y].type = 9;
+                            break;
+                        case 23:
+                            Main.tile[x, y].type = 2;
+                            break;
+                        case 32:
+                            Main.tile[x, y].type = 0;
+                            Main.tile[x, y].active = false;
+                            break;
+                        case 24:
+                            Main.tile[x, y].type = 110;
+                            break;
+                        case 112:
+                            Main.tile[x, y].type = 53;
+                            break;
+
+                            //Corruption
+                        case 117:
+                            Main.tile[x, y].type = 9;
+                            break;
+                        case 109:
+                            Main.tile[x, y].type = 2;
+                            break;
+                        case 116:
+                            Main.tile[x, y].type = 112;
+                            break;
+                        default:
+                            continue;
+                    }
+                }
+            }
+            WorldGen.CountTiles(0);
+            TSPlayer.All.SendData(PacketTypes.UpdateGoodEvil);
+            Netplay.ResetSections();
+            TShock.Utils.Broadcast("Hallow and Corruption cleansing done.");
         }
 
         #endregion Cause Events and Spawn Monsters Commands
